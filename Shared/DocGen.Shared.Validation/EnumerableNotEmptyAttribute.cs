@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace DocGen.Shared.Validation
 {
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class EnumerableNotEmptyAttribute : ValidationAttribute
     {
         public EnumerableNotEmptyAttribute() : base("Must have at least one element") { }

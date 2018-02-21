@@ -15,7 +15,7 @@ namespace DocGen.Api.Core.Templates
         public string Text { get; set; }
 
         [EnumerableNotEmpty]
-        [EnumerableElementsValid]
+        [ValidateEnumerableElements]
         public IEnumerable<StepGroup> StepGroups { get; set; }
     }
 }

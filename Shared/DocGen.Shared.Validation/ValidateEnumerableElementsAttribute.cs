@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DocGen.Shared.Validation
 {
-    public class EnumerableElementsValidAttribute : Attribute
+    public class ValidateEnumerableElementsAttribute : ValidateCustomBehaviourAttribute
     {
     }
 }

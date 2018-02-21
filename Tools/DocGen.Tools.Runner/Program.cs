@@ -46,7 +46,12 @@ namespace DocGen.Tools.Runner
                             new Step()
                             {
                                 Title = "Title 1.1",
-                                Description = "Description 1.1"
+                                Description = "Description 1.1",
+                                Type = StepType.Text,
+                                TypeData = new
+                                {
+                                    Value = "asdasdasd"
+                                }
                             }
                         }
                     }
