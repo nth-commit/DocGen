@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 
 namespace DocGen.Tools.Runner
@@ -48,10 +49,33 @@ namespace DocGen.Tools.Runner
                                 Title = "Title 1.1",
                                 Description = "Description 1.1",
                                 Type = StepType.Text,
-                                TypeData = new
+                                TypeData = CreateDynamic(new Dictionary<string, object>()
                                 {
-                                    Value = "asdasdasd"
-                                }
+                                    { "Value", "aasdasdasd" }
+                                })
+                            },
+                            new Step()
+                            {
+                                Title = "Title 1.2",
+                                Description = "Description 1.2",
+                                Type = StepType.Checkbox
+                            },
+                            new Step()
+                            {
+                                Title = "Title 1.3",
+                                Description = "Description 1.3",
+                                Type = StepType.Text,
+                                TypeData = CreateDynamic(new Dictionary<string, object>()
+                                {
+                                    { "Value", "aasdasdasd" }
+                                }),
+                                ConditionType = StepConditionType.PreviousCheckboxValue,
+                                ConditionTypeData = CreateDynamic(new Dictionary<string, object>()
+                                {
+                                    { "StepGroupIndex", 0 },
+                                    { "StepIndex", 1 },
+                                    { "Value", true }
+                                })
                             }
                         }
                     }
@@ -70,5 +94,14 @@ namespace DocGen.Tools.Runner
                 Console.ReadLine();
             }
         }
+
+        private static dynamic CreateDynamic(Dictionary<string, object> properties)
+        {
+            var result = new ExpandoObject();
+            properties.ForEach(kvp => result.TryAdd(kvp.Key, kvp.Value));
+            return result;
+        }
     }
+
+    
 }

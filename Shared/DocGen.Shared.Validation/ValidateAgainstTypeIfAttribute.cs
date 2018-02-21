@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DocGen.Shared.Validation
 {
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
     public class ValidateAgainstTypeIfAttribute : ValidateAgainstTypeAttribute
     {
         public string PropertyName { get; set; }

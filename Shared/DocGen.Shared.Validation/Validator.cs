@@ -157,7 +157,7 @@ namespace DocGen.Shared.Validation
         {
             var targetProperty = model.GetType().GetProperties().First(pi2 => pi2.Name == attr.PropertyName);
             var targetPropertyValue = targetProperty.GetValue(model);
-            if (targetPropertyValue.Equals(attr.PropertyValue))
+            if (targetPropertyValue != null && targetPropertyValue.Equals(attr.PropertyValue))
             {
                 ValidateAgainstType(model, serviceProvider, items, modelErrors, pi, attr);
             }

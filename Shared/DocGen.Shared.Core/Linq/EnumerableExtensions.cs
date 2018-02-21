@@ -14,6 +14,13 @@ namespace System.Linq
             return (groupedByMatching[true], groupedByMatching[false]);
         }
 
+        public static IEnumerable<T> Concat<T>(
+            this IEnumerable<T> source,
+            params T[] elements)
+        {
+            return source.Concat(elements.AsEnumerable());
+        }
+
         public static void ForEach<T>(
             this IEnumerable<T> source,
             Action<T> action)

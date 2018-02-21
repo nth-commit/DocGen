@@ -39,6 +39,28 @@ namespace DocGen.Shared.Validation
 
         public void Add(string error, int index) => Add(error, index.ToString(), true);
 
+        public void Add(string error, IEnumerable<object> memberPath)
+        {
+            var memberName = memberPath.First().ToString();
+            memberPath.Skip(1).ForEach(memberPathPart =>
+            {
+                if (memberPathPart is int)
+                {
+                    memberName += ResolveMemberName(memberPathPart.ToString(), true);
+                }
+                else if (memberPathPart is string)
+                {
+                    memberName += "." + ResolveMemberName((string)memberPathPart, false);
+                }
+                else
+                {
+                    throw new Exception("Unsupported memberPath type");
+                }
+            });
+
+            Add(error, memberName);
+        }
+
         public void Add(ModelErrorDictionary other, string memberName = null) => Add(other, memberName, false);
 
         public void Add(ModelErrorDictionary other, int index) => Add(other, index.ToString(), true);

@@ -22,7 +22,6 @@ namespace DocGen.Shared.Validation
                 return true;
             }
 
-            var isValueType = value.GetType().IsValueType;
             if (!value.GetType().IsValueType)
             {
                 throw new Exception("Not supported");
