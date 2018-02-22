@@ -10,7 +10,9 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddApiCoreServices(
             this IServiceCollection services)
         {
-            services.AddTransient<ITemplateService, TemplateService>();
+            services.AddTransient<TemplateService>();
+            services.AddTransient<ITemplateRepository, TableStorageTemplateRepository>();
+
             return services;
         }
     }

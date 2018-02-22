@@ -28,7 +28,7 @@ namespace DocGen.Tools.Runner
             });
 
             var serviceProvider = services.BuildServiceProvider();
-            var service = serviceProvider.GetRequiredService<ITemplateService>();
+            var service = serviceProvider.GetRequiredService<TemplateService>();
 
             try
             {

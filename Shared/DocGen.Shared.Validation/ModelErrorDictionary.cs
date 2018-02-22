@@ -65,6 +65,14 @@ namespace DocGen.Shared.Validation
 
         public void Add(ModelErrorDictionary other, int index) => Add(other, index.ToString(), true);
 
+        public void AssertValid()
+        {
+            if (HasErrors)
+            {
+                throw new ClientModelValidationException(this);
+            }
+        }
+
 
         #region Helpers
 

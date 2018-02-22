@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace DocGen.Api.Core.Templates
 {
-    public interface ITemplateService
+    public interface ITemplateRepository
     {
-        Task<Template> CreateTemplateAsync(Template template, bool dryRun = false);
+        Task<Template> CreateTemplateAsync(Template template);
     }
 }
