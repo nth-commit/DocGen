@@ -24,8 +24,7 @@ namespace DocGen.Api.Core.Templates
         [NotValue(StepConditionType.Unknown)]
         public StepConditionType? ConditionType { get; set; }
 
-        [ValidateAgainstTypeIf(typeof(StepConditionTypeData_PreviousCheckboxValue), nameof(ConditionType), StepConditionType.PreviousCheckboxValue)]
-        [ValidateAgainstTypeIf(typeof(StepConditionTypeData_PreviousRadioValue), nameof(ConditionType), StepConditionType.PreviousRadioValue)]
+        [ValidateAgainstTypeIf(typeof(StepConditionTypeData_EqualsPreviousValue), nameof(ConditionType), StepConditionType.EqualsPreviousValue)]
         public dynamic ConditionTypeData { get; set; }
     }
 
@@ -39,24 +38,18 @@ namespace DocGen.Api.Core.Templates
 
     public class StepConditionTypeData { }
 
-    public class StepConditionTypeData_PreviousValue : StepConditionTypeData
+    public class StepConditionTypeData_EqualsPreviousValue : StepConditionTypeData
     {
         [Range(0, int.MaxValue)]
         public int? StepGroupIndex { get; set; }
 
         [Range(0, int.MaxValue)]
         public int StepIndex { get; set; }
-    }
 
-    public class StepConditionTypeData_PreviousCheckboxValue : StepConditionTypeData_PreviousValue
-    {
+        [NotValue(StepType.Unknown)]
+        public StepType ExpectedStepType { get; set; }
+
         [Required]
-        public bool? Value { get; set; }
-    }
-
-    public class StepConditionTypeData_PreviousRadioValue : StepConditionTypeData_PreviousValue
-    {
-        [StringNotNullOrEmpty]
-        public string Value { get; set; }
+        public dynamic PreviousValue { get; set; }
     }
 }

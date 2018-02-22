@@ -69,12 +69,13 @@ namespace DocGen.Tools.Runner
                                 {
                                     { "Value", "aasdasdasd" }
                                 }),
-                                ConditionType = StepConditionType.PreviousCheckboxValue,
+                                ConditionType = StepConditionType.EqualsPreviousValue,
                                 ConditionTypeData = CreateDynamic(new Dictionary<string, object>()
                                 {
                                     { "StepGroupIndex", 0 },
                                     { "StepIndex", 1 },
-                                    { "Value", true }
+                                    { "ExpectedStepType", StepType.Checkbox },
+                                    { "PreviousValue", true }
                                 })
                             }
                         }

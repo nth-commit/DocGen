@@ -8,8 +8,6 @@ namespace DocGen.Api.Core.Templates
     {
         Unknown = 0,
 
-        PreviousCheckboxValue,
-
-        PreviousRadioValue
+        EqualsPreviousValue
     }
 }

@@ -121,7 +121,7 @@ namespace DocGen.Shared.Validation
             PropertyInfo pi,
             ValidateAgainstTypeAttribute attr)
         {
-            var propertyModel = pi.GetValue(model);
+            var propertyModel = pi.GetValue(model) as IDictionary<string, object>;
             if (propertyModel == null)
             {
                 // Everything is fine. RequiredAttribute should handle validation here if not.
@@ -130,14 +130,16 @@ namespace DocGen.Shared.Validation
 
             #region Instantiate an object of the target type so we can validate it
 
-            var propertyModelPropertiesByName = propertyModel.GetType().GetProperties()
-                .ToDictionary(pi2 => pi2.Name, attr.IgnoreCase ? StringComparer.InvariantCultureIgnoreCase : StringComparer.InvariantCulture);
+            var propertyModelPropertiesByName = propertyModel.ToDictionary(
+                kvp => kvp.Key,
+                kvp => kvp.Value,
+                attr.IgnoreCase ? StringComparer.InvariantCultureIgnoreCase : StringComparer.InvariantCulture);
 
             var retypedPropertyModel = Activator.CreateInstance(attr.Type);
             attr.Type.GetProperties().ForEach(retypedProperty =>
             {
-                if (propertyModelPropertiesByName.TryGetValue(retypedProperty.Name, out PropertyInfo property)) {
-                    retypedProperty.SetValue(retypedPropertyModel, property.GetValue(propertyModel));
+                if (propertyModelPropertiesByName.TryGetValue(retypedProperty.Name, out object value)) {
+                    retypedProperty.SetValue(retypedPropertyModel, value);
                 }
             });
 
