@@ -159,7 +159,7 @@ namespace DocGen.Api.Core.Templates
             {
                 stepErrors.Add("A step that has sub-steps must not contain any inputs", stepErrorPath);
             }
-            else
+            else if (!isParentStep && !step.Inputs.Any())
             {
                 stepErrors.Add("Step must have at least one inputs", stepErrorPath);
             }
@@ -171,9 +171,9 @@ namespace DocGen.Api.Core.Templates
                 var previousInputValueErrorPath = stepConditionErrorPath.Concat(nameof(TemplateStepConditionTypeData_EqualsPreviousInputValue.PreviousInputValue));
 
                 var previousInputPath = DynamicUtility.Unwrap<IEnumerable<string>>(() => step.ConditionData.PreviousInputPath);
-                if (previousInputPath.Count() <= 1)
+                if (previousInputPath.Count() < 2)
                 {
-                    stepErrors.Add("Must have a length less than or equal to 1", previousInputPathErrorPath);
+                    stepErrors.Add("Must have a greater than than or equal to 2", previousInputPathErrorPath);
                 }
                 else
                 {
