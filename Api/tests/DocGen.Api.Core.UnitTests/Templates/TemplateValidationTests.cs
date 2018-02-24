@@ -12,7 +12,6 @@ namespace DocGen.Api.Core.Templates
 {
     public class TemplateValidationTests : TestsBase
     {
-
         [Fact]
         public async Task TestValidation_StepConditionReferencesFollowingStep_Fails()
         {
@@ -47,12 +46,15 @@ namespace DocGen.Api.Core.Templates
                 "StepGroups[0].Steps[0].ConditionTypeData.StepIndex");
         }
 
-        private async Task AssertTemplateInvalidAsync(Template template, params string[] invalidMembers)
+
+        #region Helpers
+
+        private async Task AssertTemplateInvalidAsync(TemplateCreate create, params string[] invalidMembers)
         {
             var templateService = ServiceProvider.GetRequiredService<TemplateService>();
             try
             {
-                await templateService.CreateTemplateAsync(template);
+                await templateService.CreateTemplateAsync(create);
                 Assert.True(false, "Template was valid");
             }
             catch (ClientModelValidationException ex)
@@ -66,9 +68,9 @@ namespace DocGen.Api.Core.Templates
             }
         }
 
-        private Template CreateTemplate_OneStepGroup(IEnumerable<Step> steps)
+        private TemplateCreate CreateTemplate_OneStepGroup(IEnumerable<Step> steps)
         {
-            return new Template()
+            return new TemplateCreate()
             {
                 Name = "A",
                 Text = "B",
@@ -83,5 +85,7 @@ namespace DocGen.Api.Core.Templates
                 }
             };
         }
+
+        #endregion
     }
 }

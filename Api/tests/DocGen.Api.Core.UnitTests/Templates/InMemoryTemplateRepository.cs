@@ -14,5 +14,10 @@ namespace DocGen.Api.Core.Templates
             _templatesById.Add(Guid.NewGuid().ToString(), template);
             return Task.FromResult(template);
         }
+
+        public Task<Template> GetTemplateAsync(string id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

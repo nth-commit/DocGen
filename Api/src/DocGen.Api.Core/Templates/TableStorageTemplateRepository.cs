@@ -34,5 +34,10 @@ namespace DocGen.Api.Core.Templates
 
             return template;
         }
+
+        public Task<Template> GetTemplateAsync(string id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

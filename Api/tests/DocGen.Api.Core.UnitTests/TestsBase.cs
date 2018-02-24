@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using AutoMapper;
 using DocGen.Api.Core.Templates;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -12,6 +13,11 @@ namespace DocGen.Api.Core
         public TestsBase()
         {
             var services = new ServiceCollection();
+
+            services.AddAutoMapper(conf =>
+            {
+                conf.AddApiCoreMappers();
+            });
 
             services.AddApiCoreServices();
             services.AddTransient<ITemplateRepository, InMemoryTemplateRepository>();

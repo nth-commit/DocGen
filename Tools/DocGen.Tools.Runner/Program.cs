@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using DocGen.Api.Core.Templates;
+using DocGen.Shared.Core.Dynamic;
 using DocGen.Shared.Validation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MoreLinq;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -32,7 +34,7 @@ namespace DocGen.Tools.Runner
 
             try
             {
-                service.CreateTemplateAsync(new Template()
+                service.CreateTemplateAsync(new TemplateCreate()
                 {
                     Name = "Non Disclosure Agreement",
                     Text = "Test",
@@ -49,7 +51,7 @@ namespace DocGen.Tools.Runner
                                 Title = "Title 1.1",
                                 Description = "Description 1.1",
                                 Type = StepType.Text,
-                                TypeData = CreateDynamic(new Dictionary<string, object>()
+                                TypeData = ExpandoObjectFactory.CreateDynamic(new Dictionary<string, object>()
                                 {
                                     { "Value", "aasdasdasd" }
                                 })
@@ -65,12 +67,12 @@ namespace DocGen.Tools.Runner
                                 Title = "Title 1.3",
                                 Description = "Description 1.3",
                                 Type = StepType.Text,
-                                TypeData = CreateDynamic(new Dictionary<string, object>()
+                                TypeData = ExpandoObjectFactory.CreateDynamic(new Dictionary<string, object>()
                                 {
                                     { "Value", "aasdasdasd" }
                                 }),
                                 ConditionType = StepConditionType.EqualsPreviousValue,
-                                ConditionTypeData = CreateDynamic(new Dictionary<string, object>()
+                                ConditionTypeData = ExpandoObjectFactory.CreateDynamic(new Dictionary<string, object>()
                                 {
                                     { "StepGroupIndex", 0 },
                                     { "StepIndex", 1 },
@@ -95,14 +97,5 @@ namespace DocGen.Tools.Runner
                 Console.ReadLine();
             }
         }
-
-        private static dynamic CreateDynamic(Dictionary<string, object> properties)
-        {
-            var result = new ExpandoObject();
-            properties.ForEach(kvp => result.TryAdd(kvp.Key, kvp.Value));
-            return result;
-        }
     }
-
-    
 }

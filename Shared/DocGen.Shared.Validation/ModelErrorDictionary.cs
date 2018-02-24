@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MoreLinq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -42,6 +43,7 @@ namespace DocGen.Shared.Validation
         public void Add(string error, IEnumerable<object> memberPath)
         {
             var memberName = memberPath.First().ToString();
+
             memberPath.Skip(1).ForEach(memberPathPart =>
             {
                 if (memberPathPart is int)

@@ -21,22 +21,15 @@ namespace System.Linq
             return source.Concat(elements.AsEnumerable());
         }
 
-        public static void ForEach<T>(
-            this IEnumerable<T> source,
-            Action<T> action)
-        {
-            source.ForEach((element, i) => action(element));
-        }
-
-        public static void ForEach<T>(
-            this IEnumerable<T> source,
-            Action<T, int> action)
-        {
-            var sourceList = source.ToList();
-            for (int i = 0; i < sourceList.Count; i++)
-            {
-                action(sourceList[i], i);
-            }
-        }
+        //public static void ForEach<T>(
+        //    this IEnumerable<T> source,
+        //    Action<T, int> action)
+        //{
+        //    var sourceList = source.ToList();
+        //    for (int i = 0; i < sourceList.Count; i++)
+        //    {
+        //        action(sourceList[i], i);
+        //    }
+        //}
     }
 }

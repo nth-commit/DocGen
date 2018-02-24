@@ -10,6 +10,9 @@ namespace DocGen.Api.Core.Templates
     {
         public TemplateMappingProfile()
         {
+            CreateMap<TemplateCreate, Template>()
+                .ForMember(dest => dest.Id, opts => opts.ResolveUsing(src => Guid.NewGuid().ToString()));
+
             CreateMap<Template, TemplateTableEntity>()
                 .ForMember(dest => dest.RowKey, opts => opts.ResolveUsing(src => src.Name))
                 .ForMember(dest => dest.PartitionKey, opts => opts.ResolveUsing(src => Regions.Constants.Names.NewZealand))

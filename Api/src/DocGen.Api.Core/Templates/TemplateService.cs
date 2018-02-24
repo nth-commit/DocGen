@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MoreLinq;
 using DocGen.Shared.Core.Dynamic;
 using DocGen.Shared.Validation;
 using System;
@@ -12,21 +13,27 @@ namespace DocGen.Api.Core.Templates
     public class TemplateService
     {
         private readonly ITemplateRepository _templateRepository;
+        private readonly IMapper _mapper;
 
         public TemplateService(
-            ITemplateRepository templateRepository)
+            ITemplateRepository templateRepository,
+            IMapper mapper)
         {
             _templateRepository = templateRepository;
+            _mapper = mapper;
         }
 
-        public async Task<Template> CreateTemplateAsync(Template template, bool dryRun = false)
+        public async Task<Template> CreateTemplateAsync(TemplateCreate create, bool dryRun = false)
         {
-            Validator.ValidateNotNull(template, nameof(template));
-            ValidateTemplate(template);
+            Validator.ValidateNotNull(create, nameof(create));
+            ValidateTemplate(create);
+
+            var template = _mapper.Map<Template>(create);
+
             return await _templateRepository.CreateTemplateAsync(template);
         }
 
-        private void ValidateTemplate(Template template)
+        private void ValidateTemplate(TemplateCreate template)
         {
             Validator.Validate(template);
 

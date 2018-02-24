@@ -11,7 +11,10 @@ namespace DocGen.Shared.Core.Dynamic
         public static dynamic CreateDynamic(Dictionary<string, object> properties)
         {
             var result = new ExpandoObject() as IDictionary<string, object>;
-            properties.ForEach(kvp => result[kvp.Key] = kvp.Value);
+            foreach (var kvp in properties)
+            {
+                result[kvp.Key] = kvp.Value;
+            }
             return result;
         }
     }

@@ -10,6 +10,11 @@ namespace DocGen.Shared.Validation
     {
         public ModelErrorDictionary ModelErrors { get; private set; }
 
+        public ClientModelValidationException(string error, string member)
+        {
+            ModelErrors = new ModelErrorDictionary(error, member);
+        }
+
         public ClientModelValidationException(ModelErrorDictionary modelErrors)
         {
             ModelErrors = modelErrors;
