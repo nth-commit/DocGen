@@ -20,9 +20,9 @@ namespace DocGen.Api.Core.Templates
                 {
                     Name = "A",
                     Text = "A",
-                    Steps = new List<TemplateStep>()
+                    Steps = new List<TemplateStepCreate>()
                     {
-                        new TemplateStep()
+                        new TemplateStepCreate()
                         {
                             Name = "A",
                             Description = "A",
@@ -32,22 +32,22 @@ namespace DocGen.Api.Core.Templates
                                 { "PreviousInputPath", new List<string>() { "B", "{{default}}" } },
                                 { "PreviousInputValue", true }
                             }),
-                            Inputs = new List<TemplateStepInput>()
+                            Inputs = new List<TemplateStepInputCreate>()
                             {
-                                new TemplateStepInput()
+                                new TemplateStepInputCreate()
                                 {
                                     Type = TemplateStepInputType.Text
                                 }
                             }
                             
                         },
-                        new TemplateStep()
+                        new TemplateStepCreate()
                         {
                             Name = "B",
                             Description = "B",
-                            Inputs = new List<TemplateStepInput>()
+                            Inputs = new List<TemplateStepInputCreate>()
                             {
-                                new TemplateStepInput()
+                                new TemplateStepInputCreate()
                                 {
                                     Type = TemplateStepInputType.Checkbox
                                 }

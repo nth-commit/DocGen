@@ -38,35 +38,37 @@ namespace DocGen.Tools.Runner
                 {
                     Name = "Non Disclosure Agreement",
                     Text = "Test",
-                    Steps = new List<TemplateStep>()
+                    Steps = new List<TemplateStepCreate>()
                     {
-                        new TemplateStep()
+                        new TemplateStepCreate()
                         {
                             Name = "Title 1",
                             Description = "Desc 1",
-                            Inputs = new List<TemplateStepInput>()
+                            Inputs = new List<TemplateStepInputCreate>()
                             {
-                                new TemplateStepInput()
+                                new TemplateStepInputCreate()
                                 {
+                                    Name = "{{default}}",
                                     Type = TemplateStepInputType.Text,
                                     Hint = "Enter some text yo!"
                                 }
                             }
                         },
-                        new TemplateStep()
+                        new TemplateStepCreate()
                         {
                             Name = "Title 2",
                             Description = "Description 2",
-                            Inputs = new List<TemplateStepInput>()
+                            Inputs = new List<TemplateStepInputCreate>()
                             {
-                                new TemplateStepInput()
+                                new TemplateStepInputCreate()
                                 {
+                                    Name = "{{default}}",
                                     Type = TemplateStepInputType.Checkbox,
                                     Hint = "Some hint"
                                 }
                             }
                         },
-                        new TemplateStep()
+                        new TemplateStepCreate()
                         {
                             Name = "Title 3",
                             Description = "Description 3",
@@ -74,12 +76,13 @@ namespace DocGen.Tools.Runner
                             ConditionData = ExpandoObjectFactory.CreateDynamic(new Dictionary<string, object>()
                             {
                                 { "PreviousInputPath", new string[] { "Title 2", "{{default}}" } },
-                                { "PreviousInputValue", "AASDASD" }
+                                { "PreviousInputValue", true }
                             }),
-                            Inputs = new List<TemplateStepInput>()
+                            Inputs = new List<TemplateStepInputCreate>()
                             {
-                                new TemplateStepInput()
+                                new TemplateStepInputCreate()
                                 {
+                                    Name = "{{default}}",
                                     Type = TemplateStepInputType.Text,
                                     Hint = "Enter some text yo!"
                                 }

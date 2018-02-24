@@ -12,6 +12,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddTransient<TemplateService>();
             services.AddTransient<ITemplateRepository, TableStorageTemplateRepository>();
+            services.AddTransient<ITemplateIdResolver, TemplateIdResolver>();
 
             return services;
         }

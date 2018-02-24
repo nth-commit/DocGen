@@ -15,13 +15,16 @@ namespace DocGen.Api.Core.Templates
     {
         private readonly ITemplateRepository _templateRepository;
         private readonly IMapper _mapper;
+        private readonly ITemplateIdResolver _templateIdResolver;
 
         public TemplateService(
             ITemplateRepository templateRepository,
-            IMapper mapper)
+            IMapper mapper,
+            ITemplateIdResolver templateIdResolver)
         {
             _templateRepository = templateRepository;
             _mapper = mapper;
+            _templateIdResolver = templateIdResolver;
         }
 
         public async Task<Template> CreateTemplateAsync(TemplateCreate create, bool dryRun = false)
@@ -30,13 +33,12 @@ namespace DocGen.Api.Core.Templates
             Validator.Validate(create);
             ValidateTemplateSteps(create.Steps);
 
-            // TOOO: Consider changing the internal model for template, to make it easier to validate document info/generate docs?
             var template = _mapper.Map<Template>(create);
 
             return await _templateRepository.CreateTemplateAsync(template);
         }
 
-        private void ValidateTemplateSteps(IEnumerable<TemplateStep> steps)
+        private void ValidateTemplateSteps(IEnumerable<TemplateStepCreate> steps)
         {
             // TODO: Validate allowed characters in name
 
@@ -47,7 +49,7 @@ namespace DocGen.Api.Core.Templates
                     throw new NotImplementedException("Only one level of step nesting is supported");
                 });
 
-            var stepsByIdLookup = steps.ToIndexedLookup(s => ResolveId(s));
+            var stepsByIdLookup = steps.ToIndexedLookup(s => _templateIdResolver.ResolveStepId(s));
 
             stepsByIdLookup
                 .Where(g => g.Count() > 1)
@@ -69,7 +71,7 @@ namespace DocGen.Api.Core.Templates
             }
         }
 
-        private void ValidateTemplateStep(string stepId, Dictionary<string, IndexedElement<TemplateStep>> stepsById, ModelErrorDictionary stepErrors)
+        private void ValidateTemplateStep(string stepId, Dictionary<string, IndexedElement<TemplateStepCreate>> stepsById, ModelErrorDictionary stepErrors)
         {
             var indexedStep = stepsById[stepId];
             var step = indexedStep.Element;
@@ -89,7 +91,7 @@ namespace DocGen.Api.Core.Templates
 
             if (step.ConditionType == TemplateComponentConditionType.EqualsPreviousInputValue)
             {
-                var stepConditionErrorPath = stepErrorPath.Concat(nameof(TemplateStep.ConditionData));
+                var stepConditionErrorPath = stepErrorPath.Concat(nameof(TemplateStepCreate.ConditionData));
                 var previousInputPathErrorPath = stepConditionErrorPath.Concat(nameof(TemplateStepConditionTypeData_EqualsPreviousInputValue.PreviousInputPath));
                 var previousInputValueErrorPath = stepConditionErrorPath.Concat(nameof(TemplateStepConditionTypeData_EqualsPreviousInputValue.PreviousInputValue));
 
@@ -100,8 +102,8 @@ namespace DocGen.Api.Core.Templates
                 }
                 else
                 {
-                    var previousStepId = ResolveId(previousInputPath.Take(previousInputPath.Count() - 1));
-                    if (stepsById.TryGetValue(previousStepId, out IndexedElement<TemplateStep> indexedPreviousStep))
+                    var previousStepId = _templateIdResolver.ResolvePathId(previousInputPath.Take(previousInputPath.Count() - 1));
+                    if (stepsById.TryGetValue(previousStepId, out IndexedElement<TemplateStepCreate> indexedPreviousStep))
                     {
                         if (indexedPreviousStep.Index >= stepIndex)
                         {
@@ -110,7 +112,7 @@ namespace DocGen.Api.Core.Templates
                         else
                         {
                             var previousInputName = previousInputPath.TakeLast(1).First();
-                            TemplateStepInput previousInput = previousInputName == "{{default}}" ?
+                            TemplateStepInputCreate previousInput = previousInputName == "{{default}}" ?
                                 indexedPreviousStep.Element.Inputs.FirstOrDefault() :
                                 indexedPreviousStep.Element.Inputs.Where(i => i.Name == previousInputName).FirstOrDefault();
 
@@ -162,12 +164,12 @@ namespace DocGen.Api.Core.Templates
             }
         }
 
-        private void ValidateTemplateStepInputs(TemplateStep step, ModelErrorDictionary stepErrors, IEnumerable<object> stepErrorPath)
+        private void ValidateTemplateStepInputs(TemplateStepCreate step, ModelErrorDictionary stepErrors, IEnumerable<object> stepErrorPath)
         {
-            var stepInputsErrorPath = stepErrorPath.Concat(nameof(TemplateStep.Inputs));
+            var stepInputsErrorPath = stepErrorPath.Concat(nameof(TemplateStepCreate.Inputs));
 
             step.Inputs
-                .ToIndexedLookup(i => ResolveId(step, i))
+                .ToIndexedLookup(i => _templateIdResolver.ResolveStepInputId(step, i))
                 .Where(g => g.Count() > 1)
                 .SelectMany(g => g.AsEnumerable())
                 .ForEach(indexedStepInput =>
@@ -185,38 +187,32 @@ namespace DocGen.Api.Core.Templates
                 isOnlyInput));
         }
 
-        private void ValidateTemplateStepInput(TemplateStepInput stepInput, ModelErrorDictionary stepErrors, IEnumerable<object> stepInputErrorPath, bool isOnlyInput)
+        private void ValidateTemplateStepInput(TemplateStepInputCreate stepInput, ModelErrorDictionary stepErrors, IEnumerable<object> stepInputErrorPath, bool isOnlyInput)
         {
             if (isOnlyInput)
             {
-                if (!string.IsNullOrEmpty(stepInput.Name))
+                if (stepInput.Name != "{{default}}")
                 {
-                    stepErrors.Add("Must be empty if there is only one input for the step", stepInputErrorPath.Concat(nameof(TemplateStepInput.Name)));
+                    stepErrors.Add("Must be empty if there is only one input for the step", stepInputErrorPath.Concat(nameof(TemplateStepInputCreate.Name)));
                 }
 
                 if (!string.IsNullOrEmpty(stepInput.Description))
                 {
-                    stepErrors.Add("Must be empty if there is only one input for the step", stepInputErrorPath.Concat(nameof(TemplateStepInput.Description)));
+                    stepErrors.Add("Must be empty if there is only one input for the step", stepInputErrorPath.Concat(nameof(TemplateStepInputCreate.Description)));
                 }
             }
             else
             {
-                if (string.IsNullOrEmpty(stepInput.Name))
+                if (stepInput.Name == "{{default}}")
                 {
-                    stepErrors.Add("Required if there is more than one input for the step", stepInputErrorPath.Concat(nameof(TemplateStepInput.Name)));
+                    stepErrors.Add("Required if there is more than one input for the step", stepInputErrorPath.Concat(nameof(TemplateStepInputCreate.Name)));
                 }
 
                 if (string.IsNullOrEmpty(stepInput.Description))
                 {
-                    stepErrors.Add("Required if there is more than one input for the step", stepInputErrorPath.Concat(nameof(TemplateStepInput.Description)));
+                    stepErrors.Add("Required if there is more than one input for the step", stepInputErrorPath.Concat(nameof(TemplateStepInputCreate.Description)));
                 }
             }
         }
-
-        private string ResolveId(TemplateStep step) => ResolveId(step.ParentNames.Concat(step.Name));
-
-        private string ResolveId(TemplateStep step, TemplateStepInput stepInput) => ResolveId(step.ParentNames.Concat(step.Name).Concat(stepInput.Name));
-
-        private string ResolveId(IEnumerable<string> path) => string.Join(".", path.Select(n => n.ToLowerInvariant().Replace(' ', '_')));
     }
 }
