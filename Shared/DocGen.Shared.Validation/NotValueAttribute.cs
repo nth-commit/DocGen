@@ -5,6 +5,7 @@ using System.Text;
 
 namespace DocGen.Shared.Validation
 {
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
     public class NotValueAttribute : ValidationAttribute
     {
         public object Value { get; set; }

@@ -16,34 +16,47 @@ namespace DocGen.Api.Core.Templates
         public async Task TestValidation_StepConditionReferencesFollowingStep_Fails()
         {
             await AssertTemplateInvalidAsync(
-                CreateTemplate_OneStepGroup(new List<Step>()
+                new TemplateCreate()
                 {
-                    new Step()
+                    Name = "A",
+                    Text = "A",
+                    Steps = new List<TemplateStep>()
                     {
-                        Title = "A",
-                        Description = "B",
-                        Type = StepType.Text,
-                        TypeData =  ExpandoObjectFactory.CreateDynamic(new Dictionary<string, object>()
+                        new TemplateStep()
                         {
-                            { "Value", "C" }
-                        }),
-                        ConditionType = StepConditionType.EqualsPreviousValue,
-                        ConditionTypeData = ExpandoObjectFactory.CreateDynamic(new Dictionary<string, object>()
+                            Name = "A",
+                            Description = "A",
+                            ConditionType = TemplateComponentConditionType.EqualsPreviousInputValue,
+                            ConditionData = ExpandoObjectFactory.CreateDynamic(new Dictionary<string, object>()
+                            {
+                                { "PreviousInputPath", new List<string>() { "B" } },
+                                { "PreviousInputValue", true }
+                            }),
+                            Inputs = new List<TemplateStepInput>()
+                            {
+                                new TemplateStepInput()
+                                {
+                                    Type = TemplateStepInputType.Text
+                                }
+                            }
+                            
+                        },
+                        new TemplateStep()
                         {
-                            { "StepGroupIndex", 0 },
-                            { "StepIndex", 1 },
-                            { "ExpectedStepType", StepType.Checkbox },
-                            { "PreviousValue", true }
-                        })
-                    },
-                    new Step()
-                    {
-                        Title = "A",
-                        Description = "B",
-                        Type = StepType.Checkbox
+                            Name = "B",
+                            Description = "B",
+                            Inputs = new List<TemplateStepInput>()
+                            {
+                                new TemplateStepInput()
+                                {
+                                    Type = TemplateStepInputType.Checkbox
+                                }
+                            }
+                        }
+                        
                     }
-                }),
-                "StepGroups[0].Steps[0].ConditionTypeData.StepIndex");
+                },
+                "Steps[0].ConditionTypeData.PreviousInputPath");
         }
 
 
@@ -66,24 +79,6 @@ namespace DocGen.Api.Core.Templates
                 Assert.True(0 == expectedInvalidMembersMissing.Count(), $"Members were valid, expected to be invalid: {string.Join(',', expectedInvalidMembersMissing)}");
                 Assert.True(0 == expectedValidMembersPresent.Count(), $"Members were invalid, expected to be valid: {string.Join(',', expectedInvalidMembersMissing)}");
             }
-        }
-
-        private TemplateCreate CreateTemplate_OneStepGroup(IEnumerable<Step> steps)
-        {
-            return new TemplateCreate()
-            {
-                Name = "A",
-                Text = "B",
-                StepGroups = new List<StepGroup>()
-                {
-                    new StepGroup()
-                    {
-                        Title = "A",
-                        Description = "B",
-                        Steps = steps
-                    }
-                }
-            };
         }
 
         #endregion

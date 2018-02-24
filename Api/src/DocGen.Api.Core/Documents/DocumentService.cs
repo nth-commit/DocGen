@@ -45,19 +45,19 @@ namespace DocGen.Api.Core.Documents
                 ThrowEntityNotFoundAsClientModelValidation(ex, nameof(create.TemplateId));
             }
 
-            var stepsByStepGroupIndexByIndex = template.StepGroups
-                .ToDictionary(
-                    (sg, i) => i,
-                    (sg, i) => sg.Steps.ToDictionary(
-                        (s, j) => j));
+            //var stepsByStepGroupIndexByIndex = template.StepGroups
+            //    .ToDictionary(
+            //        (sg, i) => i,
+            //        (sg, i) => sg.Steps.ToDictionary(
+            //            (s, j) => j));
 
-            create.Values.ForEach(kvp1 =>
-            {
-                kvp1.Value.ForEach(kvp2 =>
-                {
+            //create.Values.ForEach(kvp1 =>
+            //{
+            //    kvp1.Value.ForEach(kvp2 =>
+            //    {
 
-                });
-            });
+            //    });
+            //});
 
             var document = _mapper.Map<Document>(create);
 

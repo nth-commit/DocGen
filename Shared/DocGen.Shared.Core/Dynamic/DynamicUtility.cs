@@ -7,7 +7,7 @@ namespace DocGen.Shared.Core.Dynamic
 {
     public class DynamicUtility
     {
-        public static T UnwrapReference<T>(Func<T> accessor) where T : class
+        public static T Unwrap<T>(Func<T> accessor) where T : class
         {
             T value = null;
             try

@@ -4,10 +4,16 @@ using System.Text;
 
 namespace DocGen.Api.Core.Templates
 {
-    public enum StepConditionType
+    public enum TemplateStepInputType
     {
         Unknown = 0,
 
-        EqualsPreviousValue
+        Text,
+
+        Radio,
+
+        Checkbox,
+
+        CheckboxGroup
     }
 }

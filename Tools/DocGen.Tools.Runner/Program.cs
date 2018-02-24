@@ -38,51 +38,54 @@ namespace DocGen.Tools.Runner
                 {
                     Name = "Non Disclosure Agreement",
                     Text = "Test",
-                    StepGroups = new List<StepGroup>()
-                {
-                    new StepGroup()
+                    Steps = new List<TemplateStep>()
                     {
-                        Title = "Title 1",
-                        Description = "Desc 1",
-                        Steps = new List<Step>()
+                        new TemplateStep()
                         {
-                            new Step()
+                            Name = "Title 1",
+                            Description = "Desc 1",
+                            Inputs = new List<TemplateStepInput>()
                             {
-                                Title = "Title 1.1",
-                                Description = "Description 1.1",
-                                Type = StepType.Text,
-                                TypeData = ExpandoObjectFactory.CreateDynamic(new Dictionary<string, object>()
+                                new TemplateStepInput()
                                 {
-                                    { "Value", "aasdasdasd" }
-                                })
-                            },
-                            new Step()
+                                    Type = TemplateStepInputType.Text,
+                                    Hint = "Enter some text yo!"
+                                }
+                            }
+                        },
+                        new TemplateStep()
+                        {
+                            Name = "Title 2",
+                            Description = "Description 2",
+                            Inputs = new List<TemplateStepInput>()
                             {
-                                Title = "Title 1.2",
-                                Description = "Description 1.2",
-                                Type = StepType.Checkbox
-                            },
-                            new Step()
+                                new TemplateStepInput()
+                                {
+                                    Type = TemplateStepInputType.Checkbox,
+                                    Hint = "Some hint"
+                                }
+                            }
+                        },
+                        new TemplateStep()
+                        {
+                            Name = "Title 3",
+                            Description = "Description 3",
+                            ConditionType = TemplateComponentConditionType.EqualsPreviousInputValue,
+                            ConditionData = ExpandoObjectFactory.CreateDynamic(new Dictionary<string, object>()
                             {
-                                Title = "Title 1.3",
-                                Description = "Description 1.3",
-                                Type = StepType.Text,
-                                TypeData = ExpandoObjectFactory.CreateDynamic(new Dictionary<string, object>()
+                                { "PreviousInputPath", new string[] { "Title 2", "{{default}}" } },
+                                { "PreviousInputValue", "AASDASD" }
+                            }),
+                            Inputs = new List<TemplateStepInput>()
+                            {
+                                new TemplateStepInput()
                                 {
-                                    { "Value", "aasdasdasd" }
-                                }),
-                                ConditionType = StepConditionType.EqualsPreviousValue,
-                                ConditionTypeData = ExpandoObjectFactory.CreateDynamic(new Dictionary<string, object>()
-                                {
-                                    { "StepGroupIndex", 0 },
-                                    { "StepIndex", 1 },
-                                    { "ExpectedStepType", StepType.Checkbox },
-                                    { "PreviousValue", true }
-                                })
+                                    Type = TemplateStepInputType.Text,
+                                    Hint = "Enter some text yo!"
+                                }
                             }
                         }
                     }
-                }
                 }).GetAwaiter().GetResult();
             }
             catch (ClientModelValidationException ex)
