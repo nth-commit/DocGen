@@ -11,7 +11,16 @@ namespace DocGen.Api.Core.Templates
 
         public string ResolveStepId(TemplateStepCreate step) => ResolvePathId(step.ParentNames.Concat(step.Name));
 
-        public string ResolveStepInputId(TemplateStepCreate step, TemplateStepInputCreate stepInput) => ResolvePathId(step.ParentNames.Concat(step.Name).Concat(stepInput.Name));
+        public string ResolveStepInputId(TemplateStepCreate step, TemplateStepInputCreate stepInput) {
+            var path = step.ParentNames.Concat(step.Name);
+
+            if (!string.IsNullOrEmpty(stepInput.Name))
+            {
+                path = path.Concat(stepInput.Name);
+            }
+
+            return ResolvePathId(path);
+        }
 
         public string ResolvePathId(IEnumerable<string> path) => string.Join(".", path.Select(n => n.ToLowerInvariant().Replace(' ', '_')));
     }

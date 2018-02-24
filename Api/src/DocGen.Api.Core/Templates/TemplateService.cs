@@ -96,14 +96,11 @@ namespace DocGen.Api.Core.Templates
                 var previousInputValueErrorPath = stepConditionErrorPath.Concat(nameof(TemplateStepConditionTypeData_EqualsPreviousInputValue.PreviousInputValue));
 
                 var previousInputPath = DynamicUtility.Unwrap<IEnumerable<string>>(() => step.ConditionData.PreviousInputPath);
-                if (previousInputPath.Count() < 2)
+                if (previousInputPath.Any())
                 {
-                    stepErrors.Add("Must have a greater than than or equal to 2", previousInputPathErrorPath);
-                }
-                else
-                {
-                    var previousStepId = _templateIdResolver.ResolvePathId(previousInputPath.Take(previousInputPath.Count() - 1));
-                    if (stepsById.TryGetValue(previousStepId, out IndexedElement<TemplateStepCreate> indexedPreviousStep))
+                    IndexedElement<TemplateStepCreate> indexedPreviousStep;
+                    if (stepsById.TryGetValue(_templateIdResolver.ResolvePathId(previousInputPath), out indexedPreviousStep) ||
+                        stepsById.TryGetValue(_templateIdResolver.ResolvePathId(previousInputPath.Take(previousInputPath.Count() - 1)), out indexedPreviousStep))
                     {
                         if (indexedPreviousStep.Index >= stepIndex)
                         {
@@ -112,7 +109,7 @@ namespace DocGen.Api.Core.Templates
                         else
                         {
                             var previousInputName = previousInputPath.TakeLast(1).First();
-                            TemplateStepInputCreate previousInput = previousInputName == "{{default}}" ?
+                            var previousInput = indexedPreviousStep.Element.Inputs.Count() == 1 ?
                                 indexedPreviousStep.Element.Inputs.FirstOrDefault() :
                                 indexedPreviousStep.Element.Inputs.Where(i => i.Name == previousInputName).FirstOrDefault();
 
@@ -156,6 +153,10 @@ namespace DocGen.Api.Core.Templates
                         stepErrors.Add("Could not find a step from given path", previousInputPathErrorPath);
                     }
                 }
+                else
+                {
+                    stepErrors.Add("Must have a greater than than or equal to 1", previousInputPathErrorPath);
+                }
             }
 
             if (!isParentStep)
@@ -191,7 +192,8 @@ namespace DocGen.Api.Core.Templates
         {
             if (isOnlyInput)
             {
-                if (stepInput.Name != "{{default}}")
+                if (!string.IsNullOrEmpty(stepInput.Name))
+                //if (stepInput.Name != "{{default}}")
                 {
                     stepErrors.Add("Must be empty if there is only one input for the step", stepInputErrorPath.Concat(nameof(TemplateStepInputCreate.Name)));
                 }

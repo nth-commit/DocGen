@@ -37,7 +37,7 @@ namespace DocGen.Tools.Runner
                 service.CreateTemplateAsync(new TemplateCreate()
                 {
                     Name = "Non Disclosure Agreement",
-                    Text = "Test",
+                    Description = "Test",
                     Steps = new List<TemplateStepCreate>()
                     {
                         new TemplateStepCreate()
@@ -48,7 +48,6 @@ namespace DocGen.Tools.Runner
                             {
                                 new TemplateStepInputCreate()
                                 {
-                                    Name = "{{default}}",
                                     Type = TemplateStepInputType.Text,
                                     Hint = "Enter some text yo!"
                                 }
@@ -62,7 +61,6 @@ namespace DocGen.Tools.Runner
                             {
                                 new TemplateStepInputCreate()
                                 {
-                                    Name = "{{default}}",
                                     Type = TemplateStepInputType.Checkbox,
                                     Hint = "Some hint"
                                 }
@@ -75,14 +73,13 @@ namespace DocGen.Tools.Runner
                             ConditionType = TemplateComponentConditionType.EqualsPreviousInputValue,
                             ConditionData = ExpandoObjectFactory.CreateDynamic(new Dictionary<string, object>()
                             {
-                                { "PreviousInputPath", new string[] { "Title 2", "{{default}}" } },
+                                { "PreviousInputPath", new string[] { "Title 2" } },
                                 { "PreviousInputValue", true }
                             }),
                             Inputs = new List<TemplateStepInputCreate>()
                             {
                                 new TemplateStepInputCreate()
                                 {
-                                    Name = "{{default}}",
                                     Type = TemplateStepInputType.Text,
                                     Hint = "Enter some text yo!"
                                 }
