@@ -30,84 +30,10 @@ namespace DocGen.Api.Core.Templates
             Validator.Validate(create);
             ValidateTemplateSteps(create.Steps);
 
+            // TOOO: Consider changing the internal model for template, to make it easier to validate document info/generate docs?
             var template = _mapper.Map<Template>(create);
 
             return await _templateRepository.CreateTemplateAsync(template);
-        }
-
-        private void ValidateTemplate(TemplateCreate template)
-        {
-            Validator.Validate(template);
-            ValidateTemplateSteps(template.Steps);
-
-            // Validate order of conditions
-            //var stepGroupErrors = new ModelErrorDictionary();
-            //var stepGroupsPath = new object[] { nameof(Template.StepGroups) };
-            //var stepGroups = template.StepGroups.ToList();
-
-            //stepGroups.ForEach((stepGroup, stepGroupIndex) =>
-            //{
-            //    var stepsPath = stepGroupsPath.Concat(stepGroupIndex, nameof(StepGroup.Steps));
-
-            //    stepGroup.Steps.ForEach((step, stepIndex) =>
-            //    {
-            //        var stepPath = stepsPath.Concat(stepIndex);
-            //        var stepConditionTypeDataPath = stepPath.Concat(nameof(TemplateStep.ConditionTypeData));
-
-            //        if (step.ConditionType == TemplateComponentConditionType.EqualsPreviousValue)
-            //        {
-            //            var requestedTargetStepGroupIndex = DynamicUtility.UnwrapNullableValue(() => (int?)step.ConditionTypeData.StepGroupIndex);
-            //            if (requestedTargetStepGroupIndex.HasValue && requestedTargetStepGroupIndex > stepGroupIndex)
-            //            {
-            //                stepGroupErrors.Add("Invalid StepGroupIndex", stepConditionTypeDataPath.Concat(nameof(TemplateStepConditionTypeData_EqualsPreviousValue.StepGroupIndex)));
-            //                return;
-            //            }
-            //            var targetStepGroupIndex = requestedTargetStepGroupIndex ?? stepGroupIndex;
-
-            //            var targetStepIndex = DynamicUtility.UnwrapValue(() => (int)step.ConditionTypeData.StepIndex);
-            //            if (targetStepGroupIndex == stepGroupIndex && targetStepIndex >= stepIndex)
-            //            {
-            //                stepGroupErrors.Add("Invalid StepIndex", stepConditionTypeDataPath.Concat(nameof(TemplateStepConditionTypeData_EqualsPreviousValue.StepIndex)));
-            //            }
-
-            //            var targetSteps = stepGroups[targetStepGroupIndex].Steps.ToList();
-            //            if (targetStepIndex > targetSteps.Count - 1)
-            //            {
-            //                stepGroupErrors.Add("Invalid StepIndex - Out of range", stepConditionTypeDataPath.Concat(nameof(TemplateStepConditionTypeData_EqualsPreviousValue.StepIndex)));
-            //            }
-
-            //            var targetStep = targetSteps[targetStepIndex];
-            //            var expectedStepType = (TemplateStepInputType)step.ConditionTypeData.ExpectedStepType;
-            //            if (targetStep.Type != expectedStepType)
-            //            {
-            //                stepGroupErrors.Add("Previous step was an unexpected type", stepConditionTypeDataPath.Concat(nameof(TemplateStepConditionTypeData_EqualsPreviousValue.ExpectedStepType)));
-            //            }
-
-            //            if (expectedStepType == TemplateStepInputType.Checkbox)
-            //            {
-            //                var previousValue = DynamicUtility.UnwrapNullableValue<bool>(() => step.ConditionTypeData.PreviousValue);
-            //                if (!previousValue.HasValue)
-            //                {
-            //                    stepGroupErrors.Add("Expected boolean", stepConditionTypeDataPath.Concat(nameof(TemplateStepConditionTypeData_EqualsPreviousValue.PreviousInputValue)));
-            //                }
-            //            }
-            //            else if (expectedStepType == TemplateStepInputType.Radio)
-            //            {
-            //                var previousValue = DynamicUtility.UnwrapReference<string>(() => step.ConditionTypeData.PreviousValue);
-            //                if (string.IsNullOrEmpty(previousValue))
-            //                {
-            //                    stepGroupErrors.Add("Expected string", stepConditionTypeDataPath.Concat(nameof(TemplateStepConditionTypeData_EqualsPreviousValue.PreviousInputValue)));
-            //                }
-            //            }
-            //            else
-            //            {
-            //                stepGroupErrors.Add("Unexpected value type", stepConditionTypeDataPath.Concat(nameof(TemplateStepConditionTypeData_EqualsPreviousValue.PreviousInputValue)));
-            //            }
-            //        }
-            //    });
-            //});
-
-            //stepGroupErrors.AssertValid();
         }
 
         private void ValidateTemplateSteps(IEnumerable<TemplateStep> steps)
@@ -121,26 +47,20 @@ namespace DocGen.Api.Core.Templates
                     throw new NotImplementedException("Only one level of step nesting is supported");
                 });
 
-            var stepsByIdLookup = steps.ToLookup(
-                (step, i) => ResolveId(step),
-                (step, i) => new TemplateStep_Index()
-                {
-                    Step = step,
-                    StepIndex = i
-                });
+            var stepsByIdLookup = steps.ToIndexedLookup(s => ResolveId(s));
 
             stepsByIdLookup
                 .Where(g => g.Count() > 1)
                 .Select(g => g.Skip(1).First())
-                .ForEach((step_index) =>
+                .ForEach(indexedStep =>
                 {
                     throw new ClientModelValidationException(
-                        $"A step with the name {step_index.Step.Name} already exists (case-insensitive)",
-                        $"{nameof(TemplateCreate.Steps)}[{step_index.StepIndex}]"); // TODO: Make exception take params of object and resolve member name
+                        $"A step with the name {indexedStep.Element.Name} already exists (case-insensitive)",
+                        $"{nameof(TemplateCreate.Steps)}[{indexedStep.Index}]"); // TODO: Make exception take params of object and resolve member name
                 });
 
             var stepErrors = new ModelErrorDictionary();
-            Dictionary<string, TemplateStep_Index> stepsById = stepsByIdLookup.ToDictionary(g => g.Key, g => g.Single());
+            var stepsById = stepsByIdLookup.ToDictionary(g => g.Key, g => g.Single());
             stepsById.ForEach(kvp => ValidateTemplateStep(kvp.Key, stepsById, stepErrors));
 
             if (stepErrors.HasErrors)
@@ -149,12 +69,15 @@ namespace DocGen.Api.Core.Templates
             }
         }
 
-        private void ValidateTemplateStep(string stepId, Dictionary<string, TemplateStep_Index> stepsById, ModelErrorDictionary stepErrors)
+        private void ValidateTemplateStep(string stepId, Dictionary<string, IndexedElement<TemplateStep>> stepsById, ModelErrorDictionary stepErrors)
         {
-            var (step, stepIndex) = stepsById[stepId];
+            var indexedStep = stepsById[stepId];
+            var step = indexedStep.Element;
+            var stepIndex = indexedStep.Index;
+
             var stepErrorPath = new object[] { nameof(TemplateCreate.Steps), stepIndex };
 
-            var isParentStep = stepsById.Any(kvp => kvp.Key.StartsWith(stepId) && kvp.Value.StepIndex != stepIndex);
+            var isParentStep = stepsById.Any(kvp => kvp.Key.StartsWith(stepId) && kvp.Value.Index != stepIndex);
             if (isParentStep && step.Inputs.Any())
             {
                 stepErrors.Add("A step that has sub-steps must not contain any inputs", stepErrorPath);
@@ -178,9 +101,9 @@ namespace DocGen.Api.Core.Templates
                 else
                 {
                     var previousStepId = ResolveId(previousInputPath.Take(previousInputPath.Count() - 1));
-                    if (stepsById.TryGetValue(previousStepId, out TemplateStep_Index previousStep))
+                    if (stepsById.TryGetValue(previousStepId, out IndexedElement<TemplateStep> indexedPreviousStep))
                     {
-                        if (previousStep.StepIndex >= stepIndex)
+                        if (indexedPreviousStep.Index >= stepIndex)
                         {
                             stepErrors.Add("Must reference a previous step", previousInputPathErrorPath);
                         }
@@ -188,8 +111,8 @@ namespace DocGen.Api.Core.Templates
                         {
                             var previousInputName = previousInputPath.TakeLast(1).First();
                             TemplateStepInput previousInput = previousInputName == "{{default}}" ?
-                                previousStep.Step.Inputs.FirstOrDefault() :
-                                previousStep.Step.Inputs.Where(i => i.Name == previousInputName).FirstOrDefault();
+                                indexedPreviousStep.Element.Inputs.FirstOrDefault() :
+                                indexedPreviousStep.Element.Inputs.Where(i => i.Name == previousInputName).FirstOrDefault();
 
                             if (previousInput == null)
                             {
@@ -233,36 +156,67 @@ namespace DocGen.Api.Core.Templates
                 }
             }
 
-            if (step.Inputs.Count() == 1)
+            if (!isParentStep)
             {
-                ValidateTemplateStepInput(step.Inputs.Single(), 0, isOnlyInput: true);
+                ValidateTemplateStepInputs(step, stepErrors, stepErrorPath);
+            }
+        }
+
+        private void ValidateTemplateStepInputs(TemplateStep step, ModelErrorDictionary stepErrors, IEnumerable<object> stepErrorPath)
+        {
+            var stepInputsErrorPath = stepErrorPath.Concat(nameof(TemplateStep.Inputs));
+
+            step.Inputs
+                .ToIndexedLookup(i => ResolveId(step, i))
+                .Where(g => g.Count() > 1)
+                .SelectMany(g => g.AsEnumerable())
+                .ForEach(indexedStepInput =>
+                {
+                    stepErrors.Add(
+                        $"An input with the name {indexedStepInput.Element.Name} already exists in this step (case-insensitive)",
+                        stepInputsErrorPath.Concat(new object[] { indexedStepInput.Index }));
+                });
+
+            var isOnlyInput = step.Inputs.Count() == 1;
+            step.Inputs.ForEach((stepInput, stepInputIndex) => ValidateTemplateStepInput(
+                stepInput,
+                stepErrors,
+                stepInputsErrorPath.Concat(stepInputIndex),
+                isOnlyInput));
+        }
+
+        private void ValidateTemplateStepInput(TemplateStepInput stepInput, ModelErrorDictionary stepErrors, IEnumerable<object> stepInputErrorPath, bool isOnlyInput)
+        {
+            if (isOnlyInput)
+            {
+                if (!string.IsNullOrEmpty(stepInput.Name))
+                {
+                    stepErrors.Add("Must be empty if there is only one input for the step", stepInputErrorPath.Concat(nameof(TemplateStepInput.Name)));
+                }
+
+                if (!string.IsNullOrEmpty(stepInput.Description))
+                {
+                    stepErrors.Add("Must be empty if there is only one input for the step", stepInputErrorPath.Concat(nameof(TemplateStepInput.Description)));
+                }
             }
             else
             {
-                step.Inputs.ForEach((stepInput, stepInputIndex) => ValidateTemplateStepInput(stepInput, stepInputIndex, isOnlyInput: false));
-            }
-        }
+                if (string.IsNullOrEmpty(stepInput.Name))
+                {
+                    stepErrors.Add("Required if there is more than one input for the step", stepInputErrorPath.Concat(nameof(TemplateStepInput.Name)));
+                }
 
-        private void ValidateTemplateStepInput(TemplateStepInput stepInput, int stepInputIndex, bool isOnlyInput)
-        {
-
-        }
-
-        private class TemplateStep_Index
-        {
-            public TemplateStep Step { get; set; }
-
-            public int StepIndex { get; set; }
-
-            public void Deconstruct(out TemplateStep step, out int stepIndex)
-            {
-                step = Step;
-                stepIndex = StepIndex;
+                if (string.IsNullOrEmpty(stepInput.Description))
+                {
+                    stepErrors.Add("Required if there is more than one input for the step", stepInputErrorPath.Concat(nameof(TemplateStepInput.Description)));
+                }
             }
         }
 
         private string ResolveId(TemplateStep step) => ResolveId(step.ParentNames.Concat(step.Name));
 
-        private string ResolveId(IEnumerable<string> stepPath) => string.Join(".", stepPath.Select(n => n.ToLowerInvariant().Replace(' ', '_')));
+        private string ResolveId(TemplateStep step, TemplateStepInput stepInput) => ResolveId(step.ParentNames.Concat(step.Name).Concat(stepInput.Name));
+
+        private string ResolveId(IEnumerable<string> path) => string.Join(".", path.Select(n => n.ToLowerInvariant().Replace(' ', '_')));
     }
 }
