@@ -99,12 +99,15 @@ namespace DocGen.Api.Core.Templates
             var stepErrorPath = new object[] { nameof(TemplateCreate.Steps), stepIndex };
 
             var isParentStep = stepsById.Any(kvp => kvp.Key.StartsWith(stepId) && kvp.Value.Index != stepIndex);
-            if (isParentStep && step.Inputs.Any())
+            if (isParentStep && step.Inputs.Count() > 1)
             {
+                // Parent step is allowed to have one input, this is useful for branching to child steps.
                 stepErrors.Add("A step that has sub-steps must not contain any inputs", stepErrorPath);
             }
             else if (!isParentStep && !step.Inputs.Any())
             {
+                // Steps that do not have child steps must have inputs.
+                // FUTURE: Maybe we want to add "informational" steps, with no inputs.
                 stepErrors.Add("Step must have at least one inputs", stepErrorPath);
             }
 
@@ -172,10 +175,7 @@ namespace DocGen.Api.Core.Templates
                 }
             }
 
-            if (!isParentStep)
-            {
-                ValidateTemplateStepInputs(step, stepErrors, stepErrorPath);
-            }
+            ValidateTemplateStepInputs(step, stepErrors, stepErrorPath);
         }
 
         private void ValidateTemplateStepInputs(TemplateStepCreate step, ModelErrorDictionary stepErrors, IEnumerable<object> stepErrorPath)
