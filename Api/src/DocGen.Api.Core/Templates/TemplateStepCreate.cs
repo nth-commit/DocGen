@@ -9,6 +9,7 @@ namespace DocGen.Api.Core.Templates
 {
     public class TemplateStepCreate : ITemplateComponent
     {
+        [StringNotNullOrEmpty]
         [RegularExpression(Constants.TemplateComponentIdRegexPattern)]
         public string Id { get; set; }
 

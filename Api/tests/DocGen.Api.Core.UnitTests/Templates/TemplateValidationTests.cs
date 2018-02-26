@@ -24,12 +24,13 @@ namespace DocGen.Api.Core.Templates
                     {
                         new TemplateStepCreate()
                         {
+                            Id = "a",
                             Name = "A",
                             Description = "A",
                             ConditionType = TemplateComponentConditionType.EqualsPreviousInputValue,
                             ConditionTypeData = ExpandoObjectFactory.CreateDynamic(new Dictionary<string, object>()
                             {
-                                { "PreviousInputPath", new List<string>() { "B" } },
+                                { "PreviousInputReference", "b" },
                                 { "PreviousInputValue", true }
                             }),
                             Inputs = new List<TemplateStepInputCreate>()
@@ -42,6 +43,7 @@ namespace DocGen.Api.Core.Templates
                         },
                         new TemplateStepCreate()
                         {
+                            Id = "b",
                             Name = "B",
                             Description = "B",
                             Inputs = new List<TemplateStepInputCreate>()
@@ -54,7 +56,7 @@ namespace DocGen.Api.Core.Templates
                         }
                     }
                 },
-                "Steps[0].ConditionData.PreviousInputPath");
+                "Steps[0].ConditionTypeData.PreviousInputReference");
         }
 
 
