@@ -27,7 +27,7 @@ namespace DocGen.Api.Core.Templates
                             Name = "A",
                             Description = "A",
                             ConditionType = TemplateComponentConditionType.EqualsPreviousInputValue,
-                            ConditionData = ExpandoObjectFactory.CreateDynamic(new Dictionary<string, object>()
+                            ConditionTypeData = ExpandoObjectFactory.CreateDynamic(new Dictionary<string, object>()
                             {
                                 { "PreviousInputPath", new List<string>() { "B" } },
                                 { "PreviousInputValue", true }

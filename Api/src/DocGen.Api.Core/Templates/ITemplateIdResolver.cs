@@ -6,10 +6,10 @@ namespace DocGen.Api.Core.Templates
 {
     public interface ITemplateIdResolver
     {
-        string ResolveStepId(TemplateStepCreate step);
+        //string ResolveStepId(TemplateStepCreate step);
 
-        string ResolveStepInputId(TemplateStepCreate step, TemplateStepInputCreate stepInput);
+        //string ResolveStepInputId(TemplateStepCreate step, TemplateStepInputCreate stepInput);
 
-        string ResolvePathId(IEnumerable<string> path);
+        //string ResolvePathId(IEnumerable<string> path);
     }
 }

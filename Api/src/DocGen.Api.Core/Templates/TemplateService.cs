@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.CSharp.RuntimeBinder;
+using DocGen.Shared.Framework;
 
 namespace DocGen.Api.Core.Templates
 {
@@ -34,8 +35,26 @@ namespace DocGen.Api.Core.Templates
             ValidateTemplateSteps(create.Steps);
 
             var template = _mapper.Map<Template>(create);
+            await ValidateTemplateHasUniqueIdAsync(template);
 
-            return await _templateRepository.CreateTemplateAsync(template);
+            if (dryRun)
+            {
+                return template;
+            }
+            else
+            {
+                return await _templateRepository.CreateTemplateAsync(template);
+            }
+        }
+
+        private async Task ValidateTemplateHasUniqueIdAsync(Template template)
+        {
+            try
+            {
+                await _templateRepository.GetTemplateAsync(template.Id);
+                throw new ClientModelValidationException("A template with that name already exists", nameof(TemplateCreate.Name));
+            }
+            catch (EntityNotFoundException) { }
         }
 
         private void ValidateTemplateSteps(IEnumerable<TemplateStepCreate> steps)
@@ -43,13 +62,13 @@ namespace DocGen.Api.Core.Templates
             // TODO: Validate allowed characters in name
 
             steps
-                .Where(step => step.ParentNames.Count() > 1)
+                .Where(step => step.ParentReference?.Split(Constants.TemplateComponentReferenceSeparator).Count() > 1)
                 .ForEach((step) =>
                 {
                     throw new NotImplementedException("Only one level of step nesting is supported");
                 });
 
-            var stepsByIdLookup = steps.ToIndexedLookup(s => _templateIdResolver.ResolveStepId(s));
+            var stepsByIdLookup = steps.ToIndexedLookup(s => s.Id);
 
             stepsByIdLookup
                 .Where(g => g.Count() > 1)
@@ -91,31 +110,29 @@ namespace DocGen.Api.Core.Templates
 
             if (step.ConditionType == TemplateComponentConditionType.EqualsPreviousInputValue)
             {
-                var stepConditionErrorPath = stepErrorPath.Concat(nameof(TemplateStepCreate.ConditionData));
-                var previousInputPathErrorPath = stepConditionErrorPath.Concat(nameof(TemplateStepConditionTypeData_EqualsPreviousInputValue.PreviousInputPath));
+                var stepConditionErrorPath = stepErrorPath.Concat(nameof(TemplateStepCreate.ConditionTypeData));
+                var previousInputReferenceErrorPath = stepConditionErrorPath.Concat(nameof(TemplateStepConditionTypeData_EqualsPreviousInputValue.PreviousInputReference));
                 var previousInputValueErrorPath = stepConditionErrorPath.Concat(nameof(TemplateStepConditionTypeData_EqualsPreviousInputValue.PreviousInputValue));
 
-                var previousInputPath = DynamicUtility.Unwrap<IEnumerable<string>>(() => step.ConditionData.PreviousInputPath);
-                if (previousInputPath.Any())
+                var previousInputReference = DynamicUtility.Unwrap<string>(() => step.ConditionTypeData.PreviousInputReference);
+                if (string.IsNullOrEmpty(previousInputReference))
                 {
-                    IndexedElement<TemplateStepCreate> indexedPreviousStep;
-                    if (stepsById.TryGetValue(_templateIdResolver.ResolvePathId(previousInputPath), out indexedPreviousStep) ||
-                        stepsById.TryGetValue(_templateIdResolver.ResolvePathId(previousInputPath.Take(previousInputPath.Count() - 1)), out indexedPreviousStep))
+                    stepErrors.Add("Must have a greater than than or equal to 1", previousInputReferenceErrorPath);
+                }
+                else
+                {
+                    if (TryGetStepFromInputReference(previousInputReference, stepsById, out IndexedElement<TemplateStepCreate> indexedPreviousStep))
                     {
                         if (indexedPreviousStep.Index >= stepIndex)
                         {
-                            stepErrors.Add("Must reference a previous step", previousInputPathErrorPath);
+                            stepErrors.Add("Must reference a previous step", previousInputReferenceErrorPath);
                         }
                         else
                         {
-                            var previousInputName = previousInputPath.TakeLast(1).First();
-                            var previousInput = indexedPreviousStep.Element.Inputs.Count() == 1 ?
-                                indexedPreviousStep.Element.Inputs.FirstOrDefault() :
-                                indexedPreviousStep.Element.Inputs.Where(i => i.Name == previousInputName).FirstOrDefault();
-
+                            var previousInput = GetTemplateStepInput(previousInputReference, indexedPreviousStep.Element);
                             if (previousInput == null)
                             {
-                                stepErrors.Add("Could not find input from given path", previousInputPathErrorPath);
+                                stepErrors.Add("Could not find input from given path", previousInputReferenceErrorPath);
                             }
                             else
                             {
@@ -123,24 +140,24 @@ namespace DocGen.Api.Core.Templates
                                 {
                                     try
                                     {
-                                        DynamicUtility.UnwrapValue<bool>(() => step.ConditionData.PreviousInputValue);
+                                        DynamicUtility.UnwrapValue<bool>(() => step.ConditionTypeData.PreviousInputValue);
                                     }
                                     catch (RuntimeBinderException)
                                     {
                                         stepErrors.Add("Expected boolean", previousInputValueErrorPath);
                                     }
                                 }
-                                //else if (previousInput.Type == TemplateStepInputType.Radio)
-                                //{
-                                //    try
-                                //    {
-                                //        DynamicUtility.Unwrap<string>(() => step.ConditionData.PreviousInputValue);
-                                //    }
-                                //    catch (RuntimeBinderException)
-                                //    {
-                                //        throw;
-                                //    }
-                                //}
+                                else if (previousInput.Type == TemplateStepInputType.Radio)
+                                {
+                                    try
+                                    {
+                                        DynamicUtility.Unwrap<string>(() => step.ConditionTypeData.PreviousInputValue);
+                                    }
+                                    catch (RuntimeBinderException)
+                                    {
+                                        throw;
+                                    }
+                                }
                                 else
                                 {
                                     stepErrors.Add("Type of previous input is not supported for conditions", previousInputValueErrorPath);
@@ -150,12 +167,8 @@ namespace DocGen.Api.Core.Templates
                     }
                     else
                     {
-                        stepErrors.Add("Could not find a step from given path", previousInputPathErrorPath);
+                        stepErrors.Add("Could not find a step from given path", previousInputReferenceErrorPath);
                     }
-                }
-                else
-                {
-                    stepErrors.Add("Must have a greater than than or equal to 1", previousInputPathErrorPath);
                 }
             }
 
@@ -170,13 +183,13 @@ namespace DocGen.Api.Core.Templates
             var stepInputsErrorPath = stepErrorPath.Concat(nameof(TemplateStepCreate.Inputs));
 
             step.Inputs
-                .ToIndexedLookup(i => _templateIdResolver.ResolveStepInputId(step, i))
+                .ToIndexedLookup(i => i.Id)
                 .Where(g => g.Count() > 1)
                 .SelectMany(g => g.AsEnumerable())
                 .ForEach(indexedStepInput =>
                 {
                     stepErrors.Add(
-                        $"An input with the name {indexedStepInput.Element.Name} already exists in this step (case-insensitive)",
+                        $"An input with the id {indexedStepInput.Element.Id} already exists in this step (case-insensitive)",
                         stepInputsErrorPath.Concat(new object[] { indexedStepInput.Index }));
                 });
 
@@ -193,7 +206,6 @@ namespace DocGen.Api.Core.Templates
             if (isOnlyInput)
             {
                 if (!string.IsNullOrEmpty(stepInput.Name))
-                //if (stepInput.Name != "{{default}}")
                 {
                     stepErrors.Add("Must be empty if there is only one input for the step", stepInputErrorPath.Concat(nameof(TemplateStepInputCreate.Name)));
                 }
@@ -205,7 +217,12 @@ namespace DocGen.Api.Core.Templates
             }
             else
             {
-                if (stepInput.Name == "{{default}}")
+                if (string.IsNullOrEmpty(stepInput.Id))
+                {
+                    stepErrors.Add("Required if there is more than one input for the step", stepInputErrorPath.Concat(nameof(TemplateStepInputCreate.Id)));
+                }
+
+                if (string.IsNullOrEmpty(stepInput.Name))
                 {
                     stepErrors.Add("Required if there is more than one input for the step", stepInputErrorPath.Concat(nameof(TemplateStepInputCreate.Name)));
                 }
@@ -214,6 +231,69 @@ namespace DocGen.Api.Core.Templates
                 {
                     stepErrors.Add("Required if there is more than one input for the step", stepInputErrorPath.Concat(nameof(TemplateStepInputCreate.Description)));
                 }
+            }
+        }
+
+        private bool TryGetStepFromInputReference(string reference, Dictionary<string, IndexedElement<TemplateStepCreate>> stepsById, out IndexedElement<TemplateStepCreate> step)
+        {
+            if (stepsById.TryGetValue(reference, out step))
+            {
+                // The input reference is to the step (the input itself is the default input for the step)
+                return true;
+            }
+
+            var referencePath = reference.Split(Constants.TemplateComponentReferenceSeparator);
+            var stepReference = string.Join(Constants.TemplateComponentReferenceSeparator.ToString(), referencePath.Take(referencePath.Count() - 1));
+            return stepsById.TryGetValue(stepReference, out step);
+        }
+
+        private TemplateStepInputCreate GetTemplateStepInput(string inputReference, TemplateStepCreate step)
+        {
+            if (string.IsNullOrEmpty(inputReference)) { throw new ArgumentException(nameof(inputReference)); }
+
+            var inputReferencePath = inputReference.Split(Constants.TemplateComponentReferenceSeparator);
+
+            var stepParentReferencePath = step.ParentReference?.Split(Constants.TemplateComponentReferenceSeparator) ?? Enumerable.Empty<string>();
+            if (!stepParentReferencePath.SequenceEqual(inputReferencePath.Take(stepParentReferencePath.Count())))
+            {
+                throw new Exception("Step's parent reference did not match input's reference");
+            }
+
+            var inputReferenceFromParentStep = inputReferencePath.Skip(stepParentReferencePath.Count());
+
+            var stepId = inputReferenceFromParentStep.First();
+            if (stepId != step.Id)
+            {
+                throw new Exception("Step id did not match id resolved from input reference");
+            }
+
+            if (inputReferenceFromParentStep.Count() == 1) // Reference to step
+            {
+                if (step.Inputs.Count() == 1)
+                {
+                    var input = step.Inputs.First();
+                    if (string.IsNullOrEmpty(input.Id))
+                    {
+                        return input;
+                    }
+                    else
+                    {
+                        throw new Exception("Could not find default input from step reference (expected input's id to be empty)");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Input reference did not contain an input id, expected one step");
+                }
+            }
+            else if (inputReferenceFromParentStep.Count() == 2) // Reference to input
+            {
+                var inputId = inputReferenceFromParentStep.Skip(1).Single();
+                return step.Inputs.SingleOrDefault(i => i.Id == inputId);
+            }
+            else
+            {
+                throw new ArgumentException(nameof(inputReference));
             }
         }
     }

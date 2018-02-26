@@ -14,10 +14,10 @@ namespace DocGen.Api.Core.Templates
         
         public TemplateComponentConditionType? ConditionType { get; set; }
 
-        public dynamic ConditionData { get; set; }
+        public dynamic ConditionTypeData { get; set; }
 
         public IEnumerable<TemplateStepInput> Inputs { get; set; }
 
-        public IEnumerable<string> ParentNames { get; set; }
+        public string ParentReference { get; set; }
     }
 }

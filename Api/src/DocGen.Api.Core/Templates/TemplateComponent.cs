@@ -12,6 +12,6 @@ namespace DocGen.Api.Core.Templates
 
         TemplateComponentConditionType? ConditionType { get; set; }
 
-        dynamic ConditionData { get; set; }
+        dynamic ConditionTypeData { get; set; }
     }
 }

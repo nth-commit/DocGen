@@ -36,12 +36,13 @@ namespace DocGen.Tools.Runner
             {
                 service.CreateTemplateAsync(new TemplateCreate()
                 {
-                    Name = "Non Disclosure Agreement",
+                    Name = "Non-Disclosure Agreement",
                     Description = "Test",
                     Steps = new List<TemplateStepCreate>()
                     {
                         new TemplateStepCreate()
                         {
+                            Id = "title1",
                             Name = "Title 1",
                             Description = "Desc 1",
                             Inputs = new List<TemplateStepInputCreate>()
@@ -55,6 +56,7 @@ namespace DocGen.Tools.Runner
                         },
                         new TemplateStepCreate()
                         {
+                            Id = "title2",
                             Name = "Title 2",
                             Description = "Description 2",
                             Inputs = new List<TemplateStepInputCreate>()
@@ -68,12 +70,13 @@ namespace DocGen.Tools.Runner
                         },
                         new TemplateStepCreate()
                         {
+                            Id = "title3",
                             Name = "Title 3",
                             Description = "Description 3",
                             ConditionType = TemplateComponentConditionType.EqualsPreviousInputValue,
-                            ConditionData = ExpandoObjectFactory.CreateDynamic(new Dictionary<string, object>()
+                            ConditionTypeData = ExpandoObjectFactory.CreateDynamic(new Dictionary<string, object>()
                             {
-                                { "PreviousInputPath", new string[] { "Title 2" } },
+                                { "PreviousInputReference", "title2" },
                                 { "PreviousInputValue", true }
                             }),
                             Inputs = new List<TemplateStepInputCreate>()
@@ -86,7 +89,8 @@ namespace DocGen.Tools.Runner
                             }
                         }
                     }
-                }).GetAwaiter().GetResult();
+                },
+                dryRun: true).GetAwaiter().GetResult();
             }
             catch (ClientModelValidationException ex)
             {

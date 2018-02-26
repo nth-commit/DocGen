@@ -1,0 +1,147 @@
+﻿{
+  "Name": "Non-Disclosure Agreement",
+  "Description": "Welcome to the Confidentiality Agreement interview! This will produce a document which binds one party to keep confidential any information it receives from another party during the course of work.\\n\\nThis is for use when an Organisation has a Contractor coming on board to do some work, and they want to ensure that any confidential information the Contractor encounters will stay just that - confidential!",
+  "Steps": [
+    {
+      "Id": "organisation",
+      "Name": "Organisation",
+      "Description": "The Organisation in this instance is the party providing the confidential information. Please tell us a bit about who the Organisation is.",
+      "Inputs": [
+        {
+          "Id": "name",
+          "Name": "Organisation name",
+          "Description": "What is the name of the organisation?",
+          "Hint": "Automio Limited",
+          "Type": 1 // Text
+        },
+        {
+          "Id": "location",
+          "Name": "Organisation location",
+          "Description": "Where is the organisation based?",
+          "Hint": "New Plymouth",
+          "Type": 1 // Text
+        }
+      ]
+    },
+    {
+      "Id": "contractor",
+      "Name": "Contractor",
+      "Description": "Is the Contractor an individual person or a business/company?",
+      "Inputs": [
+        {
+          "Id": "type",
+          "Type": 2, // Radio
+          "TypeData": [
+            {
+              "Name": "Person",
+              "Value": "person"
+            },
+            {
+              "Name": "Company",
+              "Value": "company"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Id": "contractor.person",
+      "Name": "Contractor information",
+      "Description": "Enter details about the contractor",
+      "ConditionType": 1, // EqualsPreviousValue
+      "ConditionTypeData": {
+        "PreviousValue": "person",
+        "PreviousInputReference": "contractor.type"
+      },
+      "Inputs": [
+        {
+          "Id": "name",
+          "Name": "Contractor name",
+          "Description": "What is the full legal name of the contractor?",
+          "Hint": "Joseph Michael Bloggs",
+          "Type": 1 // Text
+        },
+        {
+          "Id": "location",
+          "Name": "Town of residence",
+          "Description": "What is the contractor's town of residence?",
+          "Hint": "Joseph Michael Bloggs",
+          "Type": 1 // Text
+        },
+        {
+          "Id": "occupation",
+          "Name": "Occupation",
+          "Description": "What is the contractor's occupation?",
+          "Hint": "Marketing Executive",
+          "Type": 1 // Text
+        }
+      ]
+    },
+    {
+      "Id": "contractor.company",
+      "Name": "Company information",
+      "Description": "Enter details about the contracting company",
+      "ConditionType": 1, // EqualsPreviousValue
+      "ConditionTypeData": {
+        "PreviousValue": "company",
+        "PreviousInputReference": "contractor.type"
+      },
+      "Inputs": [
+        {
+          "Id": "name",
+          "Name": "Company name",
+          "Description": "What is the company's name?",
+          "Hint": "Lava Lamps Limited",
+          "Type": 1 // Text
+        },
+        {
+          "Id": "location",
+          "Name": "Location",
+          "Description": "Where is the company based?",
+          "Hint": "New Plymouth",
+          "Type": 1 // Text
+        }
+      ]
+    },
+    {
+      "Id": "diclosure_reason",
+      "Name": "Reason for disclosure of confidential information",
+      "Description": "Why does the Contractor need access to the confidential information?",
+      "Inputs": [
+        {
+          "Id": null, // From parent
+          "Type": 1, // Text
+          "Hint": "To provide marketing services to the Organisation"
+        }
+      ]
+    },
+    {
+      "Id": "disclosure_access",
+      "Name": "Other access of confidential information",
+      "Description": "Other than the Contractor's employees, will anyone else have access to the confidential information?",
+      "Inputs": [
+        {
+          "Id": null, // From parent
+          "Type": 3 // Checkbox
+        }
+      ]
+    },
+    {
+      "Id": "disclosure_access.details",
+      "Name": "Access given to",
+      "Description": "Not including employees, who else will have access to the confidential information?",
+      "ConditionType": 1, // EqualsPreviousValue
+      "ConditionTypeData": {
+        "PreviousValue": true,
+        "PreviousInputReference": "disclosure_access"
+      },
+      "Inputs": [
+        {
+          "Id": "persons",
+          "Hint": "sub-contractors, board members",
+          "Type": 1 // Text
+        }
+      ]
+    }
+  ]
+}
