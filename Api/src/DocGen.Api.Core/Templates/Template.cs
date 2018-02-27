@@ -14,7 +14,7 @@ namespace DocGen.Api.Core.Templates
         public string Name { get; set; }
 
         [StringNotNullOrEmpty]
-        public string Text { get; set; }
+        public string Description { get; set; }
 
         [EnumerableNotEmpty]
         [ValidateEnumerableElements]

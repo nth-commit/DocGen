@@ -50,7 +50,7 @@
       "Description": "Enter details about the contractor",
       "ConditionType": 1, // EqualsPreviousValue
       "ConditionTypeData": {
-        "PreviousValue": "person",
+        "PreviousInputValue": "person",
         "PreviousInputReference": "contractor.type"
       },
       "Inputs": [
@@ -83,7 +83,7 @@
       "Description": "Enter details about the contracting company",
       "ConditionType": 1, // EqualsPreviousValue
       "ConditionTypeData": {
-        "PreviousValue": "company",
+        "PreviousInputValue": "company",
         "PreviousInputReference": "contractor.type"
       },
       "Inputs": [
@@ -132,7 +132,7 @@
       "Description": "Not including employees, who else will have access to the confidential information?",
       "ConditionType": 1, // EqualsPreviousValue
       "ConditionTypeData": {
-        "PreviousValue": true,
+        "PreviousInputValue": true,
         "PreviousInputReference": "disclosure_access"
       },
       "Inputs": [

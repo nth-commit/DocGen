@@ -10,7 +10,7 @@ namespace DocGen.Api.Core.Templates
     public class TemplateStepCreate : ITemplateComponent
     {
         [StringNotNullOrEmpty]
-        [RegularExpression(Constants.TemplateComponentIdRegexPattern)]
+        [RegularExpression(Constants.TemplateComponentReferenceRegexPattern)]
         public string Id { get; set; }
 
         [StringNotNullOrEmpty]
@@ -35,7 +35,7 @@ namespace DocGen.Api.Core.Templates
 
     public class TemplateStepConditionTypeData_EqualsPreviousInputValue : TemplateStepConditionTypeData
     {
-        [RegularExpression(Constants.TemplateComponentIdRegexPattern)]
+        [RegularExpression(Constants.TemplateStepInputIdRegexPattern)]
         public string PreviousInputReference { get; set; }
 
         [Required]

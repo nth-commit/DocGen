@@ -1,12 +1,14 @@
 ﻿using DocGen.Shared.Validation;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace DocGen.Api.Core.Templates
 {
     public class TemplateStepInputCreate
     {
+        [RegularExpression(Constants.TemplateStepInputIdRegexPattern)]
         public string Id { get; set; }
 
         public string Name { get; set; }

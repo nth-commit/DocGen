@@ -6,10 +6,12 @@ namespace DocGen.Api.Core.Templates
 {
     public static class Constants
     {
-        public const string TemplateComponentIdRegexPattern = "[a-z_]+[a-z_0-9]*";
-
         public const char TemplateComponentReferenceSeparator = '.';
 
-        public const string TemplateComponentReferenceRegexPattern = "(" + TemplateComponentIdRegexPattern + ")(." + TemplateComponentIdRegexPattern + ")*";
+        public const string TemplateStepInputIdRegexPattern = "[a-z_]+[a-z_0-9]*";
+
+        public const string TemplateStepIdRegexPattern = "(" + TemplateStepInputIdRegexPattern + ")(." + TemplateStepInputIdRegexPattern + ")*";
+
+        public const string TemplateComponentReferenceRegexPattern = "(" + TemplateStepInputIdRegexPattern + ")(." + TemplateStepInputIdRegexPattern + ")*";
     }
 }
