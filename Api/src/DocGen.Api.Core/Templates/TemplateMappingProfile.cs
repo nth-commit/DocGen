@@ -16,12 +16,9 @@ namespace DocGen.Api.Core.Templates
                 .ForMember(dest => dest.Id, opts => opts.ResolveUsing(src => new SlugBuilderFactory().Create().Add(src.Name).ToString()));
 
             CreateMap<TemplateStepCreate, TemplateStep>()
-                .ForMember(dest => dest.Inputs, opts => opts.ResolveUsing((src, dest, member, context)
-                    => src.Inputs.Select(srcInput => context.Mapper.Map<TemplateStepInput>(srcInput, opts2 => opts2.Items["Step"] = src))));
+                .ForMember(dest => dest.Version, opts => opts.UseValue(1));
 
             CreateMap<TemplateStepInputCreate, TemplateStepInput>();
-                //.ForMember(dest => dest.Id, opts => opts.ResolveUsing((src, dest, member, context)
-                //    => TemplateIdResolver.Instance.ResolveStepInputId(context.Items["Step"] as TemplateStepCreate, src)));
 
             CreateMap<Template, TemplateTableEntity>()
                 .ForMember(dest => dest.RowKey, opts => opts.ResolveUsing(src => src.Id))
@@ -29,11 +26,7 @@ namespace DocGen.Api.Core.Templates
                 .ForMember(dest => dest.DataJson, opts => opts.ResolveUsing(src => JsonConvert.SerializeObject(src)));
 
             CreateMap<TemplateTableEntity, Template>()
-                .ConvertUsing((src, dest) =>
-                {
-
-                    return JsonConvert.DeserializeObject<Template>(src.DataJson);
-                });
+                .ConvertUsing((src, dest) => JsonConvert.DeserializeObject<Template>(src.DataJson));
         }
     }
 }

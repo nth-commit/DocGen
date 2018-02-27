@@ -11,10 +11,11 @@ namespace DocGen.Api.Core.Documents
         [StringNotNullOrEmpty]
         public string TemplateId { get; set; }
 
-        [StringNotNullOrEmpty]
-        public string TemplateVersion { get; set; }
+        [Required]
+        [Range(0, int.MaxValue)]
+        public int TemplateVersion { get; set; }
 
         [Required]
-        public IDictionary<int, IDictionary<int, object>> Values { get; set; }
+        public IDictionary<string, dynamic> InputValues { get; set; }
     }
 }

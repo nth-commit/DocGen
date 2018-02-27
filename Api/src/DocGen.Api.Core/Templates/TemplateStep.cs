@@ -19,5 +19,7 @@ namespace DocGen.Api.Core.Templates
         public IEnumerable<TemplateStepInput> Inputs { get; set; }
 
         public string ParentReference { get; set; }
+
+        public int Version { get; set; }
     }
 }

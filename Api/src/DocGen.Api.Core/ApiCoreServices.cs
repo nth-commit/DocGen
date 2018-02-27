@@ -1,4 +1,5 @@
-﻿using DocGen.Api.Core.Templates;
+﻿using DocGen.Api.Core.Documents;
+using DocGen.Api.Core.Templates;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,7 +13,9 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddTransient<TemplateService>();
             services.AddTransient<ITemplateRepository, TableStorageTemplateRepository>();
-            services.AddTransient<ITemplateIdResolver, TemplateIdResolver>();
+
+            services.AddTransient<DocumentService>();
+            services.AddTransient<IDocumentGenerator, RawTextDocumentGenerator>();
 
             return services;
         }

@@ -16,16 +16,13 @@ namespace DocGen.Api.Core.Templates
     {
         private readonly ITemplateRepository _templateRepository;
         private readonly IMapper _mapper;
-        private readonly ITemplateIdResolver _templateIdResolver;
 
         public TemplateService(
             ITemplateRepository templateRepository,
-            IMapper mapper,
-            ITemplateIdResolver templateIdResolver)
+            IMapper mapper)
         {
             _templateRepository = templateRepository;
             _mapper = mapper;
-            _templateIdResolver = templateIdResolver;
         }
 
         public async Task<Template> CreateTemplateAsync(TemplateCreate create, bool dryRun = false)

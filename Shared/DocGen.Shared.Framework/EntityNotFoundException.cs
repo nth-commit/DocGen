@@ -12,6 +12,8 @@ namespace DocGen.Shared.Framework
 
         public EntityNotFoundException(string entity, string entityId)
         {
+            Entity = entity;
+            EntityId = entityId;
         }
     }
 }
