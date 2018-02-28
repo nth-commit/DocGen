@@ -15,22 +15,13 @@ namespace DocGen.Api.Core.Documents
 {
     public class DocumentService
     {
-        private readonly IMapper _mapper;
-        private readonly IRemoteIpAddressAccessor _remoteIpAddressAccessor;
-        private readonly IDocumentRepository _documentRepository;
         private readonly ITemplateRepository _templateRepository;
         private readonly IEnumerable<IDocumentGenerator> _documentGenerators;
 
         public DocumentService(
-            IMapper mapper,
-            IRemoteIpAddressAccessor remoteIpAddressAccessor,
-            //IDocumentRepository documentRepository,
             ITemplateRepository templateRepository,
             IEnumerable<IDocumentGenerator> documentGenerators)
         {
-            _mapper = mapper;
-            _remoteIpAddressAccessor = remoteIpAddressAccessor;
-            //_documentRepository = documentRepository;
             _templateRepository = templateRepository;
             _documentGenerators = documentGenerators;
         }
@@ -64,7 +55,9 @@ namespace DocGen.Api.Core.Documents
         {
             var inputValueErrors = new ModelErrorDictionary();
 
-            var validInputValues = new Dictionary<string, dynamic>();
+            // Store the traversed values so we can easily analyse conditional inputs. It's fine to just store them as strings as we
+            // have already validated their types and value comparison will work for stringified booleans and numbers.
+            var validInputStringValues = new Dictionary<string, string>();
 
             template.Steps.ForEach(templateStep =>
             {
@@ -78,7 +71,7 @@ namespace DocGen.Api.Core.Documents
                         throw new Exception("Internal error: invalid template");
                     }
 
-                    if (!validInputValues.ContainsKey(previousInputReference) || !expectedPreviousInputValue.Equals(validInputValues[previousInputReference]))
+                    if (!validInputStringValues.ContainsKey(previousInputReference) || !expectedPreviousInputValue.Equals(validInputStringValues[previousInputReference]))
                     {
                         // Skip this step
                         return;
@@ -93,7 +86,7 @@ namespace DocGen.Api.Core.Documents
                     var result = ValidateTemplateStepInput(templateStep, defaultTemplateStepInput, create.InputValues, inputValueErrors, isDefaultInput: true);
                     if (result.success)
                     {
-                        validInputValues.Add(result.templateStepInputId, result.inputValueDynamic);
+                        validInputStringValues.Add(result.templateStepInputId, result.inputValueString);
                     }
                 }
 
@@ -104,7 +97,7 @@ namespace DocGen.Api.Core.Documents
                         var result = ValidateTemplateStepInput(templateStep, templateStepInput, create.InputValues, inputValueErrors, isDefaultInput: false);
                         if (result.success)
                         {
-                            validInputValues.Add(result.templateStepInputId, result.inputValueDynamic);
+                            validInputStringValues.Add(result.templateStepInputId, result.inputValueString);
                         }
                     });
             });
@@ -112,7 +105,7 @@ namespace DocGen.Api.Core.Documents
             inputValueErrors.AssertValid();
         }
 
-        private (bool success, string templateStepInputId, dynamic inputValueDynamic) ValidateTemplateStepInput(
+        private (bool success, string templateStepInputId, string inputValueString) ValidateTemplateStepInput(
             TemplateStep templateStep,
             TemplateStepInput templateStepInput,
             IDictionary<string, dynamic> inputValues,
@@ -131,13 +124,13 @@ namespace DocGen.Api.Core.Documents
                 {
                     try
                     {
-                        var x = (string)inputValueDynamic;
+                        var textValue = (string)inputValueDynamic;
+                        return (true, templateStepInputId, textValue);
                     }
                     catch (RuntimeBinderException)
                     {
-                        AddInputValueError(errors, "Expected string", templateStepInputId);
+                        AddInputValueError(errors, $"Expected string for \"{templateStepInput.Name ?? templateStep.Name}\"", templateStepInputId);
                     }
-                    return (true, templateStepInputId, inputValueDynamic);
                 }
                 else if (templateStepInput.Type == TemplateStepInputType.Radio)
                 {
@@ -147,11 +140,14 @@ namespace DocGen.Api.Core.Documents
                         try
                         {
                             var radioOptions = (IEnumerable<dynamic>)(templateStepInput.TypeData);
-                            if (!radioOptions.Any(r => r.Value == radioValue))
+                            if (radioOptions.Any(r => r.Value == radioValue))
+                            {
+                                return (true, templateStepInputId, inputValueDynamic);
+                            }
+                            else
                             {
                                 AddInputValueError(errors, $"Unexpected value; must be from the set of values {string.Join(", ", radioOptions.Select(r => $"\"{r.Value}\""))}", templateStepInputId);
                             }
-                            return (true, templateStepInputId, inputValueDynamic);
                         }
                         catch (RuntimeBinderException ex)
                         {
@@ -160,20 +156,25 @@ namespace DocGen.Api.Core.Documents
                     }
                     catch (RuntimeBinderException)
                     {
-                        AddInputValueError(errors, "Expected string", templateStepInputId);
+                        AddInputValueError(errors, $"Expected string for \"{templateStepInput.Name ?? templateStep.Name}\"", templateStepInputId);
+                    }
+                }
+                else if (templateStepInput.Type == TemplateStepInputType.Checkbox)
+                {
+                    try
+                    {
+                        var checkboxValue = (bool)inputValueDynamic;
+                        return (true, templateStepInputId, checkboxValue.ToString());
+                    }
+                    catch (RuntimeBinderException)
+                    {
+                        AddInputValueError(errors, $"Expected boolean for \"{templateStepInput.Name ?? templateStep.Name}\"", templateStepInputId);
                     }
                 }
             }
             else
             {
-                if (isDefaultInput)
-                {
-                    AddInputValueError(errors, $"Key invalid insufficient as template step {templateStep.Name} did not have a default input", templateStepInputId);
-                }
-                else
-                {
-                    AddInputValueError(errors, "Input is required", templateStepInputId);
-                }
+                AddInputValueError(errors, $"Input \"{templateStepInput.Name ?? templateStep.Name}\" is required", templateStepInputId);
             }
             return (false, templateStepInputId, null);
         }

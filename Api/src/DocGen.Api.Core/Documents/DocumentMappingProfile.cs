@@ -9,10 +9,6 @@ namespace DocGen.Api.Core.Documents
     {
         public DocumentMappingProfile()
         {
-            CreateMap<DocumentCreate, Document>()
-                .ForMember(dest => dest.Id, opts => opts.ResolveUsing(src => Guid.NewGuid()));
-
-
         }
     }
 }

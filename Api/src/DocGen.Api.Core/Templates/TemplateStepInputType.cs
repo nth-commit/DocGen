@@ -12,8 +12,6 @@ namespace DocGen.Api.Core.Templates
 
         Radio,
 
-        Checkbox,
-
-        CheckboxGroup
+        Checkbox
     }
 }

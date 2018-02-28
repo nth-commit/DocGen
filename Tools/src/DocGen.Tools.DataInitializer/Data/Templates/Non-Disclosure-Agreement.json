@@ -104,7 +104,7 @@
       ]
     },
     {
-      "Id": "diclosure_reason",
+      "Id": "disclosure_reason",
       "Name": "Reason for disclosure of confidential information",
       "Description": "Why does the Contractor need access to the confidential information?",
       "Inputs": [

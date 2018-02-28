@@ -110,7 +110,12 @@ namespace DocGen.Tools.Runner
                         {
                             { "organisation.name", "Automio Limited" },
                             { "organisation.location", "New Plymouth" },
-                            { "contractor.type", "company" }
+                            { "contractor.type", "company" },
+                            { "contractor.company.name", "Lava Lamps Limited" },
+                            { "contractor.company.location", "New Plymouth" },
+                            { "diclosure_reason", "To provide marketing services to the Organisation" },
+                            { "disclosure_access", true },
+                            { "disclosure_access.details.persons", "sub-contractors, board members" }
                         }
                     },
                     DocumentGenerationMode.RawText).GetAwaiter().GetResult();
