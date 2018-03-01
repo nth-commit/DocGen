@@ -124,14 +124,15 @@ namespace DocGen.Tools.Runner
 
                 #endregion
 
+                //xmlns=""http://tempuri.org/markup1.xsd""
                 new TemplateMarkupValidatorV1().Validate(@"
-                    <document xmlns=""http://tempuri.org/markup1.xsd"">
+                    <documen>
                         <page>
                             <section if=""contractor.type = company"">
                                 This is some conditionally displayed stuff.
                             </section>
                         </page>
-                    </document>
+                    </documen>
                 ");
             }
             catch (ClientModelValidationException ex)

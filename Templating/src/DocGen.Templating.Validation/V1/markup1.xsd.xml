@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <document xmlns="http://tempuri.org/markup1.xsd">
   <page>
-    asdasd
+    <section if="contractor.type = person">
+      asdjasd;lkas;dlkasd;lk
+    </section>
   </page>
 </document>
