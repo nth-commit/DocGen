@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Xml;
@@ -35,14 +36,21 @@ namespace DocGen.Templating.Validation.V1
                 settings.ValidationFlags |= XmlSchemaValidationFlags.ProcessSchemaLocation;
                 settings.ValidationFlags |= XmlSchemaValidationFlags.ReportValidationWarnings;
 
-                settings.ValidationEventHandler += Settings_ValidationEventHandler;
+                var errors = new List<string>();
+                settings.ValidationEventHandler += (object sender, ValidationEventArgs e) =>
+                {
+                    errors.Add(e.Message);
+                };
 
                 using (var markupReader = new StringReader(markup))
                 using (var markupXmlReader = XmlReader.Create(markupReader))
                 {
                     // Create a temporary document and add the namespace to the root
                     var tempDocument = XDocument.Load(markupXmlReader, LoadOptions.SetLineInfo);
-                    tempDocument.Root.Name = markupNs + tempDocument.Root.Name.ToString();
+                    foreach (var element in tempDocument.Descendants())
+                    {
+                        element.Name = markupNs + element.Name.ToString();
+                    }
 
                     string tempDocumentText = null;
                     using (var tempDocumentStringWriter = new StringWriter())
@@ -58,15 +66,16 @@ namespace DocGen.Templating.Validation.V1
                     {
                         var document = XDocument.Load(tempDocumentXmlReader, LoadOptions.SetLineInfo);
                         var lineNumber = ((IXmlLineInfo)document).LineNumber;
+
+                        if (errors.Any())
+                        {
+                            throw new Exception("Invalid");
+                        }
+
                         return document;
                     }
                 }
             }
-        }
-
-        private void Settings_ValidationEventHandler(object sender, ValidationEventArgs e)
-        {
-            throw new Exception(e.Message);
         }
     }
 }
