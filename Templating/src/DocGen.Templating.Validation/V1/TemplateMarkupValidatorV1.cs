@@ -36,15 +36,22 @@ namespace DocGen.Templating.Validation.V1
                 settings.ValidationFlags |= XmlSchemaValidationFlags.ProcessSchemaLocation;
                 settings.ValidationFlags |= XmlSchemaValidationFlags.ReportValidationWarnings;
 
-                var errors = new List<string>();
+                var errors = new List<TemplateSyntaxError>();
                 settings.ValidationEventHandler += (object sender, ValidationEventArgs e) =>
                 {
-                    errors.Add(e.Message);
+                    var lineInfo = (IXmlLineInfo)sender;
+                    errors.Add(new TemplateSyntaxError()
+                    {
+                        LineNumber = lineInfo.LineNumber,
+                        LinePosition = lineInfo.LinePosition,
+                        Message = e.Message
+                    });
                 };
 
                 using (var markupReader = new StringReader(markup))
                 using (var markupXmlReader = XmlReader.Create(markupReader))
                 {
+                    // TODO: Handle errors when loading this doc (malformed XML)
                     // Create a temporary document and add the namespace to the root
                     var tempDocument = XDocument.Load(markupXmlReader, LoadOptions.SetLineInfo);
                     foreach (var element in tempDocument.Descendants())
@@ -65,11 +72,10 @@ namespace DocGen.Templating.Validation.V1
                     using (var tempDocumentXmlReader = XmlReader.Create(textDocumentReader, settings))
                     {
                         var document = XDocument.Load(tempDocumentXmlReader, LoadOptions.SetLineInfo);
-                        var lineNumber = ((IXmlLineInfo)document).LineNumber;
 
                         if (errors.Any())
                         {
-                            throw new Exception("Invalid");
+                            throw new InvalidTemplateSyntaxException(errors);
                         }
 
                         return document;

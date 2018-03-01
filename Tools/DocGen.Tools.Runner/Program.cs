@@ -124,16 +124,24 @@ namespace DocGen.Tools.Runner
 
                 #endregion
 
-                //xmlns=""http://tempuri.org/markup1.xsd""
-                new TemplateMarkupValidatorV1().Validate(@"
-                    <documen>
-                        <page>
-                            <section if=""contractor.type = company"">
-                                This is some conditionally displayed stuff.
-                            </section>
-                        </page>
-                    </documen>
-                ");
+                try
+                {
+                    new TemplateMarkupValidatorV1().Validate(@"
+                        <document>
+                            <page>
+                                <block if=""contractor.type = company"">
+                                    This is some conditionally displayed stuff.
+                                </block>
+                                <inline>Inline content</inline>
+                            </page>
+                        </document>
+                    ");
+                }
+                catch (InvalidTemplateSyntaxException ex)
+                {
+                    ex.Errors.ForEach(e => Console.WriteLine($"{e.LineNumber}:{e.LinePosition} {e.Message}"));
+                    Console.ReadLine();
+                }
             }
             catch (ClientModelValidationException ex)
             {

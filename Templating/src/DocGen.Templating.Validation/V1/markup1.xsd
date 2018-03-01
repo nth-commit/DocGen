@@ -12,7 +12,12 @@
         <xs:element name="page" minOccurs="1" maxOccurs="unbounded">
           <xs:complexType mixed="true">
             <xs:sequence>
-              <xs:element name="section" minOccurs="0" maxOccurs="unbounded">
+              <xs:element name="block" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType mixed="true">
+                  <xs:attribute name="if" type="IF" />
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="inline" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType mixed="true">
                   <xs:attribute name="if" type="IF" />
                 </xs:complexType>
