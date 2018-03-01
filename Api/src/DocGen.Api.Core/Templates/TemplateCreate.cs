@@ -1,6 +1,7 @@
 ﻿using DocGen.Shared.Validation;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace DocGen.Api.Core.Templates
@@ -12,6 +13,12 @@ namespace DocGen.Api.Core.Templates
 
         [StringNotNullOrEmpty]
         public string Description { get; set; }
+
+        [StringNotNullOrEmpty]
+        public string Markup { get; set; }
+
+        [Range(0, int.MaxValue)]
+        public int MarkupVersion { get; set; }
 
         [EnumerableNotEmpty]
         [ValidateEnumerableElements]
