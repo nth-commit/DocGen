@@ -4,6 +4,8 @@ using DocGen.Api.Core.Templates;
 using DocGen.Shared.Core.Dynamic;
 using DocGen.Shared.Framework;
 using DocGen.Shared.Validation;
+using DocGen.Templating.Validation;
+using DocGen.Templating.Validation.V1;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MoreLinq;
@@ -100,27 +102,37 @@ namespace DocGen.Tools.Runner
 
                 #region Create document
 
-                var service = serviceProvider.GetRequiredService<DocumentService>();
-                service.CreateDocumentAsync(
-                    new DocumentCreate()
-                    {
-                        TemplateId = "non-disclosure-agreement",
-                        TemplateVersion = 1,
-                        InputValues = new Dictionary<string, dynamic>()
-                        {
-                            { "organisation.name", "Automio Limited" },
-                            { "organisation.location", "New Plymouth" },
-                            { "contractor.type", "company" },
-                            { "contractor.company.name", "Lava Lamps Limited" },
-                            { "contractor.company.location", "New Plymouth" },
-                            { "diclosure_reason", "To provide marketing services to the Organisation" },
-                            { "disclosure_access", true },
-                            { "disclosure_access.details.persons", "sub-contractors, board members" }
-                        }
-                    },
-                    DocumentGenerationMode.RawText).GetAwaiter().GetResult();
+                //var service = serviceProvider.GetRequiredService<DocumentService>();
+                //service.CreateDocumentAsync(
+                //    new DocumentCreate()
+                //    {
+                //        TemplateId = "non-disclosure-agreement",
+                //        TemplateVersion = 1,
+                //        InputValues = new Dictionary<string, dynamic>()
+                //        {
+                //            { "organisation.name", "Automio Limited" },
+                //            { "organisation.location", "New Plymouth" },
+                //            { "contractor.type", "company" },
+                //            { "contractor.company.name", "Lava Lamps Limited" },
+                //            { "contractor.company.location", "New Plymouth" },
+                //            { "diclosure_reason", "To provide marketing services to the Organisation" },
+                //            { "disclosure_access", true },
+                //            { "disclosure_access.details.persons", "sub-contractors, board members" }
+                //        }
+                //    },
+                //    DocumentGenerationMode.RawText).GetAwaiter().GetResult();
 
                 #endregion
+
+                new TemplateMarkupValidatorV1().Validate(@"
+                    <document xmlns=""http://tempuri.org/markup1.xsd"">
+                        <page>
+                            <section if=""contractor.type = company"">
+                                This is some conditionally displayed stuff.
+                            </section>
+                        </page>
+                    </document>
+                ");
             }
             catch (ClientModelValidationException ex)
             {

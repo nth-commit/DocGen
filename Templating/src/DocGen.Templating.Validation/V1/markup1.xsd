@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema
+    targetNamespace="http://tempuri.org/markup1.xsd"
+    elementFormDefault="qualified"
+    xmlns="http://tempuri.org/markup1.xsd"
+    xmlns:mstns="http://tempuri.org/markup1.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+  <xs:element name="document">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="page" minOccurs="1" maxOccurs="unbounded">
+          <xs:complexType mixed="true">
+            <xs:sequence>
+              <xs:element name="section" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType mixed="true">
+                  <xs:attribute name="if" type="IF" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="if" type="IF" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:simpleType name="IF" id="IF">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="([a-z_]+[a-z_0-9]*)(.[a-z_]+[a-z_0-9]*)+\s*=\s[a-z0-9]+" />
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
