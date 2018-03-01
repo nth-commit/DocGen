@@ -20,12 +20,14 @@ namespace DocGen.Templating.Validation.V1
 
         private XDocument GetSchemaValidatedDocument(string markup)
         {
+            XNamespace markupNs = $"http://tempuri.org/markup{MarkupVersion}.xsd";
+
             var assemblyLocation = Assembly.GetEntryAssembly().Location;
             var schemaPath = Path.Combine(Path.GetDirectoryName(assemblyLocation), $"V{MarkupVersion}", $"markup{MarkupVersion}.xsd");
             using (var schemaXmlReader = XmlReader.Create(File.OpenRead(schemaPath)))
             {
                 var settings = new XmlReaderSettings();
-                settings.Schemas.Add("http://tempuri.org/markup1.xsd", schemaXmlReader);
+                settings.Schemas.Add(markupNs.ToString(), schemaXmlReader);
                 settings.Schemas.Compile();
 
                 settings.ValidationType = ValidationType.Schema;
@@ -38,34 +40,15 @@ namespace DocGen.Templating.Validation.V1
                 using (var markupReader = new StringReader(markup))
                 using (var markupXmlReader = XmlReader.Create(markupReader))
                 {
+                    // Create a temporary document and add the namespace to the root
                     var tempDocument = XDocument.Load(markupXmlReader, LoadOptions.SetLineInfo);
-                    //tempDocument.Root.SetAttributeValue("xmlns", $"http://tempuri.org/markup{MarkupVersion}.xsd");
-                    XNamespace markupNs = $"http://tempuri.org/markup{MarkupVersion}.xsd";
-                    XNamespace xsiNs = "http://www.w3.org/2001/XMLScema-instance";
-
-                    var tempDocument2 = new XDocument(
-                        new XElement(
-                            markupNs + tempDocument.Root.Name.ToString(),
-                            new XAttribute("xmlns", markupNs),
-                            new XAttribute(XNamespace.Xmlns + "xsi", xsiNs)));
-
-                    var elements = tempDocument.Root.Elements();
-                    tempDocument2.Root.Add(elements);
-
-
-
-                    //tempDocument.Root.Name = 
-
-                    //var root = tempDocument.FirstChild;
-                    //var namespaceAttribute = tempDocument.CreateAttribute("xmlns", "http://www.w3.org/2000/xmlns/");
-                    //namespaceAttribute.Value = $"http://tempuri.org/markup{MarkupVersion}.xsd";
-                    //root.Attributes.Append(namespaceAttribute);
+                    tempDocument.Root.Name = markupNs + tempDocument.Root.Name.ToString();
 
                     string tempDocumentText = null;
                     using (var tempDocumentStringWriter = new StringWriter())
                     using (var tempDocumentTextWriter = XmlWriter.Create(tempDocumentStringWriter))
                     {
-                        tempDocument2.WriteTo(tempDocumentTextWriter);
+                        tempDocument.WriteTo(tempDocumentTextWriter);
                         tempDocumentTextWriter.Flush();
                         tempDocumentText = tempDocumentStringWriter.GetStringBuilder().ToString();
                     }
@@ -74,53 +57,10 @@ namespace DocGen.Templating.Validation.V1
                     using (var tempDocumentXmlReader = XmlReader.Create(textDocumentReader, settings))
                     {
                         var document = XDocument.Load(tempDocumentXmlReader, LoadOptions.SetLineInfo);
-
-                        //document.Validate()
-
                         var lineNumber = ((IXmlLineInfo)document).LineNumber;
-
-                        //var document = new XmlDocument();
-                        //document.Load(tempDocumentXmlReader);
                         return document;
                     }
                 }
-
-
-                // Need to append the namespace to the document and then read it again in order to validate it.
-                //using (var markupReader = new StringReader(markup))
-                //using (var markupXmlReader = XmlReader.Create(markupReader))
-                //{
-                //    var tempDocument = new XmlDocument();
-                //    tempDocument.Load(markupXmlReader);
-
-                //    var root = tempDocument.FirstChild;
-                //    var namespaceAttribute = tempDocument.CreateAttribute("xmlns", "http://www.w3.org/2000/xmlns/");
-                //    namespaceAttribute.Value = $"http://tempuri.org/markup{MarkupVersion}.xsd";
-                //    root.Attributes.Append(namespaceAttribute);
-
-                //    string tempDocumentText = null;
-                //    using (var tempDocumentStringWriter = new StringWriter())
-                //    using (var tempDocumentTextWriter = XmlWriter.Create(tempDocumentStringWriter))
-                //    {
-                //        tempDocument.WriteTo(tempDocumentTextWriter);
-                //        tempDocumentTextWriter.Flush();
-                //        tempDocumentText = tempDocumentStringWriter.GetStringBuilder().ToString();
-                //    }
-
-                //    using (var textDocumentReader = new StringReader(tempDocumentText))
-                //    using (var tempDocumentXmlReader = XmlReader.Create(textDocumentReader, settings))
-                //    {
-                //        var document = XDocument.Load(tempDocumentXmlReader, LoadOptions.SetLineInfo);
-
-                //        //document.Validate()
-
-                //        var lineNumber = ((IXmlLineInfo)document).LineNumber;
-
-                //        //var document = new XmlDocument();
-                //        //document.Load(tempDocumentXmlReader);
-                //        return document;
-                //    }
-                //}
             }
         }
 
