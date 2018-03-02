@@ -1,0 +1,7 @@
+﻿<document>
+  <page>
+    <block if="unknown_reference = person">
+      <data>known_reference</data>
+    </block>
+  </page>
+</document>

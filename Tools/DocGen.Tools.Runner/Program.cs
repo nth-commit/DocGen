@@ -32,8 +32,10 @@ namespace DocGen.Tools.Runner
             {
                 conf.AddApiCoreMappers();
             });
+            services.AddTemplatingValidationServices();
 
             services.AddTransient<IRemoteIpAddressAccessor, StubbedRemoteIpAddressAccessor>();
+
 
             var serviceProvider = services.BuildServiceProvider();
 
@@ -126,7 +128,8 @@ namespace DocGen.Tools.Runner
 
                 try
                 {
-                    new TemplateMarkupValidatorV1().Validate(
+                    var service = serviceProvider.GetRequiredService<ITemplateMarkupValidator>();
+                    service.Validate(
                         @"<document>
                             <page>
                                 <block if=""contractor.type = company"">
@@ -136,6 +139,7 @@ namespace DocGen.Tools.Runner
                                 <data>contractor.company.name</data>
                             </page>
                         </document>",
+                        1,
                         new List<ReferenceDefinition>()
                         {
                             ReferenceDefinition.StringFrom("contractor.type", new string[] { "company", "person", "god" }),

@@ -14,7 +14,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="V1\" />
+    <ProjectReference Include="..\..\src\DocGen.Templating.Abstractions\DocGen.Templating.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\DocGen.Templating.Validation\DocGen.Templating.Validation.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="V1\TestUnknownReference_DataElement.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="V1\TestUnknownReference_IfAttribute.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

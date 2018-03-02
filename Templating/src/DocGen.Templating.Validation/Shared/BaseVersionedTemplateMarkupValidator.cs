@@ -13,6 +13,14 @@ namespace DocGen.Templating.Validation.Shared
 {
     public abstract class BaseVersionedTemplateMarkupValidator : IVersionedTemplateMarkupValidator
     {
+        private readonly ISchemaFileLocator _schemaFileLocator;
+
+        public BaseVersionedTemplateMarkupValidator(
+            ISchemaFileLocator schemaFileLocator)
+        {
+            _schemaFileLocator = schemaFileLocator;
+        }
+
         public void Validate(string markup, IEnumerable<ReferenceDefinition> references)
         {
             var document = GetSchemaValidatedDocument(markup);
@@ -23,8 +31,7 @@ namespace DocGen.Templating.Validation.Shared
         {
             XNamespace markupNs = $"http://tempuri.org/markup{MarkupVersion}.xsd";
 
-            var assemblyLocation = Assembly.GetEntryAssembly().Location;
-            var schemaPath = Path.Combine(Path.GetDirectoryName(assemblyLocation), $"V{MarkupVersion}", $"markup{MarkupVersion}.xsd");
+            var schemaPath = _schemaFileLocator.GetSchemaPath(MarkupVersion);
             using (var schemaXmlReader = XmlReader.Create(File.OpenRead(schemaPath)))
             {
                 var settings = new XmlReaderSettings();

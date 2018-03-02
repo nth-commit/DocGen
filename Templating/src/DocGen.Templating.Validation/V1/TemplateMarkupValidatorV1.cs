@@ -10,6 +10,8 @@ namespace DocGen.Templating.Validation.V1
 {
     public class TemplateMarkupValidatorV1 : BaseVersionedTemplateMarkupValidator, IVersionedTemplateMarkupValidator
     {
+        public TemplateMarkupValidatorV1(ISchemaFileLocator schemaFileLocator) : base(schemaFileLocator) { }
+
         public override int MarkupVersion => 1;
 
         protected override void ValidateExpressions(XDocument document, IEnumerable<ReferenceDefinition> references)
@@ -21,20 +23,26 @@ namespace DocGen.Templating.Validation.V1
 
             document
                .Descendants()
-               .ForEach(e =>
+               .ForEach(element =>
                {
-                   if (e.Name.LocalName == "data")
+                   if (element.Name.LocalName == "data")
                    {
-                       var expression = ((XText)e.FirstNode).Value;
+                       var expression = ((XText)element.FirstNode).Value;
                        if (!dataExpressions.TryGetValue(expression, out IList<LineInfo> occurences))
                        {
                            occurences = new List<LineInfo>();
                            dataExpressions.Add(expression, occurences);
                        }
-                       occurences.Add(new LineInfo(e));
+
+                       var elementLineInfo = (IXmlLineInfo)element;
+                       occurences.Add(new LineInfo()
+                       {
+                           LineNumber = elementLineInfo.LineNumber,
+                           LinePosition = elementLineInfo.LinePosition + element.Name.LocalName.Length + ">".Length
+                       });
                    }
 
-                   var ifAttribute = e.Attributes().SingleOrDefault(a => a.Name == "if");
+                   var ifAttribute = element.Attributes().SingleOrDefault(a => a.Name == "if");
                    if (ifAttribute != null)
                    {
                        var expression = ifAttribute.Value;
@@ -43,7 +51,14 @@ namespace DocGen.Templating.Validation.V1
                            occurences = new List<LineInfo>();
                            ifExpressions.Add(expression, occurences);
                        }
-                       occurences.Add(new LineInfo(e));
+
+                       var elementLineInfo = (IXmlLineInfo)element;
+                       var attributeLineInfo = (IXmlLineInfo)ifAttribute;
+                       occurences.Add(new LineInfo()
+                       {
+                           LineNumber = elementLineInfo.LineNumber,
+                           LinePosition = attributeLineInfo.LinePosition + ifAttribute.Name.LocalName.Length + "\"=".Length
+                       });
                    }
                });
 
@@ -219,12 +234,6 @@ namespace DocGen.Templating.Validation.V1
             public int LineNumber { get; set; }
 
             public int LinePosition { get; set; }
-
-            public LineInfo(IXmlLineInfo xmlLineInfo)
-            {
-                LineNumber = xmlLineInfo.LineNumber;
-                LinePosition = xmlLineInfo.LinePosition;
-            }
         }
     }
 }
