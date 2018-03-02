@@ -19,10 +19,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="V1\TestUnknownReference_DataElement.xml">
+    <None Update="V1\Templates\TestInvalidSchema_NoDocumentNode.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="V1\TestUnknownReference_IfAttribute.xml">
+    <None Update="V1\Templates\TestUnknownReference_DataElement.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="V1\Templates\TestUnknownReference_IfAttribute.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

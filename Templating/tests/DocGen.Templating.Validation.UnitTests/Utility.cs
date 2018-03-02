@@ -18,7 +18,11 @@ namespace DocGen.Templating.Validation.UnitTests
             var validator = (BaseVersionedTemplateMarkupValidator)Activator.CreateInstance(
                 typeof(TMarkupValidator), new SchemaFileLocator(Directory.GetCurrentDirectory()));
 
-            var markup = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), $"V{version}", $"{testName}.xml"));
+            var markup = File.ReadAllText(Path.Combine(
+                Directory.GetCurrentDirectory(),
+                $"V{version}",
+                "Templates",
+                $"{testName}.xml"));
 
             try
             {

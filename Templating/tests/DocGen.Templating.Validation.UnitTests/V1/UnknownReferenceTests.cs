@@ -8,7 +8,7 @@ using Xunit;
 
 namespace DocGen.Templating.Validation.UnitTests.V1
 {
-    public class TemplateMarkupValidatorV1Tests
+    public class UnknownReferenceTests
     {
         [Fact]
         public void TestUnknownReference_IfAttribute()
