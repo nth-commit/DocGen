@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ namespace DocGen.Templating.Rendering
             _serviceProvider = serviceProvider;
         }
 
-        public Task<T> RenderAsync<T>(string markup, int markupVersion, TemplateRenderModel model)
+        public async Task<T> RenderAsync<T>(string markup, int markupVersion, TemplateRenderModel model)
         {
             var renderer = _serviceProvider.GetRequiredService<IEnumerable<IVersionedTemplateRenderer<T>>>().FirstOrDefault(r => r.MarkupVersion == markupVersion);
             if (renderer == null)
@@ -32,22 +33,11 @@ namespace DocGen.Templating.Rendering
                 throw new MarkupVersionNotSupportedException();
             }
 
-            var rendererType = renderer.GetType();
-            var renderingInstructorType = typeof(IVersionedRenderingInstructor<>);
-            var renderingInstructorGenericType = renderingInstructorType.MakeGenericType(rendererType);
-
-            var renderingInstructor = _serviceProvider.GetService(renderingInstructorGenericType);
-
-            //var renderingInstructor = _versionedRenderingInstructors.FirstOrDefault(i => i.MarkupVersion == markupVersion);
-            //if (renderingInstructor == null)
-            //{
-            //    throw new MarkupVersionNotSupportedException();
-            //}
-
-
-
-            //renderingInstructor.InstructRenderingAsync(markup, model, renderer);
-            //return renderer;
+            // HACK!
+            var method = instructor.GetType().GetMethod(nameof(IVersionedRenderingInstructor<IVersionedTemplateRenderer<T>>.InstructRenderingAsync));
+            await (method.Invoke(instructor, new object[] { markup, model, renderer }) as Task);
+            //var instructorVersioned = instructor as IVersionedRenderingInstructor<IVersionedTemplateRenderer<T>>;
+            //await instructorVersioned.InstructRenderingAsync(markup, model, renderer);
 
             return renderer.Result;
         }
