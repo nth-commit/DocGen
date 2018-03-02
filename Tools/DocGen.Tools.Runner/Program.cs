@@ -83,7 +83,7 @@ namespace DocGen.Tools.Runner
                 //            ConditionType = TemplateComponentConditionType.EqualsPreviousInputValue,
                 //            ConditionTypeData = ExpandoObjectFactory.CreateDynamic(new Dictionary<string, object>()
                 //            {
-                //                { "PreviousInputReference", "title2" },
+                //                { "PreviousInputId", "title2" },
                 //                { "PreviousInputValue", true }
                 //            }),
                 //            Inputs = new List<TemplateStepInputCreate>()
@@ -145,8 +145,6 @@ namespace DocGen.Tools.Runner
                 }
                 catch (InvalidTemplateSyntaxException ex)
                 {
-
-
                     ex.Errors.ForEach(e =>
                     {
                         var error = e.Message;

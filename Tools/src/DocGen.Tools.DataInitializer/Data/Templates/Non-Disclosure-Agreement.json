@@ -51,7 +51,7 @@
       "ConditionType": 1, // EqualsPreviousValue
       "ConditionTypeData": {
         "PreviousInputValue": "person",
-        "PreviousInputReference": "contractor.type"
+        "PreviousInputId": "contractor.type"
       },
       "Inputs": [
         {
@@ -84,7 +84,7 @@
       "ConditionType": 1, // EqualsPreviousValue
       "ConditionTypeData": {
         "PreviousInputValue": "company",
-        "PreviousInputReference": "contractor.type"
+        "PreviousInputId": "contractor.type"
       },
       "Inputs": [
         {
@@ -133,7 +133,7 @@
       "ConditionType": 1, // EqualsPreviousValue
       "ConditionTypeData": {
         "PreviousInputValue": true,
-        "PreviousInputReference": "disclosure_access"
+        "PreviousInputId": "disclosure_access"
       },
       "Inputs": [
         {

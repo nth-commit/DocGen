@@ -117,28 +117,28 @@ namespace DocGen.Api.Core.Templates
             if (step.ConditionType == TemplateComponentConditionType.EqualsPreviousInputValue)
             {
                 var stepConditionErrorPath = stepErrorPath.Concat(nameof(TemplateStepCreate.ConditionTypeData));
-                var previousInputReferenceErrorPath = stepConditionErrorPath.Concat(nameof(TemplateStepConditionTypeData_EqualsPreviousInputValue.PreviousInputReference));
+                var previousInputIdErrorPath = stepConditionErrorPath.Concat(nameof(TemplateStepConditionTypeData_EqualsPreviousInputValue.PreviousInputId));
                 var previousInputValueErrorPath = stepConditionErrorPath.Concat(nameof(TemplateStepConditionTypeData_EqualsPreviousInputValue.PreviousInputValue));
 
-                var previousInputReference = DynamicUtility.Unwrap<string>(() => step.ConditionTypeData.PreviousInputReference);
-                if (string.IsNullOrEmpty(previousInputReference))
+                var previousInputId = DynamicUtility.Unwrap<string>(() => step.ConditionTypeData.PreviousInputId);
+                if (string.IsNullOrEmpty(previousInputId))
                 {
-                    stepErrors.Add("Must have a greater than than or equal to 1", previousInputReferenceErrorPath);
+                    stepErrors.Add("Must have a greater than than or equal to 1", previousInputIdErrorPath);
                 }
                 else
                 {
-                    if (TryGetStepFromInputReference(previousInputReference, stepsById, out IndexedElement<TemplateStepCreate> indexedPreviousStep))
+                    if (TryGetStepFromInputReference(previousInputId, stepsById, out IndexedElement<TemplateStepCreate> indexedPreviousStep))
                     {
                         if (indexedPreviousStep.Index >= stepIndex)
                         {
-                            stepErrors.Add("Must reference a previous step", previousInputReferenceErrorPath);
+                            stepErrors.Add("Must reference a previous step", previousInputIdErrorPath);
                         }
                         else
                         {
-                            var previousInput = GetTemplateStepInput(previousInputReference, indexedPreviousStep.Element);
+                            var previousInput = GetTemplateStepInput(previousInputId, indexedPreviousStep.Element);
                             if (previousInput == null)
                             {
-                                stepErrors.Add("Could not find input from given path", previousInputReferenceErrorPath);
+                                stepErrors.Add("Could not find input from given path", previousInputIdErrorPath);
                             }
                             else
                             {
@@ -173,7 +173,7 @@ namespace DocGen.Api.Core.Templates
                     }
                     else
                     {
-                        stepErrors.Add("Could not find a step from given path", previousInputReferenceErrorPath);
+                        stepErrors.Add("Could not find a step from given path", previousInputIdErrorPath);
                     }
                 }
             }
@@ -186,13 +186,13 @@ namespace DocGen.Api.Core.Templates
             var stepInputsErrorPath = stepErrorPath.Concat(nameof(TemplateStepCreate.Inputs));
 
             step.Inputs
-                .ToIndexedLookup(i => i.Id)
+                .ToIndexedLookup(i => i.Key)
                 .Where(g => g.Count() > 1)
                 .SelectMany(g => g.AsEnumerable())
                 .ForEach(indexedStepInput =>
                 {
                     stepErrors.Add(
-                        $"An input with the id {indexedStepInput.Element.Id} already exists in this step (case-insensitive)",
+                        $"An input with the id {indexedStepInput.Element.Key} already exists in this step (case-insensitive)",
                         stepInputsErrorPath.Concat(new object[] { indexedStepInput.Index }));
                 });
 
@@ -220,9 +220,9 @@ namespace DocGen.Api.Core.Templates
             }
             else
             {
-                if (string.IsNullOrEmpty(stepInput.Id))
+                if (string.IsNullOrEmpty(stepInput.Key))
                 {
-                    stepErrors.Add("Required if there is more than one input for the step", stepInputErrorPath.Concat(nameof(TemplateStepInputCreate.Id)));
+                    stepErrors.Add("Required if there is more than one input for the step", stepInputErrorPath.Concat(nameof(TemplateStepInputCreate.Key)));
                 }
 
                 if (string.IsNullOrEmpty(stepInput.Name))
@@ -275,7 +275,7 @@ namespace DocGen.Api.Core.Templates
                 if (step.Inputs.Count() == 1)
                 {
                     var input = step.Inputs.First();
-                    if (string.IsNullOrEmpty(input.Id))
+                    if (string.IsNullOrEmpty(input.Key))
                     {
                         return input;
                     }
@@ -292,7 +292,7 @@ namespace DocGen.Api.Core.Templates
             else if (inputReferenceFromParentStep.Count() == 2) // Reference to input
             {
                 var inputId = inputReferenceFromParentStep.Skip(1).Single();
-                return step.Inputs.SingleOrDefault(i => i.Id == inputId);
+                return step.Inputs.SingleOrDefault(i => i.Key == inputId);
             }
             else
             {

@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using AutoMapper;
 using DocGen.Api.Core.Templates;
+using DocGen.Templating.Validation;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,7 @@ namespace DocGen.Api.Core
 
             services.AddApiCoreServices();
             services.AddTransient<ITemplateRepository, InMemoryTemplateRepository>();
+            services.AddTransient<ITemplateMarkupValidator, AlwaysValidTemplateMarkupValidator>();
 
             LifetimeScope = services.BuildAutofacServiceProvider()
                 .GetRequiredService<ILifetimeScope>()

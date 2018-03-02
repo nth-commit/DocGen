@@ -8,10 +8,10 @@ namespace DocGen.Api.Core.Templates
     {
         public const char TemplateComponentReferenceSeparator = '.';
 
-        public const string TemplateStepInputIdRegexPattern = "[a-z_]+[a-z_0-9]*";
+        public const string TemplateStepInputKeyRegexPattern = "[a-z_]+[a-z_0-9]*";
 
-        public const string TemplateStepIdRegexPattern = "(" + TemplateStepInputIdRegexPattern + ")(." + TemplateStepInputIdRegexPattern + ")*";
+        public const string TemplateStepIdRegexPattern = "(" + TemplateStepInputKeyRegexPattern + ")(." + TemplateStepInputKeyRegexPattern + ")*";
 
-        public const string TemplateComponentReferenceRegexPattern = "(" + TemplateStepInputIdRegexPattern + ")(." + TemplateStepInputIdRegexPattern + ")*";
+        public const string TemplateComponentReferenceRegexPattern = "(" + TemplateStepInputKeyRegexPattern + ")(." + TemplateStepInputKeyRegexPattern + ")*";
     }
 }

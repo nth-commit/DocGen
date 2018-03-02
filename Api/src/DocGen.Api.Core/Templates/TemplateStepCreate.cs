@@ -35,8 +35,8 @@ namespace DocGen.Api.Core.Templates
 
     public class TemplateStepConditionTypeData_EqualsPreviousInputValue : TemplateStepConditionTypeData
     {
-        [RegularExpression(Constants.TemplateStepInputIdRegexPattern)]
-        public string PreviousInputReference { get; set; }
+        [RegularExpression(Constants.TemplateStepInputKeyRegexPattern)]
+        public string PreviousInputId { get; set; }
 
         [Required]
         public dynamic PreviousInputValue { get; set; }

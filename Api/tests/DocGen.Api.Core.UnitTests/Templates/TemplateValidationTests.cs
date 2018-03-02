@@ -16,68 +16,70 @@ namespace DocGen.Api.Core.Templates
         public async Task TestValidation_StepConditionReferencesFollowingStep_Fails()
         {
             await AssertTemplateInvalidAsync(
-                new TemplateCreate()
+                new List<TemplateStepCreate>()
                 {
-                    Name = "A",
-                    Description = "A",
-                    Steps = new List<TemplateStepCreate>()
+                    new TemplateStepCreate()
                     {
-                        new TemplateStepCreate()
+                        Id = "a",
+                        Name = "A",
+                        Description = "A",
+                        ConditionType = TemplateComponentConditionType.EqualsPreviousInputValue,
+                        ConditionTypeData = ExpandoObjectFactory.CreateDynamic(new Dictionary<string, object>()
                         {
-                            Id = "a",
-                            Name = "A",
-                            Description = "A",
-                            ConditionType = TemplateComponentConditionType.EqualsPreviousInputValue,
-                            ConditionTypeData = ExpandoObjectFactory.CreateDynamic(new Dictionary<string, object>()
+                            { "PreviousInputId", "b" },
+                            { "PreviousInputValue", true }
+                        }),
+                        Inputs = new List<TemplateStepInputCreate>()
+                        {
+                            new TemplateStepInputCreate()
                             {
-                                { "PreviousInputReference", "b" },
-                                { "PreviousInputValue", true }
-                            }),
-                            Inputs = new List<TemplateStepInputCreate>()
-                            {
-                                new TemplateStepInputCreate()
-                                {
-                                    Type = TemplateStepInputType.Text
-                                }
+                                Type = TemplateStepInputType.Text
                             }
-                        },
-                        new TemplateStepCreate()
+                        }
+                    },
+                    new TemplateStepCreate()
+                    {
+                        Id = "b",
+                        Name = "B",
+                        Description = "B",
+                        Inputs = new List<TemplateStepInputCreate>()
                         {
-                            Id = "b",
-                            Name = "B",
-                            Description = "B",
-                            Inputs = new List<TemplateStepInputCreate>()
+                            new TemplateStepInputCreate()
                             {
-                                new TemplateStepInputCreate()
-                                {
-                                    Type = TemplateStepInputType.Checkbox
-                                }
+                                Type = TemplateStepInputType.Checkbox
                             }
                         }
                     }
                 },
-                "Steps[0].ConditionTypeData.PreviousInputReference");
+                "Steps[0].ConditionTypeData.PreviousInputId");
         }
 
 
         #region Helpers
 
-        private async Task AssertTemplateInvalidAsync(TemplateCreate create, params string[] invalidMembers)
+        private async Task AssertTemplateInvalidAsync(IEnumerable<TemplateStepCreate> steps, params string[] invalidMembers)
         {
             var templateService = ServiceProvider.GetRequiredService<TemplateService>();
             try
             {
-                await templateService.CreateTemplateAsync(create);
+                await templateService.CreateTemplateAsync(new TemplateCreate()
+                {
+                    Name = "x",
+                    Description = "x",
+                    Markup = "x",
+                    MarkupVersion = 1,
+                    Steps = steps
+                });
                 Assert.True(false, "Template was valid");
             }
             catch (ClientModelValidationException ex)
             {
                 var actualInvalidMembers = ex.ModelErrors.Keys;
-                var expectedInvalidMembersMissing = invalidMembers.Except(ex.ModelErrors.Keys);
                 var expectedValidMembersPresent = ex.ModelErrors.Keys.Except(invalidMembers);
+                var expectedInvalidMembersMissing = invalidMembers.Except(ex.ModelErrors.Keys);
 
-                Assert.True(0 == expectedInvalidMembersMissing.Count(), $"Members were valid, expected to be invalid: {string.Join(',', expectedInvalidMembersMissing)}");
                 Assert.True(0 == expectedValidMembersPresent.Count(), $"Members were invalid, expected to be valid: {string.Join(',', expectedInvalidMembersMissing)}");
+                Assert.True(0 == expectedInvalidMembersMissing.Count(), $"Members were valid, expected to be invalid: {string.Join(',', expectedInvalidMembersMissing)}");
             }
         }
 

@@ -64,14 +64,14 @@ namespace DocGen.Api.Core.Documents
                 if (templateStep.ConditionType == TemplateComponentConditionType.EqualsPreviousInputValue)
                 {
                     var expectedPreviousInputValue = DynamicUtility.Unwrap<string>(() => templateStep.ConditionTypeData.PreviousInputValue);
-                    var previousInputReference = DynamicUtility.Unwrap<string>(() => templateStep.ConditionTypeData.PreviousInputReference);
+                    var previousInputId = DynamicUtility.Unwrap<string>(() => templateStep.ConditionTypeData.PreviousInputId);
 
-                    if (string.IsNullOrEmpty(expectedPreviousInputValue) || string.IsNullOrEmpty(previousInputReference))
+                    if (string.IsNullOrEmpty(expectedPreviousInputValue) || string.IsNullOrEmpty(previousInputId))
                     {
                         throw new Exception("Internal error: invalid template");
                     }
 
-                    if (!validInputStringValues.ContainsKey(previousInputReference) || !expectedPreviousInputValue.Equals(validInputStringValues[previousInputReference]))
+                    if (!validInputStringValues.ContainsKey(previousInputId) || !expectedPreviousInputValue.Equals(validInputStringValues[previousInputId]))
                     {
                         // Skip this step
                         return;
@@ -80,7 +80,7 @@ namespace DocGen.Api.Core.Documents
 
                 var templateStepId = templateStep.Id;
 
-                var defaultTemplateStepInput = templateStep.Inputs.SingleOrDefault(i => string.IsNullOrEmpty(i.Id));
+                var defaultTemplateStepInput = templateStep.Inputs.SingleOrDefault(i => string.IsNullOrEmpty(i.Key));
                 if (defaultTemplateStepInput != null)
                 {
                     var result = ValidateTemplateStepInput(templateStep, defaultTemplateStepInput, create.InputValues, inputValueErrors, isDefaultInput: true);
@@ -91,7 +91,7 @@ namespace DocGen.Api.Core.Documents
                 }
 
                 templateStep.Inputs
-                    .Where(templateStepInput => !string.IsNullOrEmpty(templateStepInput.Id))
+                    .Where(templateStepInput => !string.IsNullOrEmpty(templateStepInput.Key))
                     .ForEach(templateStepInput =>
                     {
                         var result = ValidateTemplateStepInput(templateStep, templateStepInput, create.InputValues, inputValueErrors, isDefaultInput: false);
@@ -115,7 +115,7 @@ namespace DocGen.Api.Core.Documents
             var templateStepInputId = templateStep.Id;
             if (!isDefaultInput)
             {
-                templateStepInputId += Templates.Constants.TemplateComponentReferenceSeparator + templateStepInput.Id;
+                templateStepInputId += Templates.Constants.TemplateComponentReferenceSeparator + templateStepInput.Key;
             }
 
             if (inputValues.TryGetValue(templateStepInputId, out dynamic inputValueDynamic)) // Id is a reference to a step
