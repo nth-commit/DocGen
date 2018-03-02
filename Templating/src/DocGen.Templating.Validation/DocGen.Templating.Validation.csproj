@@ -13,10 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Shared\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="V1\markup1.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

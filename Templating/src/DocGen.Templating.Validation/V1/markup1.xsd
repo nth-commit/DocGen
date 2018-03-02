@@ -9,29 +9,60 @@
   <xs:element name="document">
     <xs:complexType>
       <xs:sequence>
+
         <xs:element name="page" minOccurs="1" maxOccurs="unbounded">
           <xs:complexType mixed="true">
             <xs:sequence>
-              <xs:element name="block" minOccurs="0" maxOccurs="unbounded">
-                <xs:complexType mixed="true">
-                  <xs:attribute name="if" type="IF" />
-                </xs:complexType>
-              </xs:element>
-              <xs:element name="inline" minOccurs="0" maxOccurs="unbounded">
-                <xs:complexType mixed="true">
-                  <xs:attribute name="if" type="IF" />
-                </xs:complexType>
-              </xs:element>
+              <xs:element ref="block" minOccurs="0" maxOccurs="unbounded"></xs:element>
+              <xs:element ref="inline" minOccurs="0" maxOccurs="unbounded"></xs:element>
+              <xs:element ref="data" minOccurs="0" maxOccurs="unbounded"></xs:element>
             </xs:sequence>
-            <xs:attribute name="if" type="IF" />
+            <xs:attribute name="if" type="type_if" />
           </xs:complexType>
         </xs:element>
+
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:simpleType name="IF" id="IF">
+  
+  <xs:element name="block">
+    <xs:complexType mixed="true">
+      <xs:sequence>
+        <xs:element ref="data" minOccurs="0" maxOccurs="unbounded"></xs:element>
+        <xs:element ref="inline" minOccurs="0" maxOccurs="unbounded"></xs:element>
+      </xs:sequence>
+      <xs:attribute name="if" type="type_if" />
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="inline">
+    <xs:complexType mixed="true">
+      <xs:sequence>
+        <xs:element ref="data" minOccurs="0" maxOccurs="unbounded"></xs:element>
+      </xs:sequence>
+      <xs:attribute name="if" type="type_if" />
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="data" type="type_data"></xs:element>
+
+  <xs:complexType name="type_data">
+    <xs:simpleContent>
+      <xs:extension base="type_reference">
+        <xs:attribute name="if" type="type_if"></xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:simpleType name="type_reference">
     <xs:restriction base="xs:string">
-      <xs:pattern value="([a-z_]+[a-z_0-9]*)(.[a-z_]+[a-z_0-9]*)+\s*=\s[a-z0-9]+" />
+      <xs:pattern value="([a-z_]+[a-z_0-9]*)(.[a-z_]+[a-z_0-9]*)*"></xs:pattern>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="type_if">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="([a-z_]+[a-z_0-9]*)(.[a-z_]+[a-z_0-9]*)*\s*=\s[a-z0-9]+" />
     </xs:restriction>
   </xs:simpleType>
 </xs:schema>

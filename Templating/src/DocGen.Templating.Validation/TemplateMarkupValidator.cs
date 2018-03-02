@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DocGen.Templating.Validation.Shared;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,15 +8,15 @@ namespace DocGen.Templating.Validation
 {
     public class TemplateMarkupValidator : ITemplateMarkupValidator
     {
-        private readonly IEnumerable<ITemplateVersionedMarkupValidator> _templateVersionedMarkupValidators;
+        private readonly IEnumerable<IVersionedTemplateMarkupValidator> _templateVersionedMarkupValidators;
 
         public TemplateMarkupValidator(
-            IEnumerable<ITemplateVersionedMarkupValidator> templateVersionedMarkupValidators)
+            IEnumerable<IVersionedTemplateMarkupValidator> templateVersionedMarkupValidators)
         {
             _templateVersionedMarkupValidators = templateVersionedMarkupValidators;
         }
 
-        public void Validate(string markup, int markupVersion)
+        public void Validate(string markup, int markupVersion, IEnumerable<ReferenceDefinition> references)
         {
             var validator = _templateVersionedMarkupValidators.FirstOrDefault(v => v.MarkupVersion == markupVersion);
 
@@ -24,7 +25,7 @@ namespace DocGen.Templating.Validation
                 throw new MarkupVersionNotSupportedException();
             }
             
-            validator.Validate(markup);
+            validator.Validate(markup, references);
         }
     }
 }

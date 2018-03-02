@@ -1,8 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <document xmlns="http://tempuri.org/markup1.xsd">
   <page>
-    <section if="contractor.type = person">
+    <block if="contractor.type = person">
+      <inline>
+        <data>contrator.person.name</data>
+      </inline>
       asdjasd;lkas;dlkasd;lk
-    </section>
+    </block>
+    <inline>asdasd</inline>
+    <data if="asdasd = asfasf">a</data>
   </page>
 </document>

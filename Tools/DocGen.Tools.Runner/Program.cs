@@ -126,16 +126,19 @@ namespace DocGen.Tools.Runner
 
                 try
                 {
-                    new TemplateMarkupValidatorV1().Validate(@"
-                        <document>
+                    new TemplateMarkupValidatorV1().Validate(
+                        @"<document>
                             <page>
                                 <block if=""contractor.type = company"">
                                     This is some conditionally displayed stuff.
                                 </block>
                                 <inline>Inline content</inline>
                             </page>
-                        </document>
-                    ");
+                        </document>",
+                        new List<ReferenceDefinition>()
+                        {
+                            ReferenceDefinition.StringFrom("contractor.type", new string[] { "company", "person" })
+                        });
                 }
                 catch (InvalidTemplateSyntaxException ex)
                 {

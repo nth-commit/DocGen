@@ -10,14 +10,14 @@ namespace DocGen.Api.Core.Templates
     {
         public string Id { get; set; }
 
-        [StringNotNullOrEmpty]
         public string Name { get; set; }
-
-        [StringNotNullOrEmpty]
+        
         public string Description { get; set; }
 
-        [EnumerableNotEmpty]
-        [ValidateEnumerableElements]
+        public string Markup { get; set; }
+
+        public int MarkupVersion { get; set; }
+
         public IEnumerable<TemplateStep> Steps { get; set; }
     }
 }

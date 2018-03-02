@@ -1,4 +1,5 @@
 ﻿using DocGen.Templating.Validation;
+using DocGen.Templating.Validation.Shared;
 using DocGen.Templating.Validation.V1;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<ITemplateMarkupValidator, TemplateMarkupValidator>();
 
             // V1
-            services.AddTransient<ITemplateVersionedMarkupValidator, TemplateMarkupValidatorV1>();
+            services.AddTransient<IVersionedTemplateMarkupValidator, TemplateMarkupValidatorV1>();
 
             return services;
         }

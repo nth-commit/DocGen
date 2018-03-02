@@ -9,20 +9,24 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.CSharp.RuntimeBinder;
 using DocGen.Shared.Framework;
+using DocGen.Templating.Validation;
 
 namespace DocGen.Api.Core.Templates
 {
     public class TemplateService
     {
-        private readonly ITemplateRepository _templateRepository;
         private readonly IMapper _mapper;
+        private readonly ITemplateRepository _templateRepository;
+        private readonly ITemplateMarkupValidator _templateMarkupValidator;
 
         public TemplateService(
+            IMapper mapper,
             ITemplateRepository templateRepository,
-            IMapper mapper)
+            ITemplateMarkupValidator templateMarkupValidator)
         {
-            _templateRepository = templateRepository;
             _mapper = mapper;
+            _templateRepository = templateRepository;
+            _templateMarkupValidator = templateMarkupValidator;
         }
 
         public async Task<Template> CreateTemplateAsync(TemplateCreate create, bool dryRun = false)
@@ -33,6 +37,8 @@ namespace DocGen.Api.Core.Templates
 
             var template = _mapper.Map<Template>(create);
             await ValidateTemplateHasUniqueIdAsync(template);
+
+            ValidateTemplateMarkup(template);
 
             if (dryRun)
             {
@@ -292,6 +298,11 @@ namespace DocGen.Api.Core.Templates
             {
                 throw new ArgumentException(nameof(inputReference));
             }
+        }
+
+        private void ValidateTemplateMarkup(Template template)
+        {
+            _templateMarkupValidator.Validate(template.Markup, template.MarkupVersion, Enumerable.Empty<ReferenceDefinition>());
         }
     }
 }

@@ -17,7 +17,7 @@ namespace DocGen.Api.Core.Templates
         [StringNotNullOrEmpty]
         public string Markup { get; set; }
 
-        [Range(0, int.MaxValue)]
+        [Range(1, int.MaxValue)]
         public int MarkupVersion { get; set; }
 
         [EnumerableNotEmpty]
