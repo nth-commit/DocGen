@@ -35,13 +35,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocGen.Tools.DataInitialize
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templating", "Templating", "{2031AB30-E696-4CFD-9321-F89F0CBFEFE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocGen.Templating.Abstractions", "Templating\src\DocGen.Templating.Abstractions\DocGen.Templating.Abstractions.csproj", "{0430D8AA-EFC7-46C1-823B-DAC77E79E165}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocGen.Templating.Abstractions", "Templating\src\DocGen.Templating.Abstractions\DocGen.Templating.Abstractions.csproj", "{0430D8AA-EFC7-46C1-823B-DAC77E79E165}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocGen.Templating.Validation", "Templating\src\DocGen.Templating.Validation\DocGen.Templating.Validation.csproj", "{25C17A8C-E547-43C9-8446-62C42F49AE87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocGen.Templating.Validation", "Templating\src\DocGen.Templating.Validation\DocGen.Templating.Validation.csproj", "{25C17A8C-E547-43C9-8446-62C42F49AE87}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A7A58126-9BB8-4878-A4FD-B1E17D8800B1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocGen.Templating.Validation.UnitTests", "Templating\tests\DocGen.Templating.Validation.UnitTests\DocGen.Templating.Validation.UnitTests.csproj", "{03405203-E7A1-49E3-AA65-82B4C84EC56F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocGen.Templating.Rendering", "Templating\src\DocGen.Templating.Rendering\DocGen.Templating.Rendering.csproj", "{76878DB2-C405-4FBB-9389-979F55B072AC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -101,6 +103,10 @@ Global
 		{03405203-E7A1-49E3-AA65-82B4C84EC56F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03405203-E7A1-49E3-AA65-82B4C84EC56F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03405203-E7A1-49E3-AA65-82B4C84EC56F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76878DB2-C405-4FBB-9389-979F55B072AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76878DB2-C405-4FBB-9389-979F55B072AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76878DB2-C405-4FBB-9389-979F55B072AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76878DB2-C405-4FBB-9389-979F55B072AC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -121,6 +127,7 @@ Global
 		{25C17A8C-E547-43C9-8446-62C42F49AE87} = {2031AB30-E696-4CFD-9321-F89F0CBFEFE8}
 		{A7A58126-9BB8-4878-A4FD-B1E17D8800B1} = {2031AB30-E696-4CFD-9321-F89F0CBFEFE8}
 		{03405203-E7A1-49E3-AA65-82B4C84EC56F} = {A7A58126-9BB8-4878-A4FD-B1E17D8800B1}
+		{76878DB2-C405-4FBB-9389-979F55B072AC} = {2031AB30-E696-4CFD-9321-F89F0CBFEFE8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CE53D989-E3EE-4DD3-A3BA-A43C3A3A9C8F}

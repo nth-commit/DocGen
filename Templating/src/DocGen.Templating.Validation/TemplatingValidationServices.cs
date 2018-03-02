@@ -14,11 +14,11 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddTemplatingValidationServices(
             this IServiceCollection services)
         {
-            services.AddTransient<ITemplateMarkupValidator, TemplateMarkupValidator>();
+            services.AddTransient<ITemplateValidator, TemplateMarkupValidator>();
             services.AddSingleton<ISchemaFileLocator>(new SchemaFileLocator(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)));
 
             // V1
-            services.AddTransient<IVersionedTemplateMarkupValidator, TemplateMarkupValidatorV1>();
+            services.AddTransient<IVersionedTemplateValidator, TemplateValidatorV1>();
 
             return services;
         }

@@ -22,7 +22,7 @@ namespace DocGen.Api.Core
 
             services.AddApiCoreServices();
             services.AddTransient<ITemplateRepository, InMemoryTemplateRepository>();
-            services.AddTransient<ITemplateMarkupValidator, AlwaysValidTemplateMarkupValidator>();
+            services.AddTransient<ITemplateValidator, AlwaysValidTemplateMarkupValidator>();
 
             LifetimeScope = services.BuildAutofacServiceProvider()
                 .GetRequiredService<ILifetimeScope>()

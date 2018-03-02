@@ -31,7 +31,7 @@ namespace DocGen.Templating.Validation.UnitTests.V1
             IEnumerable<ReferenceDefinition> references,
             IEnumerable<TemplateSyntaxError> expectedErrors)
         {
-            Utility.RunValidation<TemplateMarkupValidatorV1>(1, testName, references, expectedErrors);
+            Utility.RunValidation<TemplateValidatorV1>(1, testName, references, expectedErrors);
         }
     }
 }

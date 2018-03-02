@@ -13,9 +13,9 @@ namespace DocGen.Templating.Validation.UnitTests
             int version,
             string testName,
             IEnumerable<ReferenceDefinition> references,
-            IEnumerable<TemplateSyntaxError> expectedErrors) where TMarkupValidator : BaseVersionedTemplateMarkupValidator
+            IEnumerable<TemplateSyntaxError> expectedErrors) where TMarkupValidator : VersionedTemplateValidator
         {
-            var validator = (BaseVersionedTemplateMarkupValidator)Activator.CreateInstance(
+            var validator = (VersionedTemplateValidator)Activator.CreateInstance(
                 typeof(TMarkupValidator), new SchemaFileLocator(Directory.GetCurrentDirectory()));
 
             var markup = File.ReadAllText(Path.Combine(

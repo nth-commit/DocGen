@@ -11,11 +11,11 @@ using System.Xml.Schema;
 
 namespace DocGen.Templating.Validation.Shared
 {
-    public abstract class BaseVersionedTemplateMarkupValidator : IVersionedTemplateMarkupValidator
+    public abstract class VersionedTemplateValidator : IVersionedTemplateValidator
     {
         private readonly ISchemaFileLocator _schemaFileLocator;
 
-        public BaseVersionedTemplateMarkupValidator(
+        public VersionedTemplateValidator(
             ISchemaFileLocator schemaFileLocator)
         {
             _schemaFileLocator = schemaFileLocator;

@@ -17,12 +17,12 @@ namespace DocGen.Api.Core.Templates
     {
         private readonly IMapper _mapper;
         private readonly ITemplateRepository _templateRepository;
-        private readonly ITemplateMarkupValidator _templateMarkupValidator;
+        private readonly ITemplateValidator _templateMarkupValidator;
 
         public TemplateService(
             IMapper mapper,
             ITemplateRepository templateRepository,
-            ITemplateMarkupValidator templateMarkupValidator)
+            ITemplateValidator templateMarkupValidator)
         {
             _mapper = mapper;
             _templateRepository = templateRepository;

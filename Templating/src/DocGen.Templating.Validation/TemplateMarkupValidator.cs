@@ -6,12 +6,12 @@ using System.Text;
 
 namespace DocGen.Templating.Validation
 {
-    public class TemplateMarkupValidator : ITemplateMarkupValidator
+    public class TemplateMarkupValidator : ITemplateValidator
     {
-        private readonly IEnumerable<IVersionedTemplateMarkupValidator> _templateVersionedMarkupValidators;
+        private readonly IEnumerable<IVersionedTemplateValidator> _templateVersionedMarkupValidators;
 
         public TemplateMarkupValidator(
-            IEnumerable<IVersionedTemplateMarkupValidator> templateVersionedMarkupValidators)
+            IEnumerable<IVersionedTemplateValidator> templateVersionedMarkupValidators)
         {
             _templateVersionedMarkupValidators = templateVersionedMarkupValidators;
         }

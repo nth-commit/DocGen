@@ -8,9 +8,9 @@ using System.Xml.Linq;
 
 namespace DocGen.Templating.Validation.V1
 {
-    public class TemplateMarkupValidatorV1 : BaseVersionedTemplateMarkupValidator, IVersionedTemplateMarkupValidator
+    public class TemplateValidatorV1 : VersionedTemplateValidator, IVersionedTemplateValidator
     {
-        public TemplateMarkupValidatorV1(ISchemaFileLocator schemaFileLocator) : base(schemaFileLocator) { }
+        public TemplateValidatorV1(ISchemaFileLocator schemaFileLocator) : base(schemaFileLocator) { }
 
         public override int MarkupVersion => 1;
 

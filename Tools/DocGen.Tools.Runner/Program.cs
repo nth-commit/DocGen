@@ -4,6 +4,7 @@ using DocGen.Api.Core.Templates;
 using DocGen.Shared.Core.Dynamic;
 using DocGen.Shared.Framework;
 using DocGen.Shared.Validation;
+using DocGen.Templating.Rendering;
 using DocGen.Templating.Validation;
 using DocGen.Templating.Validation.V1;
 using Microsoft.Extensions.Configuration;
@@ -13,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DocGen.Tools.Runner
 {
@@ -33,6 +35,7 @@ namespace DocGen.Tools.Runner
                 conf.AddApiCoreMappers();
             });
             services.AddTemplatingValidationServices();
+            services.AddTemplatingRenderingServices();
 
             services.AddTransient<IRemoteIpAddressAccessor, StubbedRemoteIpAddressAccessor>();
 
@@ -42,93 +45,93 @@ namespace DocGen.Tools.Runner
             try
             {
                 #region Create template
-                var service = serviceProvider.GetRequiredService<TemplateService>();
-                service.CreateTemplateAsync(new TemplateCreate()
-                {
-                    Name = "Non-Disclosure Agreement 2",
-                    Description = "Test",
-                    Markup = "x",
-                    MarkupVersion = 1,
-                    Steps = new List<TemplateStepCreate>()
-                    {
-                        new TemplateStepCreate()
-                        {
-                            Id = "title0",
-                            Name = "Title 0",
-                            Description = "Desc 0",
-                            Inputs = new List<TemplateStepInputCreate>()
-                            {
-                                new TemplateStepInputCreate()
-                                {
-                                    Type = TemplateStepInputType.Radio,
-                                    TypeData = new TemplateStepInputTypeData_Radio[]
-                                    {
-                                        new TemplateStepInputTypeData_Radio()
-                                        {
-                                            Name = "Person",
-                                            Value = "person"
-                                        },
-                                        new TemplateStepInputTypeData_Radio()
-                                        {
-                                            Name = "Company",
-                                            Value = "company"
-                                        }
-                                    },
-                                    Hint = "Enter some text yo!"
-                                }
-                            }
-                        },
-                        new TemplateStepCreate()
-                        {
-                            Id = "title1",
-                            Name = "Title 1",
-                            Description = "Desc 1",
-                            Inputs = new List<TemplateStepInputCreate>()
-                            {
-                                new TemplateStepInputCreate()
-                                {
-                                    Type = TemplateStepInputType.Text,
-                                    Hint = "Enter some text yo!"
-                                }
-                            }
-                        },
-                        new TemplateStepCreate()
-                        {
-                            Id = "title2",
-                            Name = "Title 2",
-                            Description = "Description 2",
-                            Inputs = new List<TemplateStepInputCreate>()
-                            {
-                                new TemplateStepInputCreate()
-                                {
-                                    Type = TemplateStepInputType.Checkbox,
-                                    Hint = "Some hint"
-                                }
-                            }
-                        },
-                        new TemplateStepCreate()
-                        {
-                            Id = "title3",
-                            Name = "Title 3",
-                            Description = "Description 3",
-                            ConditionType = TemplateComponentConditionType.EqualsPreviousInputValue,
-                            ConditionTypeData = ExpandoObjectFactory.CreateDynamic(new Dictionary<string, object>()
-                            {
-                                { "PreviousInputId", "title2" },
-                                { "PreviousInputValue", true }
-                            }),
-                            Inputs = new List<TemplateStepInputCreate>()
-                            {
-                                new TemplateStepInputCreate()
-                                {
-                                    Type = TemplateStepInputType.Text,
-                                    Hint = "Enter some text yo!"
-                                }
-                            }
-                        }
-                    }
-                },
-                dryRun: true).GetAwaiter().GetResult();
+                //var service = serviceProvider.GetRequiredService<TemplateService>();
+                //service.CreateTemplateAsync(new TemplateCreate()
+                //{
+                //    Name = "Non-Disclosure Agreement 2",
+                //    Description = "Test",
+                //    Markup = "x",
+                //    MarkupVersion = 1,
+                //    Steps = new List<TemplateStepCreate>()
+                //    {
+                //        new TemplateStepCreate()
+                //        {
+                //            Id = "title0",
+                //            Name = "Title 0",
+                //            Description = "Desc 0",
+                //            Inputs = new List<TemplateStepInputCreate>()
+                //            {
+                //                new TemplateStepInputCreate()
+                //                {
+                //                    Type = TemplateStepInputType.Radio,
+                //                    TypeData = new TemplateStepInputTypeData_Radio[]
+                //                    {
+                //                        new TemplateStepInputTypeData_Radio()
+                //                        {
+                //                            Name = "Person",
+                //                            Value = "person"
+                //                        },
+                //                        new TemplateStepInputTypeData_Radio()
+                //                        {
+                //                            Name = "Company",
+                //                            Value = "company"
+                //                        }
+                //                    },
+                //                    Hint = "Enter some text yo!"
+                //                }
+                //            }
+                //        },
+                //        new TemplateStepCreate()
+                //        {
+                //            Id = "title1",
+                //            Name = "Title 1",
+                //            Description = "Desc 1",
+                //            Inputs = new List<TemplateStepInputCreate>()
+                //            {
+                //                new TemplateStepInputCreate()
+                //                {
+                //                    Type = TemplateStepInputType.Text,
+                //                    Hint = "Enter some text yo!"
+                //                }
+                //            }
+                //        },
+                //        new TemplateStepCreate()
+                //        {
+                //            Id = "title2",
+                //            Name = "Title 2",
+                //            Description = "Description 2",
+                //            Inputs = new List<TemplateStepInputCreate>()
+                //            {
+                //                new TemplateStepInputCreate()
+                //                {
+                //                    Type = TemplateStepInputType.Checkbox,
+                //                    Hint = "Some hint"
+                //                }
+                //            }
+                //        },
+                //        new TemplateStepCreate()
+                //        {
+                //            Id = "title3",
+                //            Name = "Title 3",
+                //            Description = "Description 3",
+                //            ConditionType = TemplateComponentConditionType.EqualsPreviousInputValue,
+                //            ConditionTypeData = ExpandoObjectFactory.CreateDynamic(new Dictionary<string, object>()
+                //            {
+                //                { "PreviousInputId", "title2" },
+                //                { "PreviousInputValue", true }
+                //            }),
+                //            Inputs = new List<TemplateStepInputCreate>()
+                //            {
+                //                new TemplateStepInputCreate()
+                //                {
+                //                    Type = TemplateStepInputType.Text,
+                //                    Hint = "Enter some text yo!"
+                //                }
+                //            }
+                //        }
+                //    }
+                //},
+                //dryRun: true).GetAwaiter().GetResult();
                 #endregion
 
                 #region Create document
@@ -154,41 +157,6 @@ namespace DocGen.Tools.Runner
                 //    DocumentGenerationMode.RawText).GetAwaiter().GetResult();
 
                 #endregion
-
-                try
-                {
-                    var service1 = serviceProvider.GetRequiredService<ITemplateMarkupValidator>();
-                    service1.Validate(
-                        @"<document>
-                            <page>
-                                <block if=""contractor.type = company"">
-                                    This is some conditionally displayed stuff.
-                                </block>
-                                <inline>Inline content</inline>
-                                <data>contractor.company.name</data>
-                            </page>
-                        </document>",
-                        1,
-                        new List<ReferenceDefinition>()
-                        {
-                            ReferenceDefinition.StringFrom("contractor.type", new string[] { "company", "person", "god" }),
-                            ReferenceDefinition.String("contractor.company.name"),
-                            ReferenceDefinition.String("test")
-                        });
-                }
-                catch (InvalidTemplateSyntaxException ex)
-                {
-                    ex.Errors.ForEach(e =>
-                    {
-                        var error = e.Message;
-                        if (e.LineNumber > -1)
-                        {
-                            error += $" {e.LineNumber}:{e.LinePosition}";
-                        }
-                        Console.WriteLine(error);
-                    });
-                    Console.ReadLine();
-                }
             }
             catch (ClientModelValidationException ex)
             {
@@ -201,6 +169,78 @@ namespace DocGen.Tools.Runner
                 });
                 Console.ReadLine();
             }
+
+            #region Create template markup
+            //try
+            //    {
+            //        var service1 = serviceProvider.GetRequiredService<ITemplateValidator>();
+            //        service1.Validate(
+            //            @"<document>
+            //                <page>
+            //                    <block if=""contractor.type = company"">
+            //                        This is some conditionally displayed stuff.
+            //                    </block>
+            //                    <inline>Inline content</inline>
+            //                    <data>contractor.company.name</data>
+            //                </page>
+            //            </document>",
+            //            1,
+            //            new List<ReferenceDefinition>()
+            //            {
+            //                ReferenceDefinition.StringFrom("contractor.type", new string[] { "company", "person", "god" }),
+            //                ReferenceDefinition.String("contractor.company.name"),
+            //                ReferenceDefinition.String("test")
+            //            });
+            //    }
+            //    catch (InvalidTemplateSyntaxException ex)
+            //    {
+            //        ex.Errors.ForEach(e =>
+            //        {
+            //            var error = e.Message;
+            //            if (e.LineNumber > -1)
+            //            {
+            //                error += $" {e.LineNumber}:{e.LinePosition}";
+            //            }
+            //            Console.WriteLine(error);
+            //        });
+            //        Console.ReadLine();
+            //    }
+            #endregion
+
+            RenderTemplateAsync(serviceProvider).GetAwaiter().GetResult();
+            
+        }
+
+        private static async Task RenderTemplateAsync(IServiceProvider serviceProvider)
+        {
+            var templateRenderer = serviceProvider.GetRequiredService<ITemplateRenderer>();
+            var result = await templateRenderer.RenderAsync<string>(
+                @"<document>
+                    <page>
+                        <block if=""contractor.type = company"">
+                            This is some conditionally displayed stuff.
+                        </block>
+                        <inline>Inline content</inline>
+                        <data>contractor.company.name</data>
+                    </page>
+                </document>",
+                1,
+                new TemplateRenderModel()
+                {
+                    Items = new List<TemplateRenderModelItem>()
+                    {
+                        new TemplateRenderModelItem()
+                        {
+                            Reference = "contractor.type",
+                            Value = "company"
+                        },
+                        new TemplateRenderModelItem()
+                        {
+                            Reference = "contractor.company.name",
+                            Value = "Michael Fry-White LTD"
+                        }
+                    }
+                });
         }
     }
 }

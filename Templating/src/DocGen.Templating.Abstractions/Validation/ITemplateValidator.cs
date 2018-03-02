@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DocGen.Templating.Validation.Shared
+namespace DocGen.Templating.Validation
 {
-    public interface IVersionedTemplateMarkupValidator
+    public interface ITemplateValidator
     {
-        int MarkupVersion { get; }
-
         // TODO:
         // Decide whether to collect input references and validate them at another place or
         // pass in input names/types and validate here.
-        void Validate(string markup, IEnumerable<ReferenceDefinition> references);
+        void Validate(string markup, int markupVersion, IEnumerable<ReferenceDefinition> references);
     }
 }
