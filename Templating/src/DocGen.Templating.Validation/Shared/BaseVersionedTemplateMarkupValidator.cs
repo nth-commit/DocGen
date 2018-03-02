@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MoreLinq;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -41,9 +42,11 @@ namespace DocGen.Templating.Validation.Shared
                     var lineInfo = (IXmlLineInfo)sender;
                     errors.Add(new TemplateSyntaxError()
                     {
+                        Message = e.Message,
                         LineNumber = lineInfo.LineNumber,
                         LinePosition = lineInfo.LinePosition,
-                        Message = e.Message
+                        Code = TemplateSyntaxErrorCode.InvalidSchema,
+                        Level = TemplateSyntaxErrorLevel.Error
                     });
                 };
 

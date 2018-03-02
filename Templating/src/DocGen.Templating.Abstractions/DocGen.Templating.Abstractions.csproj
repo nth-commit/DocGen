@@ -5,4 +5,8 @@
     <RootNamespace>DocGen.Templating</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Shared\DocGen.Shared.Core\DocGen.Shared.Core.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -133,16 +133,29 @@ namespace DocGen.Tools.Runner
                                     This is some conditionally displayed stuff.
                                 </block>
                                 <inline>Inline content</inline>
+                                <data>contractor.company.name</data>
                             </page>
                         </document>",
                         new List<ReferenceDefinition>()
                         {
-                            ReferenceDefinition.StringFrom("contractor.type", new string[] { "company", "person" })
+                            ReferenceDefinition.StringFrom("contractor.type", new string[] { "company", "person", "god" }),
+                            ReferenceDefinition.String("contractor.company.name"),
+                            ReferenceDefinition.String("test")
                         });
                 }
                 catch (InvalidTemplateSyntaxException ex)
                 {
-                    ex.Errors.ForEach(e => Console.WriteLine($"{e.LineNumber}:{e.LinePosition} {e.Message}"));
+
+
+                    ex.Errors.ForEach(e =>
+                    {
+                        var error = e.Message;
+                        if (e.LineNumber > -1)
+                        {
+                            error += $" {e.LineNumber}:{e.LinePosition}";
+                        }
+                        Console.WriteLine(error);
+                    });
                     Console.ReadLine();
                 }
             }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace DocGen.Templating.Validation
@@ -10,7 +11,7 @@ namespace DocGen.Templating.Validation
 
         public InvalidTemplateSyntaxException(IEnumerable<TemplateSyntaxError> errors) : base("Invalid template syntax")
         {
-            Errors = errors;
+            Errors = errors.OrderBy(e => e.LineNumber).ThenBy(e => e.LinePosition);
         }
     }
 }
