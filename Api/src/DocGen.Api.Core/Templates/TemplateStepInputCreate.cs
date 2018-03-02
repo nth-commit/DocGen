@@ -22,6 +22,16 @@ namespace DocGen.Api.Core.Templates
 
         [NullIf(nameof(Type), TemplateStepInputType.Text)]
         [NullIf(nameof(Type), TemplateStepInputType.Checkbox)]
+        [ValidateAgainstTypeIf(typeof(IEnumerable<TemplateStepInputTypeData_Radio>), nameof(Type), TemplateStepInputType.Radio)]
         public dynamic TypeData { get; set; }
+    }
+
+    public class TemplateStepInputTypeData_Radio
+    {
+        [StringNotNullOrEmpty]
+        public string Name { get; set; }
+
+        [StringNotNullOrEmpty]
+        public string Value { get; set; }
     }
 }

@@ -25,6 +25,7 @@ namespace DocGen.Api.Core.Templates
         [ValidateAgainstTypeIf(typeof(TemplateStepConditionTypeData_EqualsPreviousInputValue), nameof(ConditionType), TemplateComponentConditionType.EqualsPreviousInputValue)]
         public dynamic ConditionTypeData { get; set; }
 
+        [ValidateEnumerableElements]
         public IEnumerable<TemplateStepInputCreate> Inputs { get; set; } = Enumerable.Empty<TemplateStepInputCreate>(); // Can be empty if a parent step.
 
         [RegularExpression(Constants.TemplateComponentReferenceRegexPattern)]

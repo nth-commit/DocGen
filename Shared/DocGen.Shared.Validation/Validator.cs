@@ -122,11 +122,21 @@ namespace DocGen.Shared.Validation
             PropertyInfo pi,
             ValidateAgainstTypeAttribute attr)
         {
-            var propertyModel = pi.GetValue(model) as IDictionary<string, object>;
+            var propertyModelValue = pi.GetValue(model);
+            var propertyModel = propertyModelValue  as IDictionary<string, object>;
             if (propertyModel == null)
             {
-                // Everything is fine. RequiredAttribute should handle validation here if not.
-                return;
+                var propertyEnumerableModel = propertyModelValue as IEnumerable<object>;
+                if (propertyEnumerableModel == null)
+                {
+                    // Everything is fine. RequiredAttribute should handle validation here if not.
+                    return;
+                }
+                else
+                {
+                    ValidateEnumerableElements(model, serviceProvider, items, modelErrors, pi);
+                    return;
+                }
             }
 
             #region Instantiate an object of the target type so we can validate it

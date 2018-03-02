@@ -51,7 +51,8 @@ namespace DocGen.Templating.Validation
             return new ReferenceDefinition()
             {
                 Name = referenceName,
-                Type = ReferenceDefinitionType.Boolean
+                Type = ReferenceDefinitionType.Boolean,
+                ValueRestrictionType = ReferenceValueRestrictionType.None
             };
         }
     }

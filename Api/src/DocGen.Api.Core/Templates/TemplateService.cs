@@ -302,7 +302,34 @@ namespace DocGen.Api.Core.Templates
 
         private void ValidateTemplateMarkup(Template template)
         {
-            _templateMarkupValidator.Validate(template.Markup, template.MarkupVersion, Enumerable.Empty<ReferenceDefinition>());
+            var references = template.Steps.SelectMany(s => s.Inputs.Select(i =>
+            {
+                var inputId = s.Id;
+                if (!string.IsNullOrEmpty(i.Key))
+                {
+                    inputId += i.Key;
+                }
+
+                if (i.Type == TemplateStepInputType.Text)
+                {
+                    return ReferenceDefinition.String(inputId);
+                }
+                else if (i.Type == TemplateStepInputType.Checkbox)
+                {
+                    return ReferenceDefinition.Boolean(inputId);
+                }
+                else if (i.Type == TemplateStepInputType.Radio)
+                {
+                    var values = DynamicUtility.Unwrap<IEnumerable<TemplateStepInputTypeData_Radio>>(() => i.TypeData).Select(r => r.Value);
+                    return ReferenceDefinition.StringFrom(inputId, values);
+                }
+                else
+                {
+                    throw new Exception($"Unknown {nameof(TemplateStepInputType)}");
+                }
+            }));
+
+            _templateMarkupValidator.Validate(template.Markup, template.MarkupVersion, references);
         }
     }
 }
