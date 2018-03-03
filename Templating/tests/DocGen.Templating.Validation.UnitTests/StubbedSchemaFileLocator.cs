@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DocGen.Templating.Validation.UnitTests
+namespace DocGen.Templating.Validation
 {
     public class StubbedSchemaFileLocator : ISchemaFileLocator
     {

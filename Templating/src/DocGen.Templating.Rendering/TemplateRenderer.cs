@@ -1,4 +1,5 @@
-﻿using DocGen.Templating.Rendering.Shared;
+﻿using DocGen.Templating.Rendering.Builders;
+using DocGen.Templating.Rendering.Instructions;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -21,20 +22,20 @@ namespace DocGen.Templating.Rendering
 
         public async Task<T> RenderAsync<T>(string markup, int markupVersion, TemplateRenderModel model)
         {
-            var renderer = _serviceProvider.GetRequiredService<IEnumerable<IVersionedTemplateRenderer<T>>>().FirstOrDefault(r => r.MarkupVersion == markupVersion);
+            var renderer = _serviceProvider.GetRequiredService<IEnumerable<IDocumentBuilder<T>>>().FirstOrDefault(r => r.MarkupVersion == markupVersion);
             if (renderer == null)
             {
                 throw new MarkupVersionNotSupportedException();
             }
 
-            var instructor = _serviceProvider.GetRequiredService<IEnumerable<IVersionedRenderingInstructor>>().FirstOrDefault(i => i.MarkupVersion == markupVersion);
+            var instructor = _serviceProvider.GetRequiredService<IEnumerable<IDocumentInstructor>>().FirstOrDefault(i => i.MarkupVersion == markupVersion);
             if (instructor == null)
             {
                 throw new MarkupVersionNotSupportedException();
             }
 
             // HACK!
-            var method = instructor.GetType().GetMethod(nameof(IVersionedRenderingInstructor<IVersionedTemplateRenderer<T>>.InstructRenderingAsync));
+            var method = instructor.GetType().GetMethod(nameof(IDocumentInstructor<IDocumentBuilder<T>>.InstructRenderingAsync));
             await (method.Invoke(instructor, new object[] { markup, model, renderer }) as Task);
             //var instructorVersioned = instructor as IVersionedRenderingInstructor<IVersionedTemplateRenderer<T>>;
             //await instructorVersioned.InstructRenderingAsync(markup, model, renderer);

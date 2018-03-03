@@ -1,12 +1,11 @@
-﻿using DocGen.Templating.Validation.V1;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Xunit;
 
-namespace DocGen.Templating.Validation.UnitTests.V1
+namespace DocGen.Templating.Validation.V1
 {
     public class UnknownReferenceTests
     {

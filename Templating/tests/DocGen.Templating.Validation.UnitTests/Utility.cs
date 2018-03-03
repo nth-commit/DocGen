@@ -5,7 +5,7 @@ using System.IO;
 using System.Text;
 using Xunit;
 
-namespace DocGen.Templating.Validation.UnitTests
+namespace DocGen.Templating.Validation
 {
     public static class Utility
     {

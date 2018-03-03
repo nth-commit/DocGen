@@ -5,7 +5,7 @@
 
     <IsPackable>false</IsPackable>
 
-    <RootNamespace>DocGen.Templating.Validation</RootNamespace>
+    <RootNamespace>DocGen.Templating.Rendering</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,23 +25,6 @@
     <PackageReference Include="xunit" Version="2.3.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\DocGen.Templating.Abstractions\DocGen.Templating.Abstractions.csproj" />
-    <ProjectReference Include="..\..\src\DocGen.Templating.Validation\DocGen.Templating.Validation.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="V1\Templates\TestInvalidSchema_NoDocumentNode.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="V1\Templates\TestUnknownReference_DataElement.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="V1\Templates\TestUnknownReference_IfAttribute.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
   <ItemGroup>

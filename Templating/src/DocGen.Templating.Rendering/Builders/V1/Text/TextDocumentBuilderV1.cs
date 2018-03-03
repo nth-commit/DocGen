@@ -1,11 +1,12 @@
-﻿using System;
+﻿using DocGen.Templating.Rendering.Instructions.V1;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DocGen.Templating.Rendering.V1.Text
+namespace DocGen.Templating.Rendering.Builders.V1.Text
 {
-    public class TextTemplateRendererV1 : ITemplateRendererV1<string>
+    public class TextDocumentBuilderV1 : IDocumentBuilderV1<string>
     {
         private readonly StringBuilder _stringBuilder = new StringBuilder();
         private bool _isRendering = false;
@@ -14,7 +15,7 @@ namespace DocGen.Templating.Rendering.V1.Text
 
         public string Result => _stringBuilder.ToString();
 
-        public Task BeginWriteDocumentAsync(RenderContext context)
+        public Task BeginWriteDocumentAsync(DocumentInstructionContextV1 context)
         {
             if (_isRendering)
             {
@@ -26,7 +27,7 @@ namespace DocGen.Templating.Rendering.V1.Text
             return Task.CompletedTask;
         }
 
-        public Task EndWriteDocumentAsync(RenderContext context)
+        public Task EndWriteDocumentAsync(DocumentInstructionContextV1 context)
         {
             if (!_isRendering)
             {
@@ -38,32 +39,32 @@ namespace DocGen.Templating.Rendering.V1.Text
             return Task.CompletedTask;
         }
 
-        public Task BeginWritePageAsync(RenderContext context)
+        public Task BeginWritePageAsync(DocumentInstructionContextV1 context)
         {
             throw new NotImplementedException();
         }
 
-        public Task EndWritePageAsync(RenderContext context)
+        public Task EndWritePageAsync(DocumentInstructionContextV1 context)
         {
             throw new NotImplementedException();
         }
 
-        public Task BeginWriteParagraphAsync(RenderContext context)
+        public Task BeginWriteParagraphAsync(DocumentInstructionContextV1 context)
         {
             throw new NotImplementedException();
         }
 
-        public Task EndWriteParagraphAsync(RenderContext context)
+        public Task EndWriteParagraphAsync(DocumentInstructionContextV1 context)
         {
             throw new NotImplementedException();
         }
 
-        public Task WriteParagraphAsync(RenderContext context)
+        public Task WriteParagraphAsync(DocumentInstructionContextV1 context)
         {
             throw new NotImplementedException();
         }
 
-        public Task WriteTextAsync(string text, RenderContext context)
+        public Task WriteTextAsync(string text, DocumentInstructionContextV1 context)
         {
             throw new NotImplementedException();
         }
