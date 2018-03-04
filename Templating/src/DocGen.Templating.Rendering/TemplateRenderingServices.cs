@@ -20,7 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
             // V1
             services.AddTransient<IDocumentInstructor<IDocumentBuilderV1>, DocumentInstructorV1>();
             services.AddTransient<IDocumentInstructor, DocumentInstructorV1>();
-            services.AddTransient<IDocumentBuilder<string>, TextDocumentBuilderV1>();
+            services.AddTransient<IDocumentBuilder<TextDocumentResult>, TextDocumentBuilderV1>();
 
             return services;
         }

@@ -167,7 +167,6 @@ namespace DocGen.Tools.Runner
                         Console.WriteLine($"{kvp.Key}: {error}");
                     });
                 });
-                Console.ReadLine();
             }
 
             #region Create template markup
@@ -208,21 +207,26 @@ namespace DocGen.Tools.Runner
             #endregion
 
             RenderTemplateAsync(serviceProvider).GetAwaiter().GetResult();
-            
+
+            Console.ReadLine();
         }
 
         private static async Task RenderTemplateAsync(IServiceProvider serviceProvider)
         {
             var templateRenderer = serviceProvider.GetRequiredService<IDocumentRenderer>();
-            var result = await templateRenderer.RenderAsync<string>(
+            var result = await templateRenderer.RenderAsync<TextDocumentResult>(
                 @"<document>
                     <page>
                         <block if=""contractor.type = company"">
-                            This is some conditionally displayed stuff.
+                            This is a company.
+                        </block>
+                        <block if=""contractor.type = person"">
+                            This is a Person.
                         </block>
                         <inline>Inline content</inline>
                         <data>contractor.company.name</data>
                     </page>
+                    <page>Page 2!</page>
                 </document>",
                 1,
                 new DocumentRenderModel()
@@ -241,6 +245,8 @@ namespace DocGen.Tools.Runner
                         }
                     }
                 });
+
+            Console.WriteLine(result.Body);
         }
     }
 }

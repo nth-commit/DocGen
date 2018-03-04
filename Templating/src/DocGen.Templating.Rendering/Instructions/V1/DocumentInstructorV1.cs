@@ -39,32 +39,54 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             }
 
             var root = document.Root;
+
+            _context = _context.BeforeBegin(document.Root.Name.LocalName);
             await builder.BeginWriteDocumentAsync(_context);
+            _context = _context.AfterBegin();
 
             foreach (var page in root.Elements())
             {
+                if (!GetElementConditionalValue(page))
+                {
+                    continue;
+                }
+
                 await InstructPageRenderingAsync(page);
             }
 
+            _context = _context.BeforeEnd();
             await builder.EndWriteDocumentAsync(_context);
+            _context = _context.AfterEnd();
         }
 
         private async Task InstructPageRenderingAsync(XElement page)
         {
             AssertElementName(page, "page");
 
+            _context = _context.BeforeBegin(page.Name.LocalName);
             await _builder.BeginWritePageAsync(_context);
+            _context = _context.AfterBegin();
+
             await TraverseContainerElementAsync(page);
+
+            _context = _context.BeforeEnd();
             await _builder.EndWritePageAsync(_context);
+            _context = _context.AfterEnd();
         }
 
         private async Task InstructBlockRenderingAsync(XElement block)
         {
             AssertElementName(block, "block");
 
-            await _builder.BeginWriteParagraphAsync(_context);
+            _context = _context.BeforeBegin(block.Name.LocalName);
+            await _builder.BeginWriteBlockAsync(_context);
+            _context = _context.AfterBegin();
+
             await TraverseContainerElementAsync(block);
-            await _builder.EndWriteParagraphAsync(_context);
+
+            _context = _context.BeforeEnd();
+            await _builder.EndWriteBlockAsync(_context);
+            _context = _context.AfterEnd();
         }
 
         private async Task TraverseContainerElementAsync(XElement container)
@@ -79,14 +101,9 @@ namespace DocGen.Templating.Rendering.Instructions.V1
                 {
                     var element = (XElement)node;
 
-                    var ifAttribute = element.Attributes().FirstOrDefault(a => a.Name == "if");
-                    if (ifAttribute != null)
+                    if (!GetElementConditionalValue(element))
                     {
-                        var ifExpressionSplit = ifAttribute.Value.Split('=').Select(s => s.Trim()).ToArray();
-                        if (_valuesByReference[ifExpressionSplit[0]] != ifExpressionSplit[1])
-                        {
-                            continue;
-                        }
+                        continue;
                     }
 
                     if (element.Name.LocalName == "inline")
@@ -99,22 +116,39 @@ namespace DocGen.Templating.Rendering.Instructions.V1
                     }
                     else if (element.Name.LocalName == "block")
                     {
-                        await InstructWritePendingTextAsync();
+                        await InstructWritePendingInlineAsync();
                         await InstructBlockRenderingAsync(element);
                     }
                 }
             }
 
-            await InstructWritePendingTextAsync();
+            await InstructWritePendingInlineAsync();
         }
 
-        private async Task InstructWritePendingTextAsync()
+        private async Task InstructWritePendingInlineAsync()
         {
             if (HasPendingText())
             {
-                await _builder.WriteTextAsync(string.Join(" ", _pendingText), _context);
+                _context = _context.BeforeBegin("inline");
+                await _builder.WriteInlineAsync(string.Join(" ", _pendingText), _context);
+                _context = _context.AfterBegin().BeforeEnd().AfterEnd();
+
                 _pendingText = null;
             }
+        }
+
+        private bool GetElementConditionalValue(XElement element)
+        {
+            var ifAttribute = element.Attributes().FirstOrDefault(a => a.Name == "if");
+            if (ifAttribute != null)
+            {
+                var ifExpressionSplit = ifAttribute.Value.Split('=').Select(s => s.Trim()).ToArray();
+                if (_valuesByReference[ifExpressionSplit[0]] != ifExpressionSplit[1])
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         private void AddPendingText(XText text)
@@ -128,17 +162,12 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             {
                 _pendingText = new List<string>();
             }
-            _pendingText.Add(text);
+            _pendingText.Add(text.Trim());
         }
 
         private bool HasPendingText()
         {
             return _pendingText != null;
-        }
-
-        private bool IsInlineElement(XElement element)
-        {
-            return element.Name.LocalName == "inline" || element.Name.LocalName == "data";
         }
 
         private void AssertElementName(XElement element, string name)

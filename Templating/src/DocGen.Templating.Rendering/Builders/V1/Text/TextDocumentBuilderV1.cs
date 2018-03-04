@@ -1,23 +1,43 @@
 ﻿using DocGen.Templating.Rendering.Instructions.V1;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DocGen.Templating.Rendering.Builders.V1.Text
 {
-    public class TextDocumentBuilderV1 : IDocumentBuilderV1<string>
+    public class TextDocumentBuilderV1 : IDocumentBuilderV1<TextDocumentResult>
     {
         private readonly StringBuilder _stringBuilder = new StringBuilder();
+        private readonly List<int> _pageLocations = new List<int>();
+
         private bool _isRendering = false;
+        private bool _isComplete = false;
+        private int _lineCount = 0;
 
         public int MarkupVersion => 1;
 
-        public string Result => _stringBuilder.ToString();
+        public TextDocumentResult Result
+        {
+            get
+            {
+                if (!_isComplete)
+                {
+                    throw new InvalidOperationException("Rendering is not complete");
+                }
+
+                return new TextDocumentResult()
+                {
+                    Body = _stringBuilder.ToString(),
+                    PageLocations = _pageLocations
+                };
+            }
+        }
 
         public Task BeginWriteDocumentAsync(DocumentInstructionContextV1 context)
         {
-            if (_isRendering)
+            if (_isRendering || _isComplete)
             {
                 throw new InvalidOperationException("Document writing already started");
             }
@@ -29,44 +49,67 @@ namespace DocGen.Templating.Rendering.Builders.V1.Text
 
         public Task EndWriteDocumentAsync(DocumentInstructionContextV1 context)
         {
-            if (!_isRendering)
+            if (!_isRendering || _isComplete)
             {
                 throw new InvalidOperationException("Document writing has not started");
             }
 
             _isRendering = false;
+            _isComplete = true;
 
             return Task.CompletedTask;
         }
 
         public Task BeginWritePageAsync(DocumentInstructionContextV1 context)
         {
-            throw new NotImplementedException();
+            if (context.Previous != null)
+            {
+                Debug.Assert(context.Previous == "page");
+                BeginParagraph();
+            }
+
+            _pageLocations.Add(_lineCount);
+
+            return Task.CompletedTask;
         }
 
         public Task EndWritePageAsync(DocumentInstructionContextV1 context)
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
 
-        public Task BeginWriteParagraphAsync(DocumentInstructionContextV1 context)
+        public Task BeginWriteBlockAsync(DocumentInstructionContextV1 context)
         {
-            throw new NotImplementedException();
+            if (context.Previous == "block")
+            {
+                BeginParagraph();
+            }
+
+            return Task.CompletedTask;
         }
 
-        public Task EndWriteParagraphAsync(DocumentInstructionContextV1 context)
+        public Task EndWriteBlockAsync(DocumentInstructionContextV1 context)
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
 
-        public Task WriteParagraphAsync(DocumentInstructionContextV1 context)
+        public Task WriteInlineAsync(string text, DocumentInstructionContextV1 context)
         {
-            throw new NotImplementedException();
+            if (context.Previous == "block")
+            {
+                BeginParagraph();
+            }
+
+            _stringBuilder.Append(text);
+
+            return Task.CompletedTask;
         }
 
-        public Task WriteTextAsync(string text, DocumentInstructionContextV1 context)
+        private void BeginParagraph(string value = null)
         {
-            throw new NotImplementedException();
+            _stringBuilder.AppendLine(value);
+            _stringBuilder.AppendLine(value);
+            _lineCount += 2;
         }
     }
 }

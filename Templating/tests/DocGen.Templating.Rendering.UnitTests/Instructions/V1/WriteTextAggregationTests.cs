@@ -17,7 +17,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             var writeTexts = new List<string>();
             var builderMock = new Mock<IDocumentBuilderV1>();
             builderMock
-                .Setup(x => x.WriteTextAsync(It.IsAny<string>(), It.IsAny<DocumentInstructionContextV1>()))
+                .Setup(x => x.WriteInlineAsync(It.IsAny<string>(), It.IsAny<DocumentInstructionContextV1>()))
                 .Callback<string, DocumentInstructionContextV1>((text, context) => writeTexts.Add(text))
                 .Returns(Task.CompletedTask);
 
@@ -35,7 +35,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             var writeTexts = new List<string>();
             var builderMock = new Mock<IDocumentBuilderV1>();
             builderMock
-                .Setup(x => x.WriteTextAsync(It.IsAny<string>(), It.IsAny<DocumentInstructionContextV1>()))
+                .Setup(x => x.WriteInlineAsync(It.IsAny<string>(), It.IsAny<DocumentInstructionContextV1>()))
                 .Callback<string, DocumentInstructionContextV1>((text, context) => writeTexts.Add(text))
                 .Returns(Task.CompletedTask);
 
@@ -53,7 +53,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             var writeTexts = new List<string>();
             var builderMock = new Mock<IDocumentBuilderV1>();
             builderMock
-                .Setup(x => x.WriteTextAsync(It.IsAny<string>(), It.IsAny<DocumentInstructionContextV1>()))
+                .Setup(x => x.WriteInlineAsync(It.IsAny<string>(), It.IsAny<DocumentInstructionContextV1>()))
                 .Callback<string, DocumentInstructionContextV1>((text, context) => writeTexts.Add(text))
                 .Returns(Task.CompletedTask);
 
@@ -81,7 +81,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             var writeTexts = new List<string>();
             var builderMock = new Mock<IDocumentBuilderV1>();
             builderMock
-                .Setup(x => x.WriteTextAsync(It.IsAny<string>(), It.IsAny<DocumentInstructionContextV1>()))
+                .Setup(x => x.WriteInlineAsync(It.IsAny<string>(), It.IsAny<DocumentInstructionContextV1>()))
                 .Callback<string, DocumentInstructionContextV1>((text, context) => writeTexts.Add(text))
                 .Returns(Task.CompletedTask);
 

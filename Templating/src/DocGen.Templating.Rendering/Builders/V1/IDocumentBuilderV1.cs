@@ -17,13 +17,11 @@ namespace DocGen.Templating.Rendering.Builders.V1
 
         Task EndWritePageAsync(DocumentInstructionContextV1 context);
 
-        Task BeginWriteParagraphAsync(DocumentInstructionContextV1 context);
+        Task BeginWriteBlockAsync(DocumentInstructionContextV1 context);
 
-        Task EndWriteParagraphAsync(DocumentInstructionContextV1 context);
+        Task EndWriteBlockAsync(DocumentInstructionContextV1 context);
 
-        Task WriteParagraphAsync(DocumentInstructionContextV1 context);
-
-        Task WriteTextAsync(string text, DocumentInstructionContextV1 context);
+        Task WriteInlineAsync(string text, DocumentInstructionContextV1 context);
     }
 
     public interface IDocumentBuilderV1<T> : IDocumentBuilder<T>, IDocumentBuilderV1 { }
