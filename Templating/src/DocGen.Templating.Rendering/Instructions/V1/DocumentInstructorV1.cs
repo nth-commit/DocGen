@@ -17,7 +17,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
         private DocumentRenderModel _model;
         private Dictionary<string, string> _valuesByReference;
         private List<string> _pendingText;
-        private Dictionary<int, int> _listItemIndexContinueOffsetByNestingLevel;
+        private int _listItemIndexContinueOffset;
 
         public int MarkupVersion => 1;
 
@@ -32,7 +32,6 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             _builder = builder;
             _model = model;
             _valuesByReference = _model.Items.ToDictionary(i => i.Reference, i => i.Value);
-            _listItemIndexContinueOffsetByNestingLevel = new Dictionary<int, int>();
 
             XDocument document = null;
             using (var sr = new StringReader(markup))
@@ -99,17 +98,14 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             await _builder.BeginWriteListAsync(_context);
             _context = _context.AfterBegin();
 
-            var nestingLevel = _context.ListNestingLevel;
-
-            if (!_listItemIndexContinueOffsetByNestingLevel.TryGetValue(nestingLevel, out int listItemIndexContinueOffset))
+            var listNestingLevel = _context.ListNestingLevel;
+            if (listNestingLevel == 0)
             {
-                _listItemIndexContinueOffsetByNestingLevel[nestingLevel] = listItemIndexContinueOffset = 0;
-            }
-
-            var startAttribute = list.Attributes().FirstOrDefault(a => a.Name == "start");
-            if (startAttribute == null || startAttribute.Value != "continue")
-            {
-                _listItemIndexContinueOffsetByNestingLevel[nestingLevel] = listItemIndexContinueOffset = 0;
+                var startAttribute = list.Attributes().FirstOrDefault(a => a.Name == "start");
+                if (startAttribute == null || startAttribute.Value != "continue")
+                {
+                    _listItemIndexContinueOffset = 0;
+                }
             }
 
             var listItems = list.Elements().ToList();
@@ -118,7 +114,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
                 var listItem = listItems[i];
                 AssertElementName(listItem, "list-item");
 
-                int continuedListIndex = listItemIndexContinueOffset + i;
+                int continuedListIndex = _listItemIndexContinueOffset + i;
                 _context = _context.BeforeBeginListItem(continuedListIndex);
                 await _builder.BeginWriteListItemAsync(continuedListIndex, _context);
                 _context = _context.AfterBegin();
@@ -134,7 +130,10 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             await _builder.EndWriteListAsync(_context);
             _context = _context.AfterEnd();
 
-            _listItemIndexContinueOffsetByNestingLevel[nestingLevel] += listItems.Count;
+            if (listNestingLevel == 0)
+            {
+                _listItemIndexContinueOffset += listItems.Count;
+            }
         }
 
         private async Task TraverseContainerElementAsync(XElement container)

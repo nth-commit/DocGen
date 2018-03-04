@@ -220,6 +220,34 @@ namespace DocGen.Tools.Runner
                         List 1
                         <list>
                             <list-item>
+                                <block if=""contractor.type = company"">
+                                    This is a company.
+                                </block>
+                                <block if=""contractor.type = person"">
+                                    This is a Person.
+                                </block>
+                                <inline>Inline content</inline>
+                                <data>contractor.company.name</data>
+                            </list-item>
+                            <list-item>
+                                <list>
+                                    <list-item>A list item in a nested list.</list-item>
+                                    <list-item>A second list item in a nested list.</list-item>
+                                </list>
+                            </list-item>
+                            <list-item>
+                                The title of a nested list which isn't the first child.
+                                <list>
+                                    <list-item>
+                                        <block>Some text</block>
+                                        A list item in a nested list
+                                    </list-item>
+                                </list>
+                            </list-item>
+                        </list>
+                        Some stuff between this lists
+                        <list start='continue'>
+                            <list-item>
                                 <block>Some text</block>
                                 Some inline text
                             </list-item>
