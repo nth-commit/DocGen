@@ -10,17 +10,17 @@ using System.Threading.Tasks;
 
 namespace DocGen.Templating.Rendering
 {
-    public class TemplateRenderer : ITemplateRenderer
+    public class DocumentRenderer : IDocumentRenderer
     {
         private readonly IServiceProvider _serviceProvider;
 
-        public TemplateRenderer(
+        public DocumentRenderer(
             IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }
 
-        public async Task<T> RenderAsync<T>(string markup, int markupVersion, TemplateRenderModel model)
+        public async Task<T> RenderAsync<T>(string markup, int markupVersion, DocumentRenderModel model)
         {
             var renderer = _serviceProvider.GetRequiredService<IEnumerable<IDocumentBuilder<T>>>().FirstOrDefault(r => r.MarkupVersion == markupVersion);
             if (renderer == null)

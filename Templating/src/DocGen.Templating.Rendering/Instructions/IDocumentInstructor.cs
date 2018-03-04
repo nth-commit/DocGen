@@ -13,6 +13,6 @@ namespace DocGen.Templating.Rendering.Instructions
 
     public interface IDocumentInstructor<TBuilder> where TBuilder : IDocumentBuilder
     {
-        Task InstructRenderingAsync(string markup, TemplateRenderModel model, TBuilder renderer);
+        Task InstructRenderingAsync(string markup, DocumentRenderModel model, TBuilder builder);
     }
 }

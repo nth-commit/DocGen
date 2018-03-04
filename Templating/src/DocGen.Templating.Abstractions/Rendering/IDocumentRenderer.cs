@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace DocGen.Templating.Rendering
 {
-    public interface ITemplateRenderer
+    public interface IDocumentRenderer
     {
-        Task<T> RenderAsync<T>(string markup, int markupVersion, TemplateRenderModel model);
+        Task<T> RenderAsync<T>(string markup, int markupVersion, DocumentRenderModel model);
     }
 }

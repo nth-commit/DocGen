@@ -4,8 +4,8 @@ using System.Text;
 
 namespace DocGen.Templating.Rendering
 {
-    public class TemplateRenderModel
+    public class DocumentRenderModel
     {
-        public IEnumerable<TemplateRenderModelItem> Items { get; set; }
+        public IEnumerable<DocumentRenderModelItem> Items { get; set; }
     }
 }

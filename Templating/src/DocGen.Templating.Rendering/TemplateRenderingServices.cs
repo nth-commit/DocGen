@@ -15,7 +15,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddTemplatingRenderingServices(
             this IServiceCollection services)
         {
-            services.AddTransient<ITemplateRenderer, TemplateRenderer>();
+            services.AddTransient<IDocumentRenderer, DocumentRenderer>();
 
             // V1
             services.AddTransient<IDocumentInstructor<IDocumentBuilderV1>, DocumentInstructorV1>();

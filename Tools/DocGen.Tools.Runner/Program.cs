@@ -213,7 +213,7 @@ namespace DocGen.Tools.Runner
 
         private static async Task RenderTemplateAsync(IServiceProvider serviceProvider)
         {
-            var templateRenderer = serviceProvider.GetRequiredService<ITemplateRenderer>();
+            var templateRenderer = serviceProvider.GetRequiredService<IDocumentRenderer>();
             var result = await templateRenderer.RenderAsync<string>(
                 @"<document>
                     <page>
@@ -225,16 +225,16 @@ namespace DocGen.Tools.Runner
                     </page>
                 </document>",
                 1,
-                new TemplateRenderModel()
+                new DocumentRenderModel()
                 {
-                    Items = new List<TemplateRenderModelItem>()
+                    Items = new List<DocumentRenderModelItem>()
                     {
-                        new TemplateRenderModelItem()
+                        new DocumentRenderModelItem()
                         {
                             Reference = "contractor.type",
                             Value = "company"
                         },
-                        new TemplateRenderModelItem()
+                        new DocumentRenderModelItem()
                         {
                             Reference = "contractor.company.name",
                             Value = "Michael Fry-White LTD"

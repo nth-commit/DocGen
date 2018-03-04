@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DocGen.Templating.Rendering
 {
-    public class TemplateRenderModelItem
+    public class DocumentRenderModelItem
     {
         public string Reference { get; set; }
 
