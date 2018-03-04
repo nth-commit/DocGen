@@ -9,5 +9,13 @@
     </block>
     <inline>asdasd</inline>
     <data if="asdasd = asfasf">a</data>
+    
+    <list start="continue">
+      <list-item>
+        <list>
+          
+        </list>
+      </list-item>
+    </list>
   </page>
 </document>

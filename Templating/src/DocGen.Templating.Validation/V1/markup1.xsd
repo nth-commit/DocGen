@@ -16,6 +16,7 @@
               <xs:element ref="block" minOccurs="0" maxOccurs="unbounded"></xs:element>
               <xs:element ref="inline" minOccurs="0" maxOccurs="unbounded"></xs:element>
               <xs:element ref="data" minOccurs="0" maxOccurs="unbounded"></xs:element>
+              <xs:element ref="list" minOccurs="0" maxOccurs="unbounded"></xs:element>
             </xs:sequence>
             <xs:attribute name="if" type="type_if" />
           </xs:complexType>
@@ -45,6 +46,34 @@
   </xs:element>
   
   <xs:element name="data" type="type_data"></xs:element>
+
+  <xs:element name="list">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="list-item" minOccurs="0" maxOccurs="unbounded"></xs:element>
+      </xs:sequence>
+      <xs:attribute name="if" type="type_if" />
+      <xs:attribute name="start">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="continue"></xs:pattern>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="list-item">
+    <xs:complexType mixed="true">
+      <xs:sequence>
+        <xs:element ref="block" minOccurs="0" maxOccurs="unbounded"></xs:element>
+        <xs:element ref="data" minOccurs="0" maxOccurs="unbounded"></xs:element>
+        <xs:element ref="inline" minOccurs="0" maxOccurs="unbounded"></xs:element>
+        <xs:element ref="list" minOccurs="0" maxOccurs="unbounded"></xs:element>
+      </xs:sequence>
+      <xs:attribute name="if" type="type_if" />
+    </xs:complexType>
+  </xs:element>
 
   <xs:complexType name="type_data">
     <xs:simpleContent>
