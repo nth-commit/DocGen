@@ -129,7 +129,7 @@
     <None Include="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Data\Templates\Non-Disclosure-Agreement.json">
+    <None Include="Data\Templates\Non-Disclosure Agreement\metadata.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
@@ -147,6 +147,19 @@
       <Project>{436b818b-d2cc-47c9-9899-d8e236c7673f}</Project>
       <Name>DocGen.Shared.WindowsAzure.Storage</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Templating\src\DocGen.Templating.Abstractions\DocGen.Templating.Abstractions.csproj">
+      <Project>{0430d8aa-efc7-46c1-823b-dac77e79e165}</Project>
+      <Name>DocGen.Templating.Abstractions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Templating\src\DocGen.Templating.Validation\DocGen.Templating.Validation.csproj">
+      <Project>{25c17a8c-e547-43c9-8446-62c42f49ae87}</Project>
+      <Name>DocGen.Templating.Validation</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Data\Templates\Non-Disclosure Agreement\markup.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

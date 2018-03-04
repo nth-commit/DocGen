@@ -30,9 +30,13 @@ namespace DocGen.Tools.DataInitializer
             var templatesTable = tableClient.GetTableReference("templates");
             await templatesTable.DeleteIfExistsAsync();
 
-            foreach (var file in Directory.EnumerateFiles(Path.Combine(Directory.GetCurrentDirectory(), "Data", "Templates")))
+            foreach (var directory in Directory.EnumerateDirectories(Path.Combine(Directory.GetCurrentDirectory(), "Data", "Templates")))
             {
-                var template = JsonConvert.DeserializeObject<TemplateCreate>(File.ReadAllText(file));
+                var template = JsonConvert.DeserializeObject<TemplateCreate>(File.ReadAllText(Path.Combine(directory, "metadata.json")));
+                var templateMarkup = File.ReadAllText(Path.Combine(directory, "markup.xml"));
+
+                template.Markup = templateMarkup;
+
                 await _templateService.CreateTemplateAsync(template);
             }
         }

@@ -5,16 +5,23 @@ using System.Text;
 namespace DocGen.Shared.Validation
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
-    public class ValidateAgainstTypeIfAttribute : ValidateAgainstTypeAttribute
+    public class ValidateAgainstTypeIfAttribute : BaseIfAttribute, IValidateAgainstType
     {
-        public string PropertyName { get; set; }
+        public Type Type { get; private set; }
 
-        public object PropertyValue { get; set; }
+        public bool IgnoreCase { get; private set; }
 
-        public ValidateAgainstTypeIfAttribute(Type type, string propertyName, object propertyValue) : base(type)
+        public bool AllowExtraProperties { get; private set; } // TODO: Invalid if extra properties exist on the model
+
+        public ValidateAgainstTypeIfAttribute(Type type, string propertyName, object propertyValue, bool ignoreCase = true, bool allowExtraProperties = false)
+            : base(propertyName, propertyValue)
         {
-            PropertyName = propertyName;
-            PropertyValue = propertyValue;
+            Type = type;
+            IgnoreCase = ignoreCase;
+            AllowExtraProperties = allowExtraProperties;
         }
+
+        // Always valid; validation on property kicked off in another validator cycle.
+        protected override bool IsValidWhenConditionMet(object value) => true;
     }
 }

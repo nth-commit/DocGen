@@ -1,6 +1,7 @@
 ﻿{
   "Name": "Non-Disclosure Agreement",
   "Description": "Welcome to the Confidentiality Agreement interview! This will produce a document which binds one party to keep confidential any information it receives from another party during the course of work.\\n\\nThis is for use when an Organisation has a Contractor coming on board to do some work, and they want to ensure that any confidential information the Contractor encounters will stay just that - confidential!",
+  "MarkupVersion": 1,
   "Steps": [
     {
       "Id": "organisation",

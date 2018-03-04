@@ -114,16 +114,32 @@ namespace DocGen.Shared.Validation
             modelErrors.Add(enumerableModelErrors, pi.Name);
         }
 
+        private static void ValidateAgainstTypeIf(
+            object model,
+            IServiceProvider serviceProvider,
+            IDictionary<object, object> items,
+            ModelErrorDictionary modelErrors,
+            PropertyInfo pi,
+            ValidateAgainstTypeIfAttribute attr)
+        {
+            var targetProperty = model.GetType().GetProperties().First(pi2 => pi2.Name == attr.TargetPropertyName);
+            var targetPropertyValue = targetProperty.GetValue(model);
+            if (targetPropertyValue != null && targetPropertyValue.Equals(attr.TargetPropertyValue))
+            {
+                ValidateAgainstType(model, serviceProvider, items, modelErrors, pi, attr);
+            }
+        }
+
         private static void ValidateAgainstType(
             object model,
             IServiceProvider serviceProvider,
             IDictionary<object, object> items,
             ModelErrorDictionary modelErrors,
             PropertyInfo pi,
-            ValidateAgainstTypeAttribute attr)
+            IValidateAgainstType attr)
         {
             var propertyModelValue = pi.GetValue(model);
-            var propertyModel = propertyModelValue  as IDictionary<string, object>;
+            var propertyModel = propertyModelValue as IDictionary<string, object>;
             if (propertyModel == null)
             {
                 var propertyEnumerableModel = propertyModelValue as IEnumerable<object>;
@@ -149,7 +165,8 @@ namespace DocGen.Shared.Validation
             var retypedPropertyModel = Activator.CreateInstance(attr.Type);
             attr.Type.GetProperties().ForEach(retypedProperty =>
             {
-                if (propertyModelPropertiesByName.TryGetValue(retypedProperty.Name, out object value)) {
+                if (propertyModelPropertiesByName.TryGetValue(retypedProperty.Name, out object value))
+                {
                     retypedProperty.SetValue(retypedPropertyModel, value);
                 }
             });
@@ -158,22 +175,6 @@ namespace DocGen.Shared.Validation
 
             var retypedValidationResult = IsValid(retypedPropertyModel, serviceProvider, items);
             modelErrors.Add(retypedValidationResult.modelErrors, pi.Name);
-        }
-
-        private static void ValidateAgainstTypeIf(
-            object model,
-            IServiceProvider serviceProvider,
-            IDictionary<object, object> items,
-            ModelErrorDictionary modelErrors,
-            PropertyInfo pi,
-            ValidateAgainstTypeIfAttribute attr)
-        {
-            var targetProperty = model.GetType().GetProperties().First(pi2 => pi2.Name == attr.PropertyName);
-            var targetPropertyValue = targetProperty.GetValue(model);
-            if (targetPropertyValue != null && targetPropertyValue.Equals(attr.PropertyValue))
-            {
-                ValidateAgainstType(model, serviceProvider, items, modelErrors, pi, attr);
-            }
         }
 
         #endregion

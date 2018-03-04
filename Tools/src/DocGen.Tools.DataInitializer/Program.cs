@@ -29,6 +29,7 @@ namespace DocGen.Tools.DataInitializer
             {
                 conf.AddApiCoreMappers();
             });
+            services.AddTemplatingValidationServices();
 
             services.AddTransient<IDataInitializer, TemplateDataInitializer>();
 

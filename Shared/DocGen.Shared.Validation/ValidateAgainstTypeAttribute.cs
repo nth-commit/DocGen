@@ -5,7 +5,7 @@ using System.Text;
 namespace DocGen.Shared.Validation
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
-    public class ValidateAgainstTypeAttribute : ValidateCustomBehaviourAttribute
+    public class ValidateAgainstTypeAttribute : ValidateCustomBehaviourAttribute, IValidateAgainstType
     {
         public Type Type { get; private set; }
 
