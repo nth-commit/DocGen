@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -11,88 +12,128 @@ namespace DocGen.Templating.Rendering.Instructions.V1
 {
     public class DocumentInstructorV1 : IDocumentInstructor, IDocumentInstructor<IDocumentBuilderV1>
     {
+        private DocumentInstructionContextV1 _context;
+        private IDocumentBuilderV1 _builder;
+        private DocumentRenderModel _model;
+        private Dictionary<string, string> _valuesByReference;
+        private List<string> _pendingText;
+
         public int MarkupVersion => 1;
 
         public async Task InstructRenderingAsync(string markup, DocumentRenderModel model, IDocumentBuilderV1 builder)
         {
+            if (_context != null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            _context = new DocumentInstructionContextV1();
+            _builder = builder;
+            _model = model;
+            _valuesByReference = _model.Items.ToDictionary(i => i.Reference, i => i.Value);
+
             XDocument document = null;
             using (var sr = new StringReader(markup))
             {
                 document = XDocument.Load(sr);
             }
 
-            var context = new DocumentInstructionContextV1();
-
             var root = document.Root;
-            await builder.BeginWriteDocumentAsync(context);
+            await builder.BeginWriteDocumentAsync(_context);
 
             foreach (var page in root.Elements())
             {
-                await InstructPageRenderingAsync(page, model, builder, context);
+                await InstructPageRenderingAsync(page);
             }
 
-            await builder.EndWriteDocumentAsync(context);
+            await builder.EndWriteDocumentAsync(_context);
         }
 
-        private async Task InstructPageRenderingAsync(XElement page, DocumentRenderModel model, IDocumentBuilderV1 builder, DocumentInstructionContextV1 context)
+        private async Task InstructPageRenderingAsync(XElement page)
         {
             AssertElementName(page, "page");
 
-            List<string> collectedInlines = null;
-            void addInlineText(XText text)
-            {
-                collectedInlines = collectedInlines ?? new List<string>();
-                collectedInlines.Add(text.Value);
-            };
+            await _builder.BeginWritePageAsync(_context);
+            await TraverseContainerElementAsync(page);
+            await _builder.EndWritePageAsync(_context);
+        }
 
-            foreach (var node in page.Nodes())
+        private async Task InstructBlockRenderingAsync(XElement block)
+        {
+            AssertElementName(block, "block");
+
+            await _builder.BeginWriteParagraphAsync(_context);
+            await TraverseContainerElementAsync(block);
+            await _builder.EndWriteParagraphAsync(_context);
+        }
+
+        private async Task TraverseContainerElementAsync(XElement container)
+        {
+            foreach (var node in container.Nodes())
             {
                 if (node is XText)
                 {
-                    addInlineText((XText)node);
+                    AddPendingText((XText)node);
                 }
                 else if (node is XElement)
                 {
                     var element = (XElement)node;
-                    if (IsInlineElement(element))
+
+                    var ifAttribute = element.Attributes().FirstOrDefault(a => a.Name == "if");
+                    if (ifAttribute != null)
                     {
-                        addInlineText((XText)element.FirstNode);
+                        var ifExpressionSplit = ifAttribute.Value.Split('=').Select(s => s.Trim()).ToArray();
+                        if (_valuesByReference[ifExpressionSplit[0]] != ifExpressionSplit[1])
+                        {
+                            continue;
+                        }
+                    }
+
+                    if (element.Name.LocalName == "inline")
+                    {
+                        AddPendingText((XText)element.FirstNode);
+                    }
+                    else if (element.Name.LocalName == "data")
+                    {
+                        AddPendingText(_valuesByReference[((XText)element.FirstNode).Value]);
                     }
                     else if (element.Name.LocalName == "block")
                     {
-                        if (collectedInlines != null)
-                        {
-                            await InstructWriteTextAsync(builder, context, collectedInlines);
-                            collectedInlines = null;
-                        }
-                        await InstructBlockRenderingAsync(element, model, builder, context);
+                        await InstructWritePendingTextAsync();
+                        await InstructBlockRenderingAsync(element);
                     }
                 }
             }
 
-            if (collectedInlines != null)
+            await InstructWritePendingTextAsync();
+        }
+
+        private async Task InstructWritePendingTextAsync()
+        {
+            if (HasPendingText())
             {
-                await InstructWriteTextAsync(builder, context, collectedInlines);
-                collectedInlines = null;
+                await _builder.WriteTextAsync(string.Join(" ", _pendingText), _context);
+                _pendingText = null;
             }
         }
 
-        private async Task InstructBlockRenderingAsync(XElement block, DocumentRenderModel model, IDocumentBuilderV1 builder, DocumentInstructionContextV1 context)
+        private void AddPendingText(XText text)
         {
-            AssertElementName(block, "block");
-
-            foreach (var child in block.Elements())
-            {
-                if (child.Name.LocalName == "inline")
-                {
-                    await InstructBlockRenderingAsync(child, model, builder, context);
-                }
-            }
+            AddPendingText(text.Value);
         }
 
-        private async Task InstructWriteTextAsync(IDocumentBuilderV1 builder, DocumentInstructionContextV1 context, IEnumerable<string> collectedInlines)
+        private void AddPendingText(string text)
         {
-            await builder.WriteTextAsync(string.Join(" ", collectedInlines), context);
+            if (!HasPendingText())
+            {
+                _pendingText = new List<string>();
+            }
+            _pendingText.Add(text);
+        }
+
+        private bool HasPendingText()
+        {
+            return _pendingText != null;
         }
 
         private bool IsInlineElement(XElement element)
@@ -104,7 +145,5 @@ namespace DocGen.Templating.Rendering.Instructions.V1
         {
             Debug.Assert(element.Name.LocalName == name);
         }
-
-
     }
 }
