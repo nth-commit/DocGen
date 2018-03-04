@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -62,7 +63,7 @@ namespace DocGen.Templating.Rendering.Builders.V1.Text
 
         public Task BeginWritePageAsync(DocumentInstructionContextV1 context)
         {
-            if (IsParagraphElement(context.Previous))
+            if (!context.IsFirstChild)
             {
                 Debug.Assert(context.Previous == "page");
                 BeginParagraph();
@@ -80,9 +81,14 @@ namespace DocGen.Templating.Rendering.Builders.V1.Text
 
         public Task BeginWriteBlockAsync(DocumentInstructionContextV1 context)
         {
-            if (IsParagraphElement(context.Previous))
+            if (!context.IsFirstChild)
             {
                 BeginParagraph();
+
+                if (context.Parent == "list-item")
+                {
+                    AppendIndentation(context);
+                }
             }
 
             return Task.CompletedTask;
@@ -95,7 +101,16 @@ namespace DocGen.Templating.Rendering.Builders.V1.Text
 
         public Task BeginWriteListAsync(DocumentInstructionContextV1 context)
         {
-            throw new NotImplementedException();
+            if (!context.IsFirstChild || context.Parent == "list-item")
+            {
+                BeginParagraph();
+            }
+            else
+            {
+                AppendIndentation(context);
+            }
+
+            return Task.CompletedTask;
         }
 
         public Task EndWriteListAsync(DocumentInstructionContextV1 context)
@@ -105,7 +120,14 @@ namespace DocGen.Templating.Rendering.Builders.V1.Text
 
         public Task BeginWriteListItemAsync(int index, DocumentInstructionContextV1 context)
         {
-            throw new NotImplementedException();
+            if (!context.IsFirstChild)
+            {
+                BeginParagraph();
+            }
+
+            AppendListIndex(context);
+
+            return Task.CompletedTask;
         }
 
         public Task EndWriteListItemAsync(DocumentInstructionContextV1 context)
@@ -118,6 +140,11 @@ namespace DocGen.Templating.Rendering.Builders.V1.Text
             if (IsParagraphElement(context.Previous))
             {
                 BeginParagraph();
+            }
+
+            if (context.Parent == "list-item" && !context.IsFirstChild)
+            {
+                AppendIndentation(context);
             }
 
             _stringBuilder.Append(text);
@@ -135,6 +162,26 @@ namespace DocGen.Templating.Rendering.Builders.V1.Text
             _stringBuilder.AppendLine(value);
             _stringBuilder.AppendLine(value);
             _lineCount += 2;
+        }
+
+        private void AppendIndentation(DocumentInstructionContextV1 context)
+        {
+            foreach (var listItemIndex in context.ListItemPath)
+            {
+                _stringBuilder.Append("\t");
+            }
+        }
+
+        private void AppendListIndex(DocumentInstructionContextV1 context)
+        {
+            AppendIndentation(context);
+
+            foreach (var listItemIndex in context.ListItemPath)
+            {
+                _stringBuilder.Append((listItemIndex + 1) + ".");
+            }
+
+            _stringBuilder.Append(" ");
         }
     }
 }

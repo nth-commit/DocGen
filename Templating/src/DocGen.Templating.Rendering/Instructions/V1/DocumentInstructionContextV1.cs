@@ -9,11 +9,15 @@ namespace DocGen.Templating.Rendering.Instructions.V1
     {
         public IEnumerable<string> Path { get; private set; } = Enumerable.Empty<string>();
 
+        public string Parent => Path.Skip(Path.Count() - 2).First();
+
         public string Previous { get; private set; }
 
         public string Current => Path.LastOrDefault();
 
         public int ListNestingLevel => Path.Where(element => element == "list").Count() - 1;
+
+        public bool IsFirstChild => Previous == null;
 
         public IEnumerable<int> ListItemPath { get; private set; } = Enumerable.Empty<int>();
 
