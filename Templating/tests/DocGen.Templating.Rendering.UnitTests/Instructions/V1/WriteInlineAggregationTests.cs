@@ -9,16 +9,16 @@ using Xunit;
 
 namespace DocGen.Templating.Rendering.Instructions.V1
 {
-    public class WriteTextAggregationTests
+    public class WriteInlineAggregationTests
     {
         [Fact]
-        public async Task TestWriteTextAggregation_Inlines()
+        public async Task TestWriteInlineAggregation_Inlines()
         {
-            var writeTexts = new List<string>();
+            var writeInlines = new List<string>();
             var builderMock = new Mock<IDocumentBuilderV1>();
             builderMock
                 .Setup(x => x.WriteInlineAsync(It.IsAny<string>(), It.IsAny<DocumentInstructionContextV1>()))
-                .Callback<string, DocumentInstructionContextV1>((text, context) => writeTexts.Add(text))
+                .Callback<string, DocumentInstructionContextV1>((text, context) => writeInlines.Add(text))
                 .Returns(Task.CompletedTask);
 
             await new DocumentInstructorV1().InstructRenderingAsync(
@@ -26,17 +26,17 @@ namespace DocGen.Templating.Rendering.Instructions.V1
                 new DocumentRenderModel() { Items = Enumerable.Empty<DocumentRenderModelItem>() },
                 builderMock.Object);
 
-            Assert.Equal(new string[] { "1 2" }, writeTexts);
+            Assert.Equal(new string[] { "1 2" }, writeInlines);
         }
 
         [Fact]
-        public async Task TestWriteTextAggregation_InlineAndText()
+        public async Task TestWriteInlineAggregation_InlineAndText()
         {
-            var writeTexts = new List<string>();
+            var writeInlines = new List<string>();
             var builderMock = new Mock<IDocumentBuilderV1>();
             builderMock
                 .Setup(x => x.WriteInlineAsync(It.IsAny<string>(), It.IsAny<DocumentInstructionContextV1>()))
-                .Callback<string, DocumentInstructionContextV1>((text, context) => writeTexts.Add(text))
+                .Callback<string, DocumentInstructionContextV1>((text, context) => writeInlines.Add(text))
                 .Returns(Task.CompletedTask);
 
             await new DocumentInstructorV1().InstructRenderingAsync(
@@ -44,17 +44,17 @@ namespace DocGen.Templating.Rendering.Instructions.V1
                 new DocumentRenderModel() { Items = Enumerable.Empty<DocumentRenderModelItem>() },
                 builderMock.Object);
 
-            Assert.Equal(new string[] { "1 2" }, writeTexts);
+            Assert.Equal(new string[] { "1 2" }, writeInlines);
         }
 
         [Fact]
-        public async Task TestWriteTextAggregation_InlineAndConditionalInline()
+        public async Task TestWriteInlineAggregation_InlineAndConditionalInline()
         {
-            var writeTexts = new List<string>();
+            var writeInlines = new List<string>();
             var builderMock = new Mock<IDocumentBuilderV1>();
             builderMock
                 .Setup(x => x.WriteInlineAsync(It.IsAny<string>(), It.IsAny<DocumentInstructionContextV1>()))
-                .Callback<string, DocumentInstructionContextV1>((text, context) => writeTexts.Add(text))
+                .Callback<string, DocumentInstructionContextV1>((text, context) => writeInlines.Add(text))
                 .Returns(Task.CompletedTask);
 
             await new DocumentInstructorV1().InstructRenderingAsync(
@@ -72,17 +72,17 @@ namespace DocGen.Templating.Rendering.Instructions.V1
                 },
                 builderMock.Object);
 
-            Assert.Equal(new string[] { "1 2" }, writeTexts);
+            Assert.Equal(new string[] { "1 2" }, writeInlines);
         }
 
         [Fact]
-        public async Task TestWriteTextAggregation_InlineAndData()
+        public async Task TestWriteInlineAggregation_InlineAndData()
         {
-            var writeTexts = new List<string>();
+            var writeInlines = new List<string>();
             var builderMock = new Mock<IDocumentBuilderV1>();
             builderMock
                 .Setup(x => x.WriteInlineAsync(It.IsAny<string>(), It.IsAny<DocumentInstructionContextV1>()))
-                .Callback<string, DocumentInstructionContextV1>((text, context) => writeTexts.Add(text))
+                .Callback<string, DocumentInstructionContextV1>((text, context) => writeInlines.Add(text))
                 .Returns(Task.CompletedTask);
 
             await new DocumentInstructorV1().InstructRenderingAsync(
@@ -100,7 +100,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
                 },
                 builderMock.Object);
 
-            Assert.Equal(new string[] { "1 2" }, writeTexts);
+            Assert.Equal(new string[] { "1 2" }, writeInlines);
         }
     }
 }

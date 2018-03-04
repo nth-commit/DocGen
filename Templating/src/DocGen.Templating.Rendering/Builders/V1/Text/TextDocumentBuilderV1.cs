@@ -62,7 +62,7 @@ namespace DocGen.Templating.Rendering.Builders.V1.Text
 
         public Task BeginWritePageAsync(DocumentInstructionContextV1 context)
         {
-            if (context.Previous != null)
+            if (IsParagraphElement(context.Previous))
             {
                 Debug.Assert(context.Previous == "page");
                 BeginParagraph();
@@ -80,7 +80,7 @@ namespace DocGen.Templating.Rendering.Builders.V1.Text
 
         public Task BeginWriteBlockAsync(DocumentInstructionContextV1 context)
         {
-            if (context.Previous == "block")
+            if (IsParagraphElement(context.Previous))
             {
                 BeginParagraph();
             }
@@ -93,9 +93,29 @@ namespace DocGen.Templating.Rendering.Builders.V1.Text
             return Task.CompletedTask;
         }
 
+        public Task BeginWriteListAsync(DocumentInstructionContextV1 context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task EndWriteListAsync(DocumentInstructionContextV1 context)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task BeginWriteListItemAsync(int index, DocumentInstructionContextV1 context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task EndWriteListItemAsync(DocumentInstructionContextV1 context)
+        {
+            return Task.CompletedTask;
+        }
+
         public Task WriteInlineAsync(string text, DocumentInstructionContextV1 context)
         {
-            if (context.Previous == "block")
+            if (IsParagraphElement(context.Previous))
             {
                 BeginParagraph();
             }
@@ -103,6 +123,11 @@ namespace DocGen.Templating.Rendering.Builders.V1.Text
             _stringBuilder.Append(text);
 
             return Task.CompletedTask;
+        }
+
+        private bool IsParagraphElement(string element)
+        {
+            return element == "page" || element == "block" || element == "list" || element == "list-item";
         }
 
         private void BeginParagraph(string value = null)
