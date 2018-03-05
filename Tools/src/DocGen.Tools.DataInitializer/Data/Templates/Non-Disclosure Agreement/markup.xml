@@ -1,18 +1,18 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<document xmlns="http://tempuri.org/markup1.xsd">
+﻿<document>
   <page>
     <block>CONFIDENTIALITY AGREEMENT</block>
     <block>DATED __________________ of ________________________ 20____</block>
     <block></block>
     <block>BETWEEN</block>
-    <block>Michael Fry-White Limited at Wellington ("the Organisation")</block>
+    <block><data>organisation.name</data> at <data>organisation.location</data> ("the Organisation")</block>
     <block>AND</block>
-    <block>Scott Fry Limited of Hamilton, Lawyer ("the Contractor")</block>
+    <block if="contractor.type = person"><data>contractor.person.name</data> of <data>contractor.person.location</data>, <data>contractor.person.occupation</data> ("the Contractor")</block>
+    <block if="contractor.type = company"><data>contractor.company.name</data> of <data>contractor.company.location</data> ("the Contractor")</block>
     <block></block>
     <block>BACKGROUND</block>
     <list>
-      <list-item>The Organisation asdasdasd ("the Business").</list-item>
-      <list-item>The Contractor needs access to the Confidential Information asdasdasd ("Purpose").</list-item>
+      <list-item>The Organisation <data>organisation.description</data> ("the Business").</list-item>
+      <list-item>The Contractor needs access to the Confidential Information <data>disclosure_reason</data> ("Purpose").</list-item>
       <list-item>The Organisation agrees to make the Confidential Information available to the Contractor in accordance with the terms and conditions set out in this agreement.</list-item>
     </list>
     <block></block>
@@ -26,7 +26,7 @@
             <list>
               <list-item>"Business" is defined at 1.</list-item>
               <list-item>
-                "Confidential Information" means information disclosed and shared, and discussions between the parties, in relation to Michael Fry-White Limited's:
+                "Confidential Information" means information disclosed and shared, and discussions between the parties, in relation to <data>organisation.name</data>'s:
                 <list>
                   <list-item>Business, operations or strategies;</list-item>
                   <list-item>Intellectual or other property; or</list-item>
@@ -62,10 +62,10 @@
             </list>
           </list-item>
           <list-item>The Contractor will only use the Confidential Information for the Purpose.</list-item>
-          <list-item>The Contractor will only disclose the information to such of its employees or asdasd as required to fulfil its obligations under this agreement, and on the basis that such people agree to abide by the terms and conditions of this agreement as if they were parties to the agreement.</list-item>
-          <list-item>The Contractor will make such disclosure on the basis that if the employee or asdasd discloses the information in an unauthorised manner, the Contractor will be liable to the Organisation as if the Contractor had itself made such disclosure.</list-item>
-          <list-item>The Contractor will return or destroy all copies of the Confidential Information in its possession or the possession of its employees or asdasd upon any termination of this agreement.</list-item>
-          <list-item>At the request of the Organisation, the Contractor will return or destroy all copies of the Confidential Information in its possession or the possession of its employeesor asdasd.</list-item>
+          <list-item>The Contractor will only disclose the information to such of its employees <inline if="disclosure_access = true">or <data>disclosure_access.details.persons</data></inline> as required to fulfil its obligations under this agreement, and on the basis that such people agree to abide by the terms and conditions of this agreement as if they were parties to the agreement.</list-item>
+          <list-item>The Contractor will make such disclosure on the basis that if the employee <inline if="disclosure_access = true">or <data>disclosure_access.details.persons</data></inline> discloses the information in an unauthorised manner, the Contractor will be liable to the Organisation as if the Contractor had itself made such disclosure.</list-item>
+          <list-item>The Contractor will return or destroy all copies of the Confidential Information in its possession or the possession of its employees <inline if="disclosure_access = true">or <data>disclosure_access.details.persons</data></inline> upon any termination of this agreement.</list-item>
+          <list-item>At the request of the Organisation, the Contractor will return or destroy all copies of the Confidential Information in its possession or the possession of its employees<inline if="disclosure_access = true">or <data>disclosure_access.details.persons</data></inline>.</list-item>
           <list-item>The Contractor may not assign its rights and obligations in terms of this agreement without the prior written permission of the Organisation.</list-item>
         </list>
       </list-item>
@@ -87,14 +87,20 @@
       </list-item>
     </list>
     <block></block>
-    <block>Signed for and on behalf of Michael Fry-White Limited</block>
+    <block>Signed for and on behalf of <data>organisation.name</data></block>
+    <block></block>
     <block></block>
     <block>Name of representative:</block>
+    <block></block>
     <block>Date:</block>
     <block></block>
-    <block>Signed by Scott Fry Limited</block>
+    <block if="contractor.type = person">Signed by <data>contractor.person.name</data></block>
+    <block if="contractor.type = company">Signed for and on behalf of <data>contractor.company.name</data></block>
     <block></block>
-    <block>Scott Fry Limited</block>
+    <block></block>
+    <block if="contractor.type = person"><data>contractor.person.name</data></block>
+    <block if="contractor.type = company">Name of representative:</block>
+    <block></block>
     <block>Date:</block>
   </page>
 </document>

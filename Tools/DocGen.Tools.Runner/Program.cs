@@ -136,25 +136,27 @@ namespace DocGen.Tools.Runner
 
                 #region Create document
 
-                //var service = serviceProvider.GetRequiredService<DocumentService>();
-                //service.CreateDocumentAsync(
-                //    new DocumentCreate()
-                //    {
-                //        TemplateId = "non-disclosure-agreement",
-                //        TemplateVersion = 1,
-                //        InputValues = new Dictionary<string, dynamic>()
-                //        {
-                //            { "organisation.name", "Automio Limited" },
-                //            { "organisation.location", "New Plymouth" },
-                //            { "contractor.type", "company" },
-                //            { "contractor.company.name", "Lava Lamps Limited" },
-                //            { "contractor.company.location", "New Plymouth" },
-                //            { "diclosure_reason", "To provide marketing services to the Organisation" },
-                //            { "disclosure_access", true },
-                //            { "disclosure_access.details.persons", "sub-contractors, board members" }
-                //        }
-                //    },
-                //    DocumentGenerationMode.RawText).GetAwaiter().GetResult();
+                var service = serviceProvider.GetRequiredService<DocumentService>();
+                var result = service.CreateDocumentAsync(
+                    new DocumentCreate()
+                    {
+                        TemplateId = "non-disclosure-agreement",
+                        TemplateVersion = 1,
+                        InputValues = new Dictionary<string, dynamic>()
+                        {
+                            { "organisation.name", "Automio Limited" },
+                            { "organisation.location", "New Plymouth" },
+                            { "organisation.description", "operates a carpet manufacturing factory in Stratford" },
+                            { "contractor.type", "company" },
+                            { "contractor.company.name", "Lava Lamps Limited" },
+                            { "contractor.company.location", "New Plymouth" },
+                            { "disclosure_reason", "To provide marketing services to the Organisation" },
+                            { "disclosure_access", true },
+                            { "disclosure_access.details.persons", "sub-contractors, board members" }
+                        }
+                    }).GetAwaiter().GetResult();
+
+                Console.WriteLine(result.Body);
 
                 #endregion
             }
@@ -206,7 +208,7 @@ namespace DocGen.Tools.Runner
             //    }
             #endregion
 
-            RenderTemplateAsync(serviceProvider).GetAwaiter().GetResult();
+            //RenderTemplateAsync(serviceProvider).GetAwaiter().GetResult();
 
             Console.ReadLine();
         }

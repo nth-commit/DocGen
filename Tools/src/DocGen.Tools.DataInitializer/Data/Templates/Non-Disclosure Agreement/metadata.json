@@ -9,17 +9,24 @@
       "Description": "The Organisation in this instance is the party providing the confidential information. Please tell us a bit about who the Organisation is.",
       "Inputs": [
         {
-          "Id": "name",
+          "Key": "name",
           "Name": "Organisation name",
           "Description": "What is the name of the organisation?",
           "Hint": "Automio Limited",
           "Type": 1 // Text
         },
         {
-          "Id": "location",
+          "Key": "location",
           "Name": "Organisation location",
           "Description": "Where is the organisation based?",
           "Hint": "New Plymouth",
+          "Type": 1 // Text
+        },
+        {
+          "Key": "description",
+          "Name": "Organisation description",
+          "Description": "What does the organisation do?",
+          "Hint": "The Organisation \"operates a carpet manufacturing factory in Stratford\", \"runs a boutique wedding dress outlet store\"",
           "Type": 1 // Text
         }
       ]
@@ -30,7 +37,7 @@
       "Description": "Is the Contractor an individual person or a business/company?",
       "Inputs": [
         {
-          "Id": "type",
+          "Key": "type",
           "Type": 2, // Radio
           "TypeData": [
             {
@@ -56,21 +63,21 @@
       },
       "Inputs": [
         {
-          "Id": "name",
+          "Key": "name",
           "Name": "Contractor name",
           "Description": "What is the full legal name of the contractor?",
           "Hint": "Joseph Michael Bloggs",
           "Type": 1 // Text
         },
         {
-          "Id": "location",
+          "Key": "location",
           "Name": "Town of residence",
           "Description": "What is the contractor's town of residence?",
           "Hint": "Joseph Michael Bloggs",
           "Type": 1 // Text
         },
         {
-          "Id": "occupation",
+          "Key": "occupation",
           "Name": "Occupation",
           "Description": "What is the contractor's occupation?",
           "Hint": "Marketing Executive",
@@ -89,14 +96,14 @@
       },
       "Inputs": [
         {
-          "Id": "name",
+          "Key": "name",
           "Name": "Company name",
           "Description": "What is the company's name?",
           "Hint": "Lava Lamps Limited",
           "Type": 1 // Text
         },
         {
-          "Id": "location",
+          "Key": "location",
           "Name": "Location",
           "Description": "Where is the company based?",
           "Hint": "New Plymouth",
@@ -110,7 +117,7 @@
       "Description": "Why does the Contractor need access to the confidential information?",
       "Inputs": [
         {
-          "Id": null, // From parent
+          "Key": null, // From parent
           "Type": 1, // Text
           "Hint": "To provide marketing services to the Organisation"
         }
@@ -122,7 +129,7 @@
       "Description": "Other than the Contractor's employees, will anyone else have access to the confidential information?",
       "Inputs": [
         {
-          "Id": null, // From parent
+          "Key": null, // From parent
           "Type": 3 // Checkbox
         }
       ]
@@ -138,7 +145,7 @@
       },
       "Inputs": [
         {
-          "Id": "persons",
+          "Key": "persons",
           "Hint": "sub-contractors, board members",
           "Type": 1 // Text
         }

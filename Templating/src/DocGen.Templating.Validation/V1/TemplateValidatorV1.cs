@@ -190,7 +190,7 @@ namespace DocGen.Templating.Validation.V1
             }
             else if (referenceDefinition.Type == ReferenceDefinitionType.Boolean)
             {
-                if (value != "true" || value != "false")
+                if (value != "true" && value != "false")
                 {
                     return (false, $"Expected boolean value, got \"{value}\"");
                 }

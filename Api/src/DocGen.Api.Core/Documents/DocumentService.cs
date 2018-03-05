@@ -10,23 +10,24 @@ using System.Text;
 using System.Threading.Tasks;
 using DocGen.Shared.Core.Dynamic;
 using Microsoft.CSharp.RuntimeBinder;
+using DocGen.Templating.Rendering;
 
 namespace DocGen.Api.Core.Documents
 {
     public class DocumentService
     {
         private readonly ITemplateRepository _templateRepository;
-        private readonly IEnumerable<IDocumentGenerator> _documentGenerators;
+        private readonly IDocumentRenderer _documentRenderer;
 
         public DocumentService(
             ITemplateRepository templateRepository,
-            IEnumerable<IDocumentGenerator> documentGenerators)
+            IDocumentRenderer documentRenderer)
         {
             _templateRepository = templateRepository;
-            _documentGenerators = documentGenerators;
+            _documentRenderer = documentRenderer;
         }
 
-        public async Task<string> CreateDocumentAsync(DocumentCreate create, DocumentGenerationMode generationMode)
+        public async Task<TextDocumentResult> CreateDocumentAsync(DocumentCreate create)
         {
             Validator.ValidateNotNull(create, nameof(create));
             Validator.Validate(create);
@@ -43,7 +44,17 @@ namespace DocGen.Api.Core.Documents
 
             ValidateDocumentAgainstTemplate(create, template);
 
-            return await _documentGenerators.Single(d => d.GenerationMode == generationMode).GenerateAsync(template);
+            return await _documentRenderer.RenderAsync<TextDocumentResult>(
+                template.Markup,
+                template.MarkupVersion,
+                new DocumentRenderModel()
+                {
+                    Items = create.InputValues.Select(kvp => new DocumentRenderModelItem()
+                    {
+                        Reference = kvp.Key,
+                        Value = ((object)kvp.Value).ToString()
+                    })
+                });
         }
 
         private void ThrowEntityNotFoundAsClientModelValidation(EntityNotFoundException ex, string member)

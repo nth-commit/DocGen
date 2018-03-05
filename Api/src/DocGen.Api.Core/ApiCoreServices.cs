@@ -15,7 +15,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<ITemplateRepository, TableStorageTemplateRepository>();
 
             services.AddTransient<DocumentService>();
-            services.AddTransient<IDocumentGenerator, RawTextDocumentGenerator>();
 
             return services;
         }

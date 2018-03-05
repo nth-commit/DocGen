@@ -307,7 +307,7 @@ namespace DocGen.Api.Core.Templates
                 var inputId = s.Id;
                 if (!string.IsNullOrEmpty(i.Key))
                 {
-                    inputId += i.Key;
+                    inputId += $".{i.Key}";
                 }
 
                 if (i.Type == TemplateStepInputType.Text)
@@ -320,7 +320,8 @@ namespace DocGen.Api.Core.Templates
                 }
                 else if (i.Type == TemplateStepInputType.Radio)
                 {
-                    var values = DynamicUtility.Unwrap<IEnumerable<TemplateStepInputTypeData_Radio>>(() => i.TypeData).Select(r => r.Value);
+                    var values = DynamicUtility.Unwrap(() => (IEnumerable<dynamic>)i.TypeData)
+                        .Select(d => DynamicUtility.Unwrap<string>(() => d.Value));
                     return ReferenceDefinition.StringFrom(inputId, values);
                 }
                 else
