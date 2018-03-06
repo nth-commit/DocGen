@@ -29,6 +29,16 @@ namespace DocGen.Api.Core.Templates
             _templateMarkupValidator = templateMarkupValidator;
         }
 
+        public async Task<IEnumerable<Template>> ListTemplatesAsync()
+        {
+            return await _templateRepository.ListTemplatesAsync();
+        }
+
+        public async Task<Template> GetTemplateAsync(string id)
+        {
+            return await _templateRepository.GetTemplateAsync(id);
+        }
+
         public async Task<Template> CreateTemplateAsync(TemplateCreate create, bool dryRun = false)
         {
             Validator.ValidateNotNull(create, nameof(create));

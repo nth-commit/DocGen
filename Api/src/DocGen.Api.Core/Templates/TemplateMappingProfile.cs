@@ -13,10 +13,10 @@ namespace DocGen.Api.Core.Templates
         public TemplateMappingProfile()
         {
             CreateMap<TemplateCreate, Template>()
-                .ForMember(dest => dest.Id, opts => opts.ResolveUsing(src => new SlugBuilderFactory().Create().Add(src.Name).ToString()));
-
-            CreateMap<TemplateStepCreate, TemplateStep>()
+                .ForMember(dest => dest.Id, opts => opts.ResolveUsing(src => new SlugBuilderFactory().Create().Add(src.Name).ToString()))
                 .ForMember(dest => dest.Version, opts => opts.UseValue(1));
+
+            CreateMap<TemplateStepCreate, TemplateStep>();
 
             CreateMap<TemplateStepInputCreate, TemplateStepInput>();
 

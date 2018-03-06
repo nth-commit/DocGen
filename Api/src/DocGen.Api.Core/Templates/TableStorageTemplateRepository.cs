@@ -4,6 +4,7 @@ using DocGen.Shared.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,15 +23,14 @@ namespace DocGen.Api.Core.Templates
             _mapper = mapper;
         }
 
-        public async Task<Template> CreateTemplateAsync(Template template)
+        public async Task<IEnumerable<Template>> ListTemplatesAsync()
         {
-            var templateRow = _mapper.Map<TemplateTableEntity>(template);
-
             var table = await GetTableReferenceAsync();
 
-            await table.ExecuteAsync(TableOperation.Insert(templateRow));
+            var continuationToken = new TableContinuationToken();
+            var templateTableEntities = await table.ExecuteQuerySegmentedAsync(new TableQuery<TemplateTableEntity>(), continuationToken);
 
-            return template;
+            return templateTableEntities.Results.Select(t => _mapper.Map<Template>(t));
         }
 
         public async Task<Template> GetTemplateAsync(string id)
@@ -47,6 +47,17 @@ namespace DocGen.Api.Core.Templates
             {
                 return _mapper.Map<Template>(retrieveResult.Result);
             }
+        }
+
+        public async Task<Template> CreateTemplateAsync(Template template)
+        {
+            var templateTableEntity = _mapper.Map<TemplateTableEntity>(template);
+
+            var table = await GetTableReferenceAsync();
+
+            await table.ExecuteAsync(TableOperation.Insert(templateTableEntity));
+
+            return template;
         }
 
         private async Task<CloudTable> GetTableReferenceAsync()

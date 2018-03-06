@@ -36,6 +36,13 @@ namespace DocGen.Api
             {
                 conf.AddApiCoreMappers();
             });
+
+            services.AddTemplatingValidationServices();
+            services.AddTemplatingRenderingServices();
+
+            services.AddMvc();
+
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,10 +53,18 @@ namespace DocGen.Api
                 app.UseDeveloperExceptionPage();
             }
 
-            app.Run(async (context) =>
+            app.Use(async (context, next) =>
             {
-                await context.Response.WriteAsync("Hello World!");
+                await next();
             });
+
+            app.UseCors(opts => opts
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowAnyOrigin()
+                .AllowCredentials());
+
+            app.UseMvc();
         }
     }
 }

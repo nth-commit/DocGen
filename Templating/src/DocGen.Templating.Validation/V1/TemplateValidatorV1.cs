@@ -76,8 +76,6 @@ namespace DocGen.Templating.Validation.V1
                 LineNumber = -1
             }));
 
-            // TODO: Ensure there are no nested lists with 'start' attribute
-
             if (errors.Any())
             {
                 throw new InvalidTemplateSyntaxException(errors);

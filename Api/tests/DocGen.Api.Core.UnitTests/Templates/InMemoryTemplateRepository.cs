@@ -19,5 +19,10 @@ namespace DocGen.Api.Core.Templates
         {
             throw new NotImplementedException();
         }
+
+        public Task<IEnumerable<Template>> ListTemplatesAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

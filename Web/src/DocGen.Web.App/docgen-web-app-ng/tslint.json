@@ -5,7 +5,7 @@
   "rules": {
     "arrow-return-shorthand": true,
     "callable-types": true,
-    "class-name": true,
+    "class-name": false, // Allow underscore in class name
     "comment-format": [
       true,
       "check-space"
@@ -55,10 +55,10 @@
       "trace"
     ],
     "no-construct": true,
-    "no-debugger": true,
+    "no-debugger": false, // Use often for dev
     "no-duplicate-super": true,
     "no-empty": false,
-    "no-empty-interface": true,
+    "no-empty-interface": false, // Annoying for scaffolded stuff
     "no-eval": true,
     "no-inferrable-types": [
       true,

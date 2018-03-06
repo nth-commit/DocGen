@@ -7,8 +7,10 @@ namespace DocGen.Api.Core.Templates
 {
     public interface ITemplateRepository
     {
-        Task<Template> CreateTemplateAsync(Template template);
+        Task<IEnumerable<Template>> ListTemplatesAsync();
 
         Task<Template> GetTemplateAsync(string id);
+
+        Task<Template> CreateTemplateAsync(Template template);
     }
 }
