@@ -1,0 +1,25 @@
+$groupItemMarginLeft: 20px;
+
+form {
+    .input-container {
+        mat-form-field {
+            width: 100%;
+        }
+
+        mat-radio-group {
+            mat-radio-button {
+                &:not(:first-child) {
+                    margin-left: $groupItemMarginLeft;
+                }
+            }
+        }
+
+        .checkbox-group {
+            mat-checkbox {
+                &:not(:first-child) {
+                    margin-left: $groupItemMarginLeft;
+                }
+            }
+        }
+    }
+}

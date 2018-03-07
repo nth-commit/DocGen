@@ -1,3 +1,8 @@
+<app-wizard-template-step
+  *ngFor="let step of (template$ | async).steps"
+  [templateStep]="step">
+
+</app-wizard-template-step>
 <pre>
-  {{ template$ | async | json }}  
+  {{ template$ | async | json }} 
 </pre>

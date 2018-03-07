@@ -9,4 +9,5 @@
     "start": "cd ./docgen-web-app-ng && yarn run start",
     "build": "cd ./docgen-web-app-ng &&  ng build --prod --aot --output-path \"./wwwroot\""
   }
+, "-vs-binding":{"ProjectOpened":["start"]}
 }
