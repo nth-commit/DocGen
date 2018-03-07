@@ -5,18 +5,32 @@
       <input matInput
         formControlName="text"
         [placeholder]="templateStepInput.name" />
-      <mat-hint>{{ templateStepInput.hint ? ('e.g. ' + templateStepInput.hint) : '' }}</mat-hint>
+      <mat-hint>{{ templateStepInput.description }} {{ templateStepInput.hint ? ('e.g. ' + templateStepInput.hint) : '' }}</mat-hint>
     </mat-form-field>
-    <mat-radio-group
+
+    <mat-form-field
       *ngSwitchCase="TemplateStepInputType.Radio"
-      formControlName="radio">
-      <mat-radio-button
-        *ngFor="let option of templateStepInput.typeData"
-        [value]="option.Value">{{ option.Name }}</mat-radio-button>
-    </mat-radio-group>
-    <div class="checkbox-group" *ngSwitchCase="TemplateStepInputType.Checkbox">
-      <mat-checkbox formControlName="yes">Yes</mat-checkbox>
-      <mat-checkbox formControlName="no">No</mat-checkbox>      
-    </div>
+      floatPlaceholder="always"
+      class="mat-form-field--no-underline">
+      <input matInput [placeholder]="templateStepInput.name" />
+      <mat-radio-group
+        *ngSwitchCase="TemplateStepInputType.Radio"
+        formControlName="radio">
+        <mat-radio-button
+          *ngFor="let option of templateStepInput.typeData"
+          [value]="option.Value">{{ option.Name }}</mat-radio-button>
+      </mat-radio-group>
+    </mat-form-field>
+
+    <mat-form-field
+      *ngSwitchCase="TemplateStepInputType.Checkbox"
+      floatPlaceholder="always"
+      class="mat-form-field--no-underline">
+      <input matInput [placeholder]="templateStepInput.name" />
+      <div class="checkbox-group">
+        <mat-checkbox formControlName="yes">Yes</mat-checkbox>
+        <mat-checkbox formControlName="no">No</mat-checkbox>
+      </div>
+    </mat-form-field>
   </div>
 </form>

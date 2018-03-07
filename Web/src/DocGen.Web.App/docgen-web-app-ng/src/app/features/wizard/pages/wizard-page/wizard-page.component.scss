@@ -1,0 +1,24 @@
+.app-wizard-page {
+
+    .card-container {
+        display: flex;
+        justify-content: center;
+
+        mat-card {
+            margin-top: 20px;
+            max-width: 100%;
+            width: 700px;
+
+            mat-card-content {
+                min-height: 350px;
+            }
+
+            mat-card-actions {
+                display: flex;
+                justify-content: center;
+                margin-bottom: 30px;
+
+            }
+        }
+    }
+}

@@ -1,8 +1,20 @@
-<app-wizard-template-step
-  *ngFor="let step of (template$ | async).steps"
-  [templateStep]="step">
-
-</app-wizard-template-step>
+<div class="app-wizard-page">
+  <div class="card-container" *ngFor="let templateStep of (template$ | async).steps">
+    <mat-card style="margin-bottom: 50px; max-width: 500px;">
+        <mat-card-title>{{ templateStep.name }}</mat-card-title>
+        <mat-card-subtitle>{{ templateStep.description }}</mat-card-subtitle>
+        <mat-card-content>
+          <app-wizard-template-step [templateStep]="templateStep"></app-wizard-template-step>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-raised-button color="accent">BACK</button>
+          <button mat-raised-button color="primary">NEXT</button>
+        </mat-card-actions>
+    </mat-card>
+  </div>
+</div>
+<div >
+</div>
 <pre>
   {{ template$ | async | json }} 
 </pre>

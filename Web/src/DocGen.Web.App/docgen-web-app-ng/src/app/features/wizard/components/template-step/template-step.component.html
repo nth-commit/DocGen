@@ -1,4 +1,6 @@
 <app-wizard-template-step-input
   *ngFor="let templateStepInput of templateStep.inputs"
-  [templateStepInput]="templateStepInput">
+  [templateStepInput]="templateStepInput"
+  [value]="value[templateStepInput.key]"
+  (valueChanges)="updateInputValue(templateStepInput.key, $event)">
 </app-wizard-template-step-input>

@@ -18,7 +18,7 @@
     "forin": true,
     "import-blacklist": [
       true,
-      "rxjs",
+      //"rxjs", // Time-saver, increases package size
       "rxjs/Rx"
     ],
     "import-spacing": true,

@@ -4,6 +4,17 @@ form {
     .input-container {
         mat-form-field {
             width: 100%;
+
+            &.mat-form-field--no-underline {
+
+                /host/ .mat-form-field-underline {
+                    background-color: transparent;
+                }
+
+                input {
+                    display: none;
+                }
+            }
         }
 
         mat-radio-group {
@@ -11,7 +22,7 @@ form {
                 &:not(:first-child) {
                     margin-left: $groupItemMarginLeft;
                 }
-            }
+            }   
         }
 
         .checkbox-group {
