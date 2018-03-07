@@ -4,7 +4,9 @@
         <mat-card-title>{{ templateStep.name }}</mat-card-title>
         <mat-card-subtitle>{{ templateStep.description }}</mat-card-subtitle>
         <mat-card-content>
-          <app-wizard-template-step [templateStep]="templateStep"></app-wizard-template-step>
+          <app-wizard-template-step
+            [templateStep]="templateStep"
+            (valueChanges)="updateStepValues($event)"></app-wizard-template-step>
         </mat-card-content>
         <mat-card-actions>
           <button mat-raised-button color="accent">BACK</button>
@@ -13,8 +15,3 @@
     </mat-card>
   </div>
 </div>
-<div >
-</div>
-<pre>
-  {{ template$ | async | json }} 
-</pre>

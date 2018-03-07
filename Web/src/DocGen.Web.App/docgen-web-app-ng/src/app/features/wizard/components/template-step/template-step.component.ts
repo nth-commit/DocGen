@@ -29,17 +29,10 @@ export class TemplateStepComponent implements OnInit {
     Observable
       .combineLatest(inputValueObservables)
       .subscribe(kvps => {
-        let isValid = true;
         kvps.forEach(kvp => {
           this.value[kvp.key] = kvp.value;
-          isValid = isValid && !!kvp.value;
         });
-
-        if (isValid) {
-          this.valueChanges.emit(this.value);
-        } else {
-          this.valueChanges.emit(null);
-        }
+        this.valueChanges.emit(this.value);
       });
   }
 
