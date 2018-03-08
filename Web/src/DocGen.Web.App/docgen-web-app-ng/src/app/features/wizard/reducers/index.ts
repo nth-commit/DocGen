@@ -80,8 +80,26 @@ export const reducerBase: ActionReducer<WizardState> = (state, action: WizardAct
       });
     }
     case WizardActionTypes.UPDATE_VALUES: {
+      const values = Object.assign({}, state.values, action.payload);
       return Object.assign(state, <WizardState>{
-        values: Object.assign({}, state.values, action.payload)
+        values,
+
+        valid: state.template.steps.every(s => {
+          if (s.conditionType === TemplateStepConditionType.EqualsPreviousInputValue) {
+            const expectedPreviousInputValue = s.conditionTypeData.PreviousInputValue;
+            const previousInputId = s.conditionTypeData.PreviousInputId;
+
+            if (state.values[previousInputId] !== expectedPreviousInputValue) {
+              // Skip this step
+              return true;
+            }
+          }
+
+          return s.inputs.every(i => {
+            const inputId = Utility.getTemplateStepInputId(s, i);
+            return state.values[inputId] !== undefined && state.values[inputId] !== null;
+          });
+        })
       });
     }
     case WizardActionTypes.NEXT_STEP: {
@@ -112,6 +130,7 @@ export const reducerBase: ActionReducer<WizardState> = (state, action: WizardAct
       if (!state.valid) {
         throw new Error('Template values are incomplete');
       }
+
       return Object.assign(state, <WizardState>{
         completed: true
       });
@@ -148,9 +167,7 @@ export const reducer: ActionReducer<WizardState> = (state, action: WizardAction)
 
     state.currentStepValid = state.currentStep.inputs
       .map(i => Utility.getTemplateStepInputId(state.currentStep, i))
-      .every(reference => !!state.values[reference]);
-
-    state.valid = false; // TODO
+      .every(inputId => state.values[inputId] !== undefined && state.values[inputId] !== null);
   }
 
   return state;
