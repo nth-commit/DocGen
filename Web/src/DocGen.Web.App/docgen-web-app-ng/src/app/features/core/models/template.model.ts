@@ -26,8 +26,8 @@ export enum TemplateStepConditionType {
 }
 
 export interface TemplateStepConditionTypeData_EqualsPreviousInputValue {
-    previousInputId: string;
-    previousInputValue: any;
+    PreviousInputId: string;
+    PreviousInputValue: any;
 }
 
 export interface TemplateStepInput {

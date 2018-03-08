@@ -56,6 +56,7 @@ export interface State {
 
 export interface WizardState {
   template: Template;
+  stepIndexHistory: number[];
   hasPreviousStep: boolean;
   currentStep: TemplateStep;
   currentStepIndex: number;
@@ -93,15 +94,18 @@ export const reducerBase: ActionReducer<WizardState> = (state, action: WizardAct
       }
 
       return Object.assign(state, <WizardState>{
-        currentStepIndex: state.currentStepIndex + 1
+        currentStepIndex: state.nextStepIndex,
+        stepIndexHistory: [...state.stepIndexHistory, state.currentStepIndex]
       });
     }
     case WizardActionTypes.PREVIOUS_STEP: {
       if (!state.hasPreviousStep) {
         throw new Error('Template does not have a previous step');
       }
+
       return Object.assign(state, <WizardState>{
-        currentStepIndex: state.currentStepIndex - 1
+        currentStepIndex: state.stepIndexHistory[state.stepIndexHistory.length - 1],
+        stepIndexHistory: state.stepIndexHistory.slice(0, state.stepIndexHistory.length - 1)
       });
     }
     case WizardActionTypes.COMPLETE: {
@@ -113,7 +117,9 @@ export const reducerBase: ActionReducer<WizardState> = (state, action: WizardAct
       });
     }
     default: {
-      return state || <WizardState>{};
+      return state || <WizardState>{
+        stepIndexHistory: []
+      };
     }
   }
 };
@@ -134,7 +140,7 @@ export const reducer: ActionReducer<WizardState> = (state, action: WizardAction)
 
     state.nextStepIndex = state.template.steps
       .findIndex((s, i) => i > state.currentStepIndex &&
-        (!s.conditionType || state.values[s.conditionTypeData.previousInputId] === s.conditionTypeData.previousInputValue));
+        (!s.conditionType || state.values[s.conditionTypeData.PreviousInputId] === s.conditionTypeData.PreviousInputValue));
 
     state.hasNextStep = state.nextStepIndex > -1;
 
