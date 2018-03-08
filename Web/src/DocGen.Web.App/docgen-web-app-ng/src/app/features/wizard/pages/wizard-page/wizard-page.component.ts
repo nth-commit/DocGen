@@ -3,11 +3,13 @@ import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 
 import { Observable } from 'rxjs';
+import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/first';
 
 import { Template } from '../../../core';
 
 import { InputValueCollection } from '../../models';
-import { WizardState, Begin, UpdateValues } from '../../reducers';
+import { State, Begin, UpdateValues, NextStep, PreviousStep, Complete } from '../../reducers';
 
 @Component({
   selector: 'app-wizard-page',
@@ -16,23 +18,42 @@ import { WizardState, Begin, UpdateValues } from '../../reducers';
 })
 export class WizardPageComponent implements OnInit {
 
-  template$: Observable<Template>;
+  template$ = this.store.select(s => s.wizard.template);
+  templateStep$ = this.store.select(s => s.wizard.currentStep);
+  hasNextStep$ = this.store.select(s => s.wizard.hasNextStep);
+  hasPreviousStep$ = this.store.select(s => s.wizard.hasPreviousStep);
+  currentStepValid$ = this.store.select(s => s.wizard.currentStepValid);
+  currentValues$ = this.store.select(s => s.wizard.currentValues);
 
   constructor(
     private route: ActivatedRoute,
-    private wizardStore: Store<WizardState>
+    private store: Store<State>
   ) { }
 
   ngOnInit() {
-    this.template$ = this.route.data.map((data => data.template));
-
-    this.template$.subscribe(template => {
-      this.wizardStore.dispatch(new Begin(template));
-    });
   }
 
   updateStepValues(values: InputValueCollection) {
-    this.wizardStore.dispatch(new UpdateValues(values));
+    this.store.dispatch(new UpdateValues(values));
   }
 
+  onNextStepClick() {
+    this.currentStepValid$
+      .first()
+      .subscribe(currentStepValid => {
+        if (currentStepValid) {
+          this.store.dispatch(new NextStep());
+        } else {
+          // TODO: Trigger validation?
+        }
+    });
+  }
+
+  onPreviousStepClick() {
+    this.store.dispatch(new PreviousStep());
+  }
+
+  onCompleteClick() {
+    this.store.dispatch(new Complete());
+  }
 }

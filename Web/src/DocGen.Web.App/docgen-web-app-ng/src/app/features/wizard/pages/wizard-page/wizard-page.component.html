@@ -1,16 +1,23 @@
 <div class="app-wizard-page">
-  <div class="card-container" *ngFor="let templateStep of (template$ | async).steps">
+  <div class="card-container">
     <mat-card style="margin-bottom: 50px; max-width: 500px;">
-        <mat-card-title>{{ templateStep.name }}</mat-card-title>
-        <mat-card-subtitle>{{ templateStep.description }}</mat-card-subtitle>
+        <mat-card-title>{{ (templateStep$ | async).name }}</mat-card-title>
+        <mat-card-subtitle>{{ (templateStep$ | async).description }}</mat-card-subtitle>
         <mat-card-content>
           <app-wizard-template-step
-            [templateStep]="templateStep"
+            [templateStep]="templateStep$ | async"
+            [value]="currentValues$ | async"
             (valueChanges)="updateStepValues($event)"></app-wizard-template-step>
         </mat-card-content>
         <mat-card-actions>
-          <button mat-raised-button color="accent">BACK</button>
-          <button mat-raised-button color="primary">NEXT</button>
+          <app-wizard-template-step-navigation
+            [hasNextStep]="hasNextStep$ | async"
+            [hasPreviousStep]="hasPreviousStep$ | async"
+            [currentStepValid]="currentStepValid$ | async"
+            (nextStepClick)="onNextStepClick($event)"
+            (previousStepClick)="onPreviousStepClick($event)"
+            (completeClick)="onCompleteClick($event)">
+          </app-wizard-template-step-navigation>
         </mat-card-actions>
     </mat-card>
   </div>

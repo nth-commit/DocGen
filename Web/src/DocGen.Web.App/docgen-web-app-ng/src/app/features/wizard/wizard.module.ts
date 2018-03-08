@@ -20,6 +20,7 @@ import { WizardRoutingModule } from './wizard-routing.module';
 import { WizardPageComponent } from './pages/wizard-page/wizard-page.component';
 import { TemplateStepInputComponent } from './components/template-step-input/template-step-input.component';
 import { TemplateStepComponent } from './components/template-step/template-step.component';
+import { TemplateStepNavigationComponent } from './components/template-step-navigation/template-step-navigation.component';
 
 
 @NgModule({
@@ -34,7 +35,7 @@ import { TemplateStepComponent } from './components/template-step/template-step.
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     EffectsModule.forFeature([WizardEffects])
   ],
-  declarations: [WizardPageComponent, TemplateStepInputComponent, TemplateStepComponent],
+  declarations: [WizardPageComponent, TemplateStepInputComponent, TemplateStepComponent, TemplateStepNavigationComponent],
   providers: []
 })
 export class WizardModule { }

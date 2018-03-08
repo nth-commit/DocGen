@@ -1,2 +1,2 @@
-export { InputValueCollection } from './input-value-collection.model';
+export { InputValueCollection, createInputValueCollection } from './input-value-collection.model';
 export { InputValue } from './input-value.model';
