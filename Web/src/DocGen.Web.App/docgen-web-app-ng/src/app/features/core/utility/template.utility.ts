@@ -1,6 +1,6 @@
-import { TemplateStep, TemplateStepInput } from '../core';
+import { TemplateStep, TemplateStepInput } from '../models';
 
-export const Utility = {
+export const TemplateUtility = {
 
     getTemplateStepInputId: (templateStep: TemplateStep, templateStepInput: TemplateStepInput) => {
         let inputId = templateStep.id;

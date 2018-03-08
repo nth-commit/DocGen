@@ -9,11 +9,10 @@ import {
 
 import { environment } from '../../../../environments/environment';
 
-import { Template, TemplateStep, TemplateStepConditionType } from '../../core';
-
-import { Utility } from '../utility';
-import { InputValueCollection, InputValue, createInputValueCollection } from '../models';
-
+import {
+  Template, TemplateStep, TemplateStepConditionType, TemplateUtility,
+  InputValue, InputValueCollection, InputValueCollectionUtility
+} from '../../core';
 
 export enum WizardActionTypes {
   BEGIN = '[Wizard] Begin',
@@ -76,7 +75,7 @@ export const reducerBase: ActionReducer<WizardState> = (state, action: WizardAct
       return Object.assign({}, state, <WizardState>{
         template: action.payload,
         currentStepIndex: 0,
-        values: createInputValueCollection(<any>action.payload)
+        values: InputValueCollectionUtility.fromTemplate(<any>action.payload)
       });
     }
     case WizardActionTypes.UPDATE_VALUES: {
@@ -96,7 +95,7 @@ export const reducerBase: ActionReducer<WizardState> = (state, action: WizardAct
           }
 
           return s.inputs.every(i => {
-            const inputId = Utility.getTemplateStepInputId(s, i);
+            const inputId = TemplateUtility.getTemplateStepInputId(s, i);
             return state.values[inputId] !== undefined && state.values[inputId] !== null;
           });
         })
@@ -153,7 +152,7 @@ export const reducer: ActionReducer<WizardState> = (state, action: WizardAction)
 
     state.currentValues = {};
     state.currentStep.inputs.forEach(i => {
-      const inputId = Utility.getTemplateStepInputId(state.currentStep, i);
+      const inputId = TemplateUtility.getTemplateStepInputId(state.currentStep, i);
       state.currentValues[inputId] = state.values[inputId];
     });
 
@@ -166,7 +165,7 @@ export const reducer: ActionReducer<WizardState> = (state, action: WizardAction)
     state.nextStep = state.hasNextStep ? state.template.steps[state.nextStepIndex] : null;
 
     state.currentStepValid = state.currentStep.inputs
-      .map(i => Utility.getTemplateStepInputId(state.currentStep, i))
+      .map(i => TemplateUtility.getTemplateStepInputId(state.currentStep, i))
       .every(inputId => state.values[inputId] !== undefined && state.values[inputId] !== null);
   }
 

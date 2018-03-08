@@ -6,9 +6,8 @@ import { Observable } from 'rxjs';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/first';
 
-import { Template } from '../../../core';
+import { Template, InputValueCollection } from '../../../core';
 
-import { InputValueCollection } from '../../models';
 import { State, Begin, UpdateValues, NextStep, PreviousStep, Complete } from '../../reducers';
 
 @Component({

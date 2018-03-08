@@ -1,10 +1,7 @@
 import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { Observable, BehaviorSubject, Subscription } from 'rxjs';
 
-import { TemplateStep, TemplateStepInput } from '../../../core';
-
-import { Utility } from '../../utility';
-import { InputValueCollection, InputValue } from '../../models';
+import { TemplateStep, TemplateStepInput, InputValueCollection, InputValue, TemplateUtility } from '../../../core';
 
 @Component({
   selector: 'app-wizard-template-step',
@@ -33,7 +30,7 @@ export class TemplateStepComponent implements OnInit, OnChanges {
 
       this.inputValueSubjectsById = {};
       this.templateStep.inputs.forEach(i => {
-        const inputId = Utility.getTemplateStepInputId(this.templateStep, i);
+        const inputId = TemplateUtility.getTemplateStepInputId(this.templateStep, i);
         const initialValue = this.value[inputId];
         this.inputValueSubjectsById[inputId] = new BehaviorSubject(initialValue);
       });
@@ -69,6 +66,6 @@ export class TemplateStepComponent implements OnInit, OnChanges {
   }
 
   private getInputId(input: TemplateStepInput): string {
-    return Utility.getTemplateStepInputId(this.templateStep, input);
+    return TemplateUtility.getTemplateStepInputId(this.templateStep, input);
   }
 }
