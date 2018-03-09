@@ -9,7 +9,7 @@ using Xunit;
 
 namespace DocGen.Templating.Rendering.Instructions.V1
 {
-    public class WriteTextTests
+    public class TextTests
     {
         [Fact]
         public async Task TestWriteText_DataInsideInline()
@@ -18,24 +18,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             var builderMock = new Mock<IDocumentBuilderV1>();
             builderMock
                 .Setup(x => x.WriteTextAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DocumentInstructionContextV1>()))
-                .Callback<string, DocumentInstructionContextV1>((text, context) => textWrites.Add(text))
-                .Returns(Task.CompletedTask);
-
-            await new DocumentInstructorV1().InstructRenderingAsync(
-                @"<document><page><inline>1</inline><inline>2</inline></page></document>",
-                new DocumentRenderModel() { Items = Enumerable.Empty<DocumentRenderModelItem>() },
-                builderMock.Object);
-        }
-
-
-        [Fact]
-        public async Task TestWriteInlineAggregation_Inlines()
-        {
-            var writeInlines = new List<string>();
-            var builderMock = new Mock<IDocumentBuilderV1>();
-            builderMock
-                .Setup(x => x.WriteTextAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DocumentInstructionContextV1>()))
-                .Callback<string, string, DocumentInstructionContextV1>((text, reference, context) => writeInlines.Add(text))
+                .Callback<string, string, DocumentInstructionContextV1>((text, reference, context) => textWrites.Add(text))
                 .Returns(Task.CompletedTask);
 
             await new DocumentInstructorV1().InstructRenderingAsync(
@@ -53,7 +36,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
                 },
                 builderMock.Object);
 
-            Assert.Equal(new string[] { "1", "2" }, writeInlines);
+            Assert.Equal(new string[] { "1", "2" }, textWrites);
         }
 
 

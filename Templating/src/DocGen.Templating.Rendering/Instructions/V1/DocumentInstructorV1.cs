@@ -48,25 +48,10 @@ namespace DocGen.Templating.Rendering.Instructions.V1
 
             foreach (var page in root.Elements())
             {
-                var (conditionalResult, conditionalExpression) = GetElementConditionalValue(page);
-                if (!string.IsNullOrEmpty(conditionalExpression))
+                await WriteConditionalElementAsync(page, async () =>
                 {
-                    if (conditionalResult)
-                    {
-                        await _builder.BeginConditionalAsync(conditionalExpression, _context);
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
-
-                await InstructPageRenderingAsync(page);
-
-                if (!string.IsNullOrEmpty(conditionalExpression))
-                {
-                    await _builder.EndCondititionalAsync(_context);
-                }
+                    await InstructPageRenderingAsync(page);
+                });
             }
 
             _context = _context.BeforeEnd();
@@ -131,35 +116,22 @@ namespace DocGen.Templating.Rendering.Instructions.V1
                 var listItem = listItems[i];
                 AssertElementName(listItem, "list-item");
 
-                var (conditionalResult, conditionalExpression) = GetElementConditionalValue(listItem);
-                if (!string.IsNullOrEmpty(conditionalExpression))
-                {
-                    if (conditionalResult)
+                await WriteConditionalElementAsync(
+                    listItem,
+                    async () =>
                     {
-                        await _builder.BeginConditionalAsync(conditionalExpression, _context);
-                    }
-                    else
-                    {
-                        conditionallyExcludedListItems++;
-                        continue;
-                    }
-                }
+                        int continuedListIndex = listItemIndexContinueOffset + i - conditionallyExcludedListItems;
+                        _context = _context.BeforeBeginListItem(continuedListIndex);
+                        await _builder.BeginWriteListItemAsync(continuedListIndex, _context);
+                        _context = _context.AfterBegin();
 
-                int continuedListIndex = listItemIndexContinueOffset + i - conditionallyExcludedListItems;
-                _context = _context.BeforeBeginListItem(continuedListIndex);
-                await _builder.BeginWriteListItemAsync(continuedListIndex, _context);
-                _context = _context.AfterBegin();
+                        await TraverseContainerElementAsync(listItem);
 
-                await TraverseContainerElementAsync(listItem);
-
-                _context = _context.BeforeEnd();
-                await _builder.EndWriteListItemAsync(_context);
-                _context = _context.AfterEndListItem();
-
-                if (!string.IsNullOrEmpty(conditionalExpression))
-                {
-                    await _builder.EndCondititionalAsync(_context);
-                }
+                        _context = _context.BeforeEnd();
+                        await _builder.EndWriteListItemAsync(_context);
+                        _context = _context.AfterEndListItem();
+                    },
+                    () => conditionallyExcludedListItems++);
             }
 
             _context = _context.BeforeEnd();
@@ -181,41 +153,26 @@ namespace DocGen.Templating.Rendering.Instructions.V1
                 {
                     var element = (XElement)node;
 
-                    var (conditionalResult, conditionalExpression) = GetElementConditionalValue(element);
-                    if (!string.IsNullOrEmpty(conditionalExpression))
+                    await WriteConditionalElementAsync(element, async () =>
                     {
-                        if (conditionalResult)
+                        if (element.Name.LocalName == "inline")
                         {
-                            await _builder.BeginConditionalAsync(conditionalExpression, _context);
+                            await InstructWriteInlineAsync((XText)element.FirstNode);
                         }
-                        else
+                        else if (element.Name.LocalName == "data")
                         {
-                            continue;
+                            var reference = ((XText)element.FirstNode).Value;
+                            await InstructWriteInlineAsync(_valuesByReference[reference], reference);
                         }
-                    }
-
-                    if (element.Name.LocalName == "inline")
-                    {
-                        await InstructWriteInlineAsync((XText)element.FirstNode);
-                    }
-                    else if (element.Name.LocalName == "data")
-                    {
-                        var reference = ((XText)element.FirstNode).Value;
-                        await InstructWriteInlineAsync(_valuesByReference[reference], reference);
-                    }
-                    else if (element.Name.LocalName == "block")
-                    {
-                        await InstructBlockRenderingAsync(element);
-                    }
-                    else if (element.Name.LocalName == "list")
-                    {
-                        await InstructListRenderingAsync(element);
-                    }
-
-                    if (!string.IsNullOrEmpty(conditionalExpression))
-                    {
-                        await _builder.EndCondititionalAsync(_context);
-                    }
+                        else if (element.Name.LocalName == "block")
+                        {
+                            await InstructBlockRenderingAsync(element);
+                        }
+                        else if (element.Name.LocalName == "list")
+                        {
+                            await InstructListRenderingAsync(element);
+                        }
+                    });
                 }
             }
         }
@@ -230,6 +187,31 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             _context = _context.BeforeBegin("inline");
             await _builder.WriteTextAsync(text, reference, _context);
             _context = _context.AfterBegin().BeforeEnd().AfterEnd();
+        }
+
+        private async Task WriteConditionalElementAsync(XElement conditionalElement, Func<Task> writeAction, Action onConditionFailed = null)
+        {
+            var (conditionalResult, conditionalExpression) = GetElementConditionalValue(conditionalElement);
+            if (!string.IsNullOrEmpty(conditionalExpression))
+            {
+                if (conditionalResult)
+                {
+                    await _builder.BeginConditionalAsync(conditionalExpression, _context);
+                }
+                else
+                {
+                    // Don't call the write action, this element should not be rendered.
+                    onConditionFailed?.Invoke();
+                    return;
+                }
+            }
+
+            await writeAction();
+
+            if (!string.IsNullOrEmpty(conditionalExpression))
+            {
+                await _builder.EndCondititionalAsync(_context);
+            }
         }
 
         private (bool conditional, string reference) GetElementConditionalValue(XElement element)
