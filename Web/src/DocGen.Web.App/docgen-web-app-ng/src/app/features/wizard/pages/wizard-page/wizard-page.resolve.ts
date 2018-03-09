@@ -27,7 +27,21 @@ export class WizardPageResolve implements Resolve<Template> {
             this.store.dispatch(new Refresh(wizardState));
             return new Promise(resolve => resolve(wizardState.template));
         } else {
-            const template$ = this.http.get(`${getAppSettings().Urls.Api}/templates/${templateId}`).map(r => r.json());
+            const template$ = this.http.get(`${getAppSettings().Urls.Api}/templates/${templateId}`).map(r => {
+                const result: Template = r.json();
+
+                result.steps.forEach(s => {
+                    s.inputs.forEach(i => {
+                        let id = s.id;
+                        if (i.key) {
+                            id += `.${i.key}`;
+                        }
+                        i.id = id;
+                    });
+                });
+
+                return result;
+            });
             const templatePromise = template$.toPromise();
             templatePromise.then(template => this.store.dispatch(new Begin(template)));
             return templatePromise;

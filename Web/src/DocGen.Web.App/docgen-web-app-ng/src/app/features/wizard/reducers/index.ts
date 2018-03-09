@@ -10,7 +10,7 @@ import {
 import { environment } from '../../../../environments/environment';
 
 import {
-  Template, TemplateStep, TemplateStepConditionType, TemplateUtility,
+  Template, TemplateStep, TemplateStepConditionType,
   InputValue, InputValueCollection, InputValueCollectionUtility
 } from '../../core';
 
@@ -78,14 +78,12 @@ export interface WizardState {
   hasNextStep: boolean;
   values: InputValueCollection;
   currentStepValid: boolean;
-  valid: boolean;
+  templateValid: boolean;
+  templateStepsValid: boolean[];
+  templateStepInputsValid: boolean[][];
   completed: boolean;
   empty: boolean;
 }
-
-const DEFAULT_WIZARD_STATE = <WizardState>{
-  stepIndexHistory: []
-};
 
 export const reducerBase: ActionReducer<WizardState> = (state, action: WizardAction) => {
   switch (action.type) {
@@ -93,33 +91,51 @@ export const reducerBase: ActionReducer<WizardState> = (state, action: WizardAct
       return action.payload;
     }
     case WizardActionTypes.BEGIN: {
+      const template = <Template>action.payload;
+
+      const templateStepInputsValid = [];
+      template.steps.forEach(s => {
+        const result = [];
+        s.inputs.forEach(i => result.push(false));
+        templateStepInputsValid.push(result);
+      });
+
       return Object.assign({}, state, <WizardState>{
-        template: action.payload,
+        template,
         currentStepIndex: 0,
-        values: InputValueCollectionUtility.fromTemplate(<any>action.payload)
+        values: InputValueCollectionUtility.fromTemplate(template),
+        templateStepInputsValid,
+        stepIndexHistory: []
       });
     }
     case WizardActionTypes.UPDATE_VALUES: {
       const values = Object.assign({}, state.values, action.payload);
+
+      const templateStepInputsValid: boolean[][] = [];
+      state.template.steps.forEach((step, stepIndex) => {
+        const result: boolean[] = [];
+        let skipValidation = false;
+
+        if (step.conditionType === TemplateStepConditionType.EqualsPreviousInputValue) {
+          const expectedPreviousInputValue = step.conditionTypeData.PreviousInputValue;
+          const previousInputId = step.conditionTypeData.PreviousInputId;
+
+          if (state.values[previousInputId] !== expectedPreviousInputValue) {
+            // All inputs are valid based on the fact it is not required by condition
+            skipValidation = true;
+          }
+        }
+
+        step.inputs.forEach((input, inputIndex) => {
+          result[inputIndex] = skipValidation || (state.values[input.id] !== undefined && state.values[input.id] !== null);
+        });
+
+        templateStepInputsValid[stepIndex] = result;
+      });
+
       return Object.assign(state, <WizardState>{
         values,
-
-        valid: state.template.steps.every(s => {
-          if (s.conditionType === TemplateStepConditionType.EqualsPreviousInputValue) {
-            const expectedPreviousInputValue = s.conditionTypeData.PreviousInputValue;
-            const previousInputId = s.conditionTypeData.PreviousInputId;
-
-            if (state.values[previousInputId] !== expectedPreviousInputValue) {
-              // Skip this step
-              return true;
-            }
-          }
-
-          return s.inputs.every(i => {
-            const inputId = TemplateUtility.getTemplateStepInputId(s, i);
-            return state.values[inputId] !== undefined && state.values[inputId] !== null;
-          });
-        })
+        templateStepInputsValid
       });
     }
     case WizardActionTypes.NEXT_STEP: {
@@ -147,7 +163,7 @@ export const reducerBase: ActionReducer<WizardState> = (state, action: WizardAct
       });
     }
     case WizardActionTypes.COMPLETE: {
-      if (!state.valid) {
+      if (!state.templateValid) {
         throw new Error('Template values are incomplete');
       }
 
@@ -156,17 +172,25 @@ export const reducerBase: ActionReducer<WizardState> = (state, action: WizardAct
       });
     }
     case WizardActionTypes.CLEAR_VALUES: {
-      return Object.assign(
-        {},
-        <WizardState>{
-          template: state.template,
-          currentStepIndex: 0,
-          values: InputValueCollectionUtility.fromTemplate(state.template)
-        },
-        DEFAULT_WIZARD_STATE);
+      const template = state.template;
+
+      const templateStepInputsValid = [];
+      template.steps.forEach(s => {
+        const result = [];
+        s.inputs.forEach(i => result.push(false));
+        templateStepInputsValid.push(result);
+      });
+
+      return Object.assign({}, state, <WizardState>{
+        template,
+        currentStepIndex: 0,
+        values: InputValueCollectionUtility.fromTemplate(template),
+        templateStepInputsValid,
+        stepIndexHistory: []
+      });
     }
     default: {
-      return state || DEFAULT_WIZARD_STATE;
+      return {};
     }
   }
 };
@@ -175,14 +199,16 @@ export const reducer: ActionReducer<WizardState> = (state, action: WizardAction)
   state = reducerBase(state, action);
 
   if (state.template) {
+    state.templateStepsValid = state.templateStepInputsValid.map(inputsValid => inputsValid.every(x => x));
+    state.templateValid = state.templateStepsValid.every(x => x);
+
     state.hasPreviousStep = state.currentStepIndex > 0;
 
     state.currentStep = state.template.steps[state.currentStepIndex];
 
     state.currentValues = {};
     state.currentStep.inputs.forEach(i => {
-      const inputId = TemplateUtility.getTemplateStepInputId(state.currentStep, i);
-      state.currentValues[inputId] = state.values[inputId];
+      state.currentValues[i.id] = state.values[i.id];
     });
 
     state.nextStepIndex = state.template.steps
@@ -194,8 +220,7 @@ export const reducer: ActionReducer<WizardState> = (state, action: WizardAction)
     state.nextStep = state.hasNextStep ? state.template.steps[state.nextStepIndex] : null;
 
     state.currentStepValid = state.currentStep.inputs
-      .map(i => TemplateUtility.getTemplateStepInputId(state.currentStep, i))
-      .every(inputId => state.values[inputId] !== undefined && state.values[inputId] !== null);
+      .every(i => state.values[i.id] !== undefined && state.values[i.id] !== null);
 
     state.empty = Object.keys(state.values).every(id => state.values[id] === undefined || state.values[id] === null);
   }

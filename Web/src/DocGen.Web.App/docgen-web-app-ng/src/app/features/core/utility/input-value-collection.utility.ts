@@ -1,4 +1,3 @@
-import { TemplateUtility } from './template.utility';
 import { Template, InputValue, InputValueCollection } from '../models';
 
 export const InputValueCollectionUtility = {
@@ -8,8 +7,7 @@ export const InputValueCollectionUtility = {
 
         template.steps.forEach(s => {
           s.inputs.forEach(i => {
-            const inputId = TemplateUtility.getTemplateStepInputId(s, i);
-            result[inputId] = null;
+            result[i.id] = null;
           });
         });
 
@@ -38,5 +36,29 @@ export const InputValueCollectionUtility = {
         });
 
         return result;
+    },
+
+    isEqual: (a: InputValueCollection, b: InputValueCollection) => {
+        if (a === b) {
+            return true;
+        } else if (a === undefined || b === undefined) {
+            return false;
+        }
+
+        const aKeys = Object.keys(a);
+        const bKeys = Object.keys(b);
+
+        if (aKeys.length !== bKeys.length) {
+            return false;
+        }
+
+        return aKeys.every((aKey, i) => {
+            const bKey = bKeys[i];
+            if (!bKey) {
+                return false;
+            }
+
+            return a[aKey] === b[bKey];
+        });
     }
 };

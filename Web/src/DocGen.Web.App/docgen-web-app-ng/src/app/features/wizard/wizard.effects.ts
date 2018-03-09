@@ -1,15 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Router, RouterEvent } from '@angular/router';
+import { Router, RouterEvent, NavigationEnd } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 import { Store, Action } from '@ngrx/store';
 import { Actions, Effect } from '@ngrx/effects';
 
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/takeUntil';
+import { timer } from 'rxjs/observable/timer';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/scan';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/withLatestFrom';
 
@@ -46,6 +44,10 @@ export class WizardEffects {
               'Reset',
               { duration: 10000 });
 
+            this.router.events.subscribe(ev => {
+              debugger;
+            });
+
             snackBarRef
               .onAction()
               .first()
@@ -60,8 +62,8 @@ export class WizardEffects {
     .ofType(WizardActionTypes.COMPLETE)
     .withLatestFrom(this.store)
     .do(([action, state]) => {
-      localStorage.setItem(this.getKey(state, 'values'), JSON.stringify(state.wizard.values));
-      // TODO: Route to preview
+      localStorage.setItem(this.getKey(state, 'values'), JSON.stringify(state.wizard.values)); // Used for document generation module
+      // TODO: Route to document generation
     });
 
   @Effect({ dispatch: false }) clear$ = this.actions$

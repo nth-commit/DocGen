@@ -1,17 +1,17 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { TemplateStepInput, TemplateStepInputType } from '../../../core';
+import { TemplateStepInput, TemplateStepInputType, InputValue } from '../../../core';
 
 @Component({
   selector: 'app-wizard-template-step-input',
   templateUrl: './template-step-input.component.html',
   styleUrls: ['./template-step-input.component.scss']
 })
-export class TemplateStepInputComponent implements OnInit {
+export class TemplateStepInputComponent implements OnInit, OnChanges {
   @Input() templateStepInput: TemplateStepInput;
-  @Input() value: string | boolean;
-  @Output() valueChanges = new EventEmitter<string | boolean>();
+  @Input() value: InputValue;
+  @Output() valueChanges = new EventEmitter<InputValue>();
 
   TemplateStepInputType = TemplateStepInputType;
   form: FormGroup;
@@ -19,6 +19,14 @@ export class TemplateStepInputComponent implements OnInit {
   constructor(
     private fb: FormBuilder
   ) { }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (this.form && changes.value.currentValue) {
+      const controls = this.form.controls;
+      const controlKey = Object.keys(controls)[0];
+      controls[controlKey].setValue(changes.value.currentValue);
+    }
+  }
 
   ngOnInit() {
     const { fb, templateStepInput } = this;

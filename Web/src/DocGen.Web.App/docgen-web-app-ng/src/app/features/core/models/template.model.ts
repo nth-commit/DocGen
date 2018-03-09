@@ -31,6 +31,7 @@ export interface TemplateStepConditionTypeData_EqualsPreviousInputValue {
 }
 
 export interface TemplateStepInput {
+    id: string;
     key: string;
     name: string;
     description: string;
