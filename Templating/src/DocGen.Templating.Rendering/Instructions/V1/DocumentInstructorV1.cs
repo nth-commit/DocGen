@@ -16,7 +16,6 @@ namespace DocGen.Templating.Rendering.Instructions.V1
         private IDocumentBuilderV1 _builder;
         private DocumentRenderModel _model;
         private Dictionary<string, string> _valuesByReference;
-        private List<string> _pendingText;
         private Dictionary<int, int> _listItemIndexContinueOffsetByNestingLevel;
 
         public int MarkupVersion => 1;
@@ -147,7 +146,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             {
                 if (node is XText)
                 {
-                    await InstructWriteInlineAsync((XText)node);
+                    await InstructWriteTextAsync((XText)node);
                 }
                 else if (node is XElement)
                 {
@@ -157,12 +156,11 @@ namespace DocGen.Templating.Rendering.Instructions.V1
                     {
                         if (element.Name.LocalName == "inline")
                         {
-                            await InstructWriteInlineAsync((XText)element.FirstNode);
+                            await InstructWriteInlineAsync(element);
                         }
                         else if (element.Name.LocalName == "data")
                         {
-                            var reference = ((XText)element.FirstNode).Value;
-                            await InstructWriteInlineAsync(_valuesByReference[reference], reference);
+                            await InstructWriteDataAsync(element);
                         }
                         else if (element.Name.LocalName == "block")
                         {
@@ -177,14 +175,47 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             }
         }
 
-        private async Task InstructWriteInlineAsync(XText text, string reference = null)
+        private async Task InstructWriteInlineAsync(XElement inline)
         {
-            await InstructWriteInlineAsync(text.Value, reference);
+            AssertElementName(inline, "inline");
+
+            foreach (var node in inline.Nodes())
+            {
+                if (node is XText)
+                {
+                    await InstructWriteTextAsync((XText)node);
+                }
+                else
+                {
+                    var element = node as XElement;
+                    if (element != null && element.Name.LocalName == "data")
+                    {
+                        await InstructWriteDataAsync(element);
+                    }
+                    else
+                    {
+                        throw new Exception("Only data elements or text can be inside an inline element");
+                    }
+                }
+            }
         }
 
-        private async Task InstructWriteInlineAsync(string text, string reference = null)
+        private async Task InstructWriteDataAsync(XElement data)
         {
-            _context = _context.BeforeBegin("inline");
+            AssertElementName(data, "data");
+
+            var reference = ((XText)data.FirstNode).Value;
+            await InstructWriteTextAsync(_valuesByReference[reference], reference);
+        }
+
+        private async Task InstructWriteTextAsync(XText text, string reference = null)
+        {
+            await InstructWriteTextAsync(text.Value, reference);
+        }
+
+        private async Task InstructWriteTextAsync(string text, string reference = null)
+        {
+            _context = _context.BeforeBegin("text");
             await _builder.WriteTextAsync(text, reference, _context);
             _context = _context.AfterBegin().BeforeEnd().AfterEnd();
         }
