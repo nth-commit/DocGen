@@ -174,7 +174,7 @@ namespace DocGen.Api.Core.Documents
                 {
                     try
                     {
-                        var checkboxValue = (bool)inputValueDynamic;
+                        var checkboxValue = (bool)(bool.Parse(inputValueDynamic));
                         return (true, templateStepInputId, checkboxValue.ToString());
                     }
                     catch (RuntimeBinderException)

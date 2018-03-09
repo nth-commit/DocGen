@@ -7,7 +7,7 @@ import { WizardPageResolve } from './pages/wizard-page/wizard-page.resolve';
 const routes: Routes = [
   {
     component: WizardPageComponent,
-    path: 'create/:templateId',
+    path: ':templateId',
     resolve: {
       template: WizardPageResolve
     }

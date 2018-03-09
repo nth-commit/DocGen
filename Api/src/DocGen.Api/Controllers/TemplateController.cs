@@ -22,9 +22,9 @@ namespace DocGen.Api.Controllers
         [Authorize]
         [HttpGet("")]
         [ProducesResponseType(typeof(Template[]), 200)]
-        public Task<IEnumerable<Template>> List() => _templateService.ListTemplatesAsync();
+        public async Task<IActionResult> List() => Ok(await _templateService.ListTemplatesAsync());
 
         [HttpGet("{id}")]
-        public Task<Template> Get(string id) => _templateService.GetTemplateAsync(id);
+        public async Task<IActionResult> GetAsync(string id) => Ok(await _templateService.GetTemplateAsync(id));
     }
 }

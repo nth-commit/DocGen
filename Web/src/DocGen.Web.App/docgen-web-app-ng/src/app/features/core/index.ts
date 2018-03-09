@@ -9,7 +9,9 @@ export
     TemplateStepInputTypeData_Radio,
 
     InputValue,
-    InputValueCollection
+    InputValueCollection,
+
+    TextDocument
 } from './models';
 
 export { InputValueCollectionUtility, TemplateUtility } from './utility';

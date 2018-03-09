@@ -54,11 +54,6 @@ namespace DocGen.Api
                 app.UseDeveloperExceptionPage();
             }
 
-            app.Use(async (context, next) =>
-            {
-                await next();
-            });
-
             app.UseCors(opts => opts
                 .AllowAnyHeader()
                 .AllowAnyMethod()

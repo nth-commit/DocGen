@@ -11,8 +11,9 @@ import { EffectsModule } from '@ngrx/effects';
 import { AppEffects } from './app.effects';
 
 import { WizardModule } from './features/wizard';
-import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
+import { DocumentViewerModule } from './features/document-viewer';
 
+import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
 
 @NgModule({
   declarations: [
@@ -22,17 +23,18 @@ import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.com
   imports: [
     BrowserModule,
     RouterModule.forRoot([
-      {
-        path: '**',
-        component: NotFoundPageComponent
-      }
+      // {
+      //   path: '**',
+      //   component: NotFoundPageComponent
+      // }
     ]),
 
     StoreModule.forRoot(reducers, { metaReducers }),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     EffectsModule.forRoot([AppEffects]),
 
-    WizardModule
+    WizardModule,
+    DocumentViewerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

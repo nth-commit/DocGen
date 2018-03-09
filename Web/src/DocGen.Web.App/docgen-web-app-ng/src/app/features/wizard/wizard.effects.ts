@@ -44,9 +44,11 @@ export class WizardEffects {
               'Reset',
               { duration: 10000 });
 
-            this.router.events.subscribe(ev => {
-              debugger;
-            });
+            this.router.events
+              .first()
+              .subscribe(ev => {
+                snackBarRef.dismiss();
+              });
 
             snackBarRef
               .onAction()
@@ -63,7 +65,7 @@ export class WizardEffects {
     .withLatestFrom(this.store)
     .do(([action, state]) => {
       localStorage.setItem(this.getKey(state, 'values'), JSON.stringify(state.wizard.values)); // Used for document generation module
-      // TODO: Route to document generation
+      this.router.navigateByUrl(`/${state.wizard.template.id}/preview`);
     });
 
   @Effect({ dispatch: false }) clear$ = this.actions$
