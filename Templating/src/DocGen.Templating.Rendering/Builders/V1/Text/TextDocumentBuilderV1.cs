@@ -152,10 +152,10 @@ namespace DocGen.Templating.Rendering.Builders.V1.Text
                 BeginParagraph();
             }
 
-            if (context.Parent == "list-item" && !context.IsFirstChild)
-            {
-                AppendIndentation(context);
-            }
+            //if (context.Parent == "list-item" && !context.IsFirstChild)
+            //{
+            //    AppendIndentation(context);
+            //}
 
             _stringBuilder.Append(text);
 

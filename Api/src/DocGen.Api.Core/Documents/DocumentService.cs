@@ -27,7 +27,16 @@ namespace DocGen.Api.Core.Documents
             _documentRenderer = documentRenderer;
         }
 
-        public async Task<SerializableDocument> CreateDocumentAsync(DocumentCreate create)
+        public Task<SerializableDocument> CreateSerializableDocumentAsync(DocumentCreate create)
+            => CreateDocumentAsync<SerializableDocument>(create);
+
+        public Task<TextDocument> CreateTextDocumentAsync(DocumentCreate create)
+            => CreateDocumentAsync<TextDocument>(create);
+
+
+        #region Helpers
+
+        private async Task<TDocument> CreateDocumentAsync<TDocument>(DocumentCreate create)
         {
             Validator.ValidateNotNull(create, nameof(create));
             Validator.Validate(create);
@@ -44,7 +53,7 @@ namespace DocGen.Api.Core.Documents
 
             ValidateDocumentAgainstTemplate(create, template);
 
-            return await _documentRenderer.RenderAsync<SerializableDocument>(
+            return await _documentRenderer.RenderAsync<TDocument>(
                 template.Markup,
                 template.MarkupVersion,
                 new DocumentRenderModel()
@@ -194,5 +203,7 @@ namespace DocGen.Api.Core.Documents
         {
             errors.Add(error, $"{nameof(DocumentCreate.InputValues)}[\"{templateStepInputId}\"]");
         }
+
+        #endregion
     }
 }

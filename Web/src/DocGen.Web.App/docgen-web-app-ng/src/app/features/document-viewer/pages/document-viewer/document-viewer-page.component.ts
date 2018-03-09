@@ -7,11 +7,11 @@ import 'rxjs/add/operator/map';
 import { TextDocument } from '../../../core';
 
 @Component({
-  selector: 'app-document-viewer',
-  templateUrl: './document-viewer.component.html',
-  styleUrls: ['./document-viewer.component.scss']
+  selector: 'app-document-viewer-page',
+  templateUrl: './document-viewer-page.component.html',
+  styleUrls: ['./document-viewer-page.component.scss']
 })
-export class DocumentViewerComponent implements OnInit {
+export class DocumentViewerPageComponent implements OnInit {
 
   textDocument$: Observable<TextDocument>;
 

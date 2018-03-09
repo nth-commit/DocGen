@@ -23,16 +23,24 @@ namespace DocGen.Api.Controllers
         [ProducesResponseType(typeof(SerializableDocument), 200)]
         public async Task<IActionResult> Create([FromQuery] string templateId)
         {
-            var document = await _documentService.CreateDocumentAsync(new DocumentCreate()
+            var documentCreate = new DocumentCreate()
             {
                 TemplateId = templateId,
                 TemplateVersion = 1, // TODO
                 InputValues = Request.Query
                     .Where(kvp => kvp.Key != nameof(templateId))
                     .ToDictionary(kvp => kvp.Key, kvp => (dynamic)kvp.Value)
-            });
+            };
 
-            return Ok(document);
+            if (Request.ContentType == "text/plain")
+            {
+                var document = await _documentService.CreateTextDocumentAsync(documentCreate);
+                return Content(document.Body);
+            }
+            else {
+                var document = await _documentService.CreateSerializableDocumentAsync(documentCreate);
+                return Ok(document);
+            }
         }
     }
 }

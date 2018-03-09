@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DocumentViewerComponent } from './document-viewer.component';
+import { DocumentViewerPageComponent } from './document-viewer-page.component';
 
 describe('DocumentViewerComponent', () => {
-  let component: DocumentViewerComponent;
-  let fixture: ComponentFixture<DocumentViewerComponent>;
+  let component: DocumentViewerPageComponent;
+  let fixture: ComponentFixture<DocumentViewerPageComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DocumentViewerComponent ]
+      declarations: [ DocumentViewerPageComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DocumentViewerComponent);
+    fixture = TestBed.createComponent(DocumentViewerPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

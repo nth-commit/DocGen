@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { DocumentViewerComponent } from './pages/document-viewer/document-viewer.component';
+import { DocumentViewerPageComponent } from './pages/document-viewer/document-viewer-page.component';
 
-import { DocumentViewerResolve } from './pages/document-viewer/document-viewer.resolve';
+import { DocumentViewerPageResolve } from './pages/document-viewer/document-viewer-page.resolve';
 
 const routes: Routes = [
   {
-    component: DocumentViewerComponent,
+    component: DocumentViewerPageComponent,
     path: ':templateId/preview',
     resolve: {
-      textDocument: DocumentViewerResolve
+      textDocument: DocumentViewerPageResolve
     }
   }
 ];
@@ -19,7 +19,7 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
   providers: [
-    DocumentViewerResolve
+    DocumentViewerPageResolve
   ]
 })
 export class DocumentViewerRoutingModule { }

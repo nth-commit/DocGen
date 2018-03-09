@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
@@ -210,11 +211,21 @@ namespace DocGen.Templating.Rendering.Instructions.V1
 
         private async Task InstructWriteTextAsync(XText text, string reference = null)
         {
-            await InstructWriteTextAsync(text.Value.Trim(), reference);
+            await InstructWriteTextAsync(text.Value, reference);
         }
 
         private async Task InstructWriteTextAsync(string text, string reference = null)
         {
+            if (Regex.Match(text, @"^\s").Success)
+            {
+                text = " " + text.TrimStart();
+            }
+
+            if (Regex.Match(text, @"\s$").Success)
+            {
+                text =  text.TrimEnd() + " ";
+            }
+
             _context = _context.BeforeBegin("text");
             await _builder.WriteTextAsync(text, reference, _context);
             _context = _context.AfterBegin().BeforeEnd().AfterEnd();

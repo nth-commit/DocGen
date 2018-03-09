@@ -35,8 +35,8 @@
                 The information must be one of the following:
                 <list start="continue">
                   <list-item>Confidential in fact;</list-item>
-                  <list-item>Reasonably regarded by Michael Fry-White Limited as confidential; or</list-item>
-                  <list-item>Information that a written notice from Michael Fry-White Limited to Scott Fry Limited states is confidential.</list-item>
+                  <list-item>Reasonably regarded by <data if="contractor.type = person">contractor.person.name</data><data if="contractor.type = company">contractor.company.name</data> as confidential; or</list-item>
+                  <list-item>Information that a written notice from <data>organisation.name</data> to <data if="contractor.type = person">contractor.person.name</data><data if="contractor.type = company">contractor.company.name</data> states is confidential.</list-item>
                 </list>
               </list-item>
             </list>

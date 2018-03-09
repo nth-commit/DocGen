@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { DocumentViewerRoutingModule } from './document-viewer-routing.module';
-import { DocumentViewerComponent } from './pages/document-viewer/document-viewer.component';
+import { DocumentViewerPageComponent } from './pages/document-viewer/document-viewer-page.component';
 import { TextDocumentComponent } from './components/text-document/text-document.component';
 
 @NgModule({
@@ -10,6 +10,6 @@ import { TextDocumentComponent } from './components/text-document/text-document.
     CommonModule,
     DocumentViewerRoutingModule
   ],
-  declarations: [DocumentViewerComponent, TextDocumentComponent]
+  declarations: [DocumentViewerPageComponent, TextDocumentComponent]
 })
 export class DocumentViewerModule { }
