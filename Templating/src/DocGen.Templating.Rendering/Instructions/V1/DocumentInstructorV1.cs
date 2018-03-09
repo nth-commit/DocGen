@@ -48,12 +48,25 @@ namespace DocGen.Templating.Rendering.Instructions.V1
 
             foreach (var page in root.Elements())
             {
-                if (!GetElementConditionalValue(page))
+                var (conditionalResult, conditionalExpression) = GetElementConditionalValue(page);
+                if (!string.IsNullOrEmpty(conditionalExpression))
                 {
-                    continue;
+                    if (conditionalResult)
+                    {
+                        await _builder.BeginConditionalAsync(conditionalExpression, _context);
+                    }
+                    else
+                    {
+                        continue;
+                    }
                 }
 
                 await InstructPageRenderingAsync(page);
+
+                if (!string.IsNullOrEmpty(conditionalExpression))
+                {
+                    await _builder.EndCondititionalAsync(_context);
+                }
             }
 
             _context = _context.BeforeEnd();
@@ -112,12 +125,27 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             }
 
             var listItems = list.Elements().ToList();
+            var conditionallyExcludedListItems = 0;
             for (var i = 0; i < listItems.Count; i++)
             {
                 var listItem = listItems[i];
                 AssertElementName(listItem, "list-item");
 
-                int continuedListIndex = listItemIndexContinueOffset + i;
+                var (conditionalResult, conditionalExpression) = GetElementConditionalValue(listItem);
+                if (!string.IsNullOrEmpty(conditionalExpression))
+                {
+                    if (conditionalResult)
+                    {
+                        await _builder.BeginConditionalAsync(conditionalExpression, _context);
+                    }
+                    else
+                    {
+                        conditionallyExcludedListItems++;
+                        continue;
+                    }
+                }
+
+                int continuedListIndex = listItemIndexContinueOffset + i - conditionallyExcludedListItems;
                 _context = _context.BeforeBeginListItem(continuedListIndex);
                 await _builder.BeginWriteListItemAsync(continuedListIndex, _context);
                 _context = _context.AfterBegin();
@@ -127,6 +155,11 @@ namespace DocGen.Templating.Rendering.Instructions.V1
                 _context = _context.BeforeEnd();
                 await _builder.EndWriteListItemAsync(_context);
                 _context = _context.AfterEndListItem();
+
+                if (!string.IsNullOrEmpty(conditionalExpression))
+                {
+                    await _builder.EndCondititionalAsync(_context);
+                }
             }
 
             _context = _context.BeforeEnd();
@@ -142,84 +175,73 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             {
                 if (node is XText)
                 {
-                    AddPendingText((XText)node);
+                    await InstructWriteInlineAsync((XText)node);
                 }
                 else if (node is XElement)
                 {
                     var element = (XElement)node;
 
-                    if (!GetElementConditionalValue(element))
+                    var (conditionalResult, conditionalExpression) = GetElementConditionalValue(element);
+                    if (!string.IsNullOrEmpty(conditionalExpression))
                     {
-                        continue;
+                        if (conditionalResult)
+                        {
+                            await _builder.BeginConditionalAsync(conditionalExpression, _context);
+                        }
+                        else
+                        {
+                            continue;
+                        }
                     }
 
                     if (element.Name.LocalName == "inline")
                     {
-                        AddPendingText((XText)element.FirstNode);
+                        await InstructWriteInlineAsync((XText)element.FirstNode);
                     }
                     else if (element.Name.LocalName == "data")
                     {
-                        AddPendingText(_valuesByReference[((XText)element.FirstNode).Value]);
+                        var reference = ((XText)element.FirstNode).Value;
+                        await InstructWriteInlineAsync(_valuesByReference[reference], reference);
                     }
                     else if (element.Name.LocalName == "block")
                     {
-                        await InstructWritePendingInlineAsync();
                         await InstructBlockRenderingAsync(element);
                     }
                     else if (element.Name.LocalName == "list")
                     {
-                        await InstructWritePendingInlineAsync();
                         await InstructListRenderingAsync(element);
+                    }
+
+                    if (!string.IsNullOrEmpty(conditionalExpression))
+                    {
+                        await _builder.EndCondititionalAsync(_context);
                     }
                 }
             }
-
-            await InstructWritePendingInlineAsync();
         }
 
-        private async Task InstructWritePendingInlineAsync()
+        private async Task InstructWriteInlineAsync(XText text, string reference = null)
         {
-            if (HasPendingText())
-            {
-                _context = _context.BeforeBegin("inline");
-                await _builder.WriteInlineAsync(string.Join(" ", _pendingText), _context);
-                _context = _context.AfterBegin().BeforeEnd().AfterEnd();
-
-                _pendingText = null;
-            }
+            await InstructWriteInlineAsync(text.Value, reference);
         }
 
-        private bool GetElementConditionalValue(XElement element)
+        private async Task InstructWriteInlineAsync(string text, string reference = null)
+        {
+            _context = _context.BeforeBegin("inline");
+            await _builder.WriteTextAsync(text, reference, _context);
+            _context = _context.AfterBegin().BeforeEnd().AfterEnd();
+        }
+
+        private (bool conditional, string reference) GetElementConditionalValue(XElement element)
         {
             var ifAttribute = element.Attributes().FirstOrDefault(a => a.Name == "if");
             if (ifAttribute != null)
             {
                 var ifExpressionSplit = ifAttribute.Value.Split('=').Select(s => s.Trim()).ToArray();
-                if (_valuesByReference[ifExpressionSplit[0]] != ifExpressionSplit[1])
-                {
-                    return false;
-                }
+                var reference = ifExpressionSplit[0];
+                return (_valuesByReference[reference] == ifExpressionSplit[1], reference);
             }
-            return true;
-        }
-
-        private void AddPendingText(XText text)
-        {
-            AddPendingText(text.Value);
-        }
-
-        private void AddPendingText(string text)
-        {
-            if (!HasPendingText())
-            {
-                _pendingText = new List<string>();
-            }
-            _pendingText.Add(text.Trim());
-        }
-
-        private bool HasPendingText()
-        {
-            return _pendingText != null;
+            return (false, null);
         }
 
         private void AssertElementName(XElement element, string name)

@@ -135,7 +135,17 @@ namespace DocGen.Templating.Rendering.Builders.V1.Text
             return Task.CompletedTask;
         }
 
-        public Task WriteInlineAsync(string text, DocumentInstructionContextV1 context)
+        public Task BeginConditionalAsync(string expression, DocumentInstructionContextV1 context)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task EndCondititionalAsync(DocumentInstructionContextV1 context)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task WriteTextAsync(string text, string expression, DocumentInstructionContextV1 context)
         {
             if (IsParagraphElement(context.Previous))
             {

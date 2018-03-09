@@ -29,7 +29,11 @@ namespace DocGen.Templating.Rendering.Builders.V1
 
         Task EndWriteListItemAsync(DocumentInstructionContextV1 context);
 
-        Task WriteInlineAsync(string text, DocumentInstructionContextV1 context);
+        Task BeginConditionalAsync(string expression, DocumentInstructionContextV1 context);
+
+        Task EndCondititionalAsync(DocumentInstructionContextV1 context);
+
+        Task WriteTextAsync(string text, string reference, DocumentInstructionContextV1 context);
     }
 
     public interface IDocumentBuilderV1<T> : IDocumentBuilder<T>, IDocumentBuilderV1 { }

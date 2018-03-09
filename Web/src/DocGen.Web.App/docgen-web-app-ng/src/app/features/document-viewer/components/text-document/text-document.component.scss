@@ -1,0 +1,22 @@
+div {
+    .document {
+        .page {
+            width: 21cm;
+            min-height: 29.7cm;
+            padding-left: 2cm;
+            padding-top: 2cm;
+            padding-right: 2cm;
+            padding-bottom: 2cm;
+
+            white-space: pre-line;
+
+            background: #fff;
+            box-shadow: 0 4px 5px rgba(75, 75, 75, 0.2);
+            outline: 0;
+
+            &:not(:first-child) {
+                margin-top: 50px;
+            }
+        }
+    }
+}
