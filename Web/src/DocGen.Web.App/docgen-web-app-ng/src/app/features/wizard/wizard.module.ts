@@ -6,7 +6,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
   MatInputModule, MatRadioModule, MatCheckboxModule,
   MatButtonModule,
-  MatCardModule
+  MatCardModule,
+  MatSnackBarModule
 } from '@angular/material';
 import { StoreModule } from '@ngrx/store';
 import { reducer, metaReducers } from './reducers';
@@ -29,7 +30,7 @@ import { TemplateStepNavigationComponent } from './components/template-step-navi
     HttpModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    MatInputModule, MatRadioModule, MatCheckboxModule, MatButtonModule, MatCardModule,
+    MatInputModule, MatRadioModule, MatCheckboxModule, MatButtonModule, MatCardModule, MatSnackBarModule,
     WizardRoutingModule,
     StoreModule.forFeature('wizard', reducer, { metaReducers }),
     !environment.production ? StoreDevtoolsModule.instrument() : [],

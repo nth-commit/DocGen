@@ -1,5 +1,9 @@
 import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
-import { Observable, BehaviorSubject, Subscription } from 'rxjs';
+
+import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Subscription } from 'rxjs/Subscription';
+import 'rxjs/add/observable/combineLatest';
 
 import { TemplateStep, TemplateStepInput, InputValueCollection, InputValue, TemplateUtility } from '../../../core';
 

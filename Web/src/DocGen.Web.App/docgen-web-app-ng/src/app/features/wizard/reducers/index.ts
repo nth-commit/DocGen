@@ -15,11 +15,18 @@ import {
 } from '../../core';
 
 export enum WizardActionTypes {
+  REFRESH = '[Wizard] Refresh',
   BEGIN = '[Wizard] Begin',
   UPDATE_VALUES = '[Wizard] Update values',
   NEXT_STEP = '[Wizard] Next step',
   PREVIOUS_STEP = '[Wizard] Previous step',
   COMPLETE = '[Wizard] Complete',
+  CLEAR_VALUES = '[Wizard] Clear'
+}
+
+export class Refresh implements Action {
+  readonly type: string = WizardActionTypes.REFRESH;
+  constructor (public payload: WizardState) { }
 }
 
 export class Begin implements Action {
@@ -47,7 +54,13 @@ export class Complete implements Action {
   constructor (public payload?: any) { }
 }
 
-export type WizardAction = Begin | UpdateValues; // | NextStep | PreviousStep | Complete;
+export class ClearValues implements Action {
+  readonly type: string = WizardActionTypes.CLEAR_VALUES;
+  constructor () { }
+}
+
+
+export type WizardAction = Begin | UpdateValues| NextStep | PreviousStep | Complete;
 
 export interface State {
   wizard: WizardState;
@@ -66,11 +79,19 @@ export interface WizardState {
   values: InputValueCollection;
   currentStepValid: boolean;
   valid: boolean;
-  completed: true;
+  completed: boolean;
+  empty: boolean;
 }
+
+const DEFAULT_WIZARD_STATE = <WizardState>{
+  stepIndexHistory: []
+};
 
 export const reducerBase: ActionReducer<WizardState> = (state, action: WizardAction) => {
   switch (action.type) {
+    case WizardActionTypes.REFRESH: {
+      return action.payload;
+    }
     case WizardActionTypes.BEGIN: {
       return Object.assign({}, state, <WizardState>{
         template: action.payload,
@@ -134,10 +155,18 @@ export const reducerBase: ActionReducer<WizardState> = (state, action: WizardAct
         completed: true
       });
     }
+    case WizardActionTypes.CLEAR_VALUES: {
+      return Object.assign(
+        {},
+        <WizardState>{
+          template: state.template,
+          currentStepIndex: 0,
+          values: InputValueCollectionUtility.fromTemplate(state.template)
+        },
+        DEFAULT_WIZARD_STATE);
+    }
     default: {
-      return state || <WizardState>{
-        stepIndexHistory: []
-      };
+      return state || DEFAULT_WIZARD_STATE;
     }
   }
 };
@@ -167,6 +196,8 @@ export const reducer: ActionReducer<WizardState> = (state, action: WizardAction)
     state.currentStepValid = state.currentStep.inputs
       .map(i => TemplateUtility.getTemplateStepInputId(state.currentStep, i))
       .every(inputId => state.values[inputId] !== undefined && state.values[inputId] !== null);
+
+    state.empty = Object.keys(state.values).every(id => state.values[id] === undefined || state.values[id] === null);
   }
 
   return state;

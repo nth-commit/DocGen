@@ -8,7 +8,7 @@ import 'rxjs/add/operator/map';
 
 import { getAppSettings } from '../../../../app.settings';
 import { Template } from '../../../core';
-import { State, Begin } from '../../reducers';
+import { State, WizardState, Refresh, Begin } from '../../reducers';
 
 @Injectable()
 export class WizardPageResolve implements Resolve<Template> {
@@ -18,13 +18,19 @@ export class WizardPageResolve implements Resolve<Template> {
         private store: Store<State>
     ) { }
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Template | Observable<Template> | Promise<Template> {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<Template> {
         const templateId = route.paramMap.get('templateId');
-        const template$ = this.http.get(`${getAppSettings().Urls.Api}/templates/${templateId}`).map(r => r.json());
 
-        const templatePromise = template$.toPromise();
-        templatePromise.then(template => this.store.dispatch(new Begin(template)));
-
-        return templatePromise;
+        const wizardStateJson = localStorage.getItem(`templates:${templateId}:wizard`);
+        if (wizardStateJson) {
+            const wizardState: WizardState = JSON.parse(wizardStateJson);
+            this.store.dispatch(new Refresh(wizardState));
+            return new Promise(resolve => resolve(wizardState.template));
+        } else {
+            const template$ = this.http.get(`${getAppSettings().Urls.Api}/templates/${templateId}`).map(r => r.json());
+            const templatePromise = template$.toPromise();
+            templatePromise.then(template => this.store.dispatch(new Begin(template)));
+            return templatePromise;
+        }
     }
 }
