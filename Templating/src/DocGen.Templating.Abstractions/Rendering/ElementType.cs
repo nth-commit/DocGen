@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DocGen.Templating.Rendering.Builders.V1.Serializable
+namespace DocGen.Templating.Rendering
 {
     public enum ElementType
     {
@@ -12,7 +12,7 @@ namespace DocGen.Templating.Rendering.Builders.V1.Serializable
 
         Block,
 
-        Inline,
+        Text,
 
         List,
 

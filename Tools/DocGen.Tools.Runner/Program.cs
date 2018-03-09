@@ -10,6 +10,7 @@ using DocGen.Templating.Validation.V1;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MoreLinq;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -136,27 +137,27 @@ namespace DocGen.Tools.Runner
 
                 #region Create document
 
-                var service = serviceProvider.GetRequiredService<DocumentService>();
-                var result = service.CreateDocumentAsync(
-                    new DocumentCreate()
-                    {
-                        TemplateId = "non-disclosure-agreement",
-                        TemplateVersion = 1,
-                        InputValues = new Dictionary<string, dynamic>()
-                        {
-                            { "organisation.name", "Automio Limited" },
-                            { "organisation.location", "New Plymouth" },
-                            { "organisation.description", "operates a carpet manufacturing factory in Stratford" },
-                            { "contractor.type", "company" },
-                            { "contractor.company.name", "Lava Lamps Limited" },
-                            { "contractor.company.location", "New Plymouth" },
-                            { "disclosure_reason", "To provide marketing services to the Organisation" },
-                            { "disclosure_access", true },
-                            { "disclosure_access.details.persons", "sub-contractors, board members" }
-                        }
-                    }).GetAwaiter().GetResult();
+                //var service = serviceProvider.GetRequiredService<DocumentService>();
+                //var result = service.CreateDocumentAsync(
+                //    new DocumentCreate()
+                //    {
+                //        TemplateId = "non-disclosure-agreement",
+                //        TemplateVersion = 1,
+                //        InputValues = new Dictionary<string, dynamic>()
+                //        {
+                //            { "organisation.name", "Automio Limited" },
+                //            { "organisation.location", "New Plymouth" },
+                //            { "organisation.description", "operates a carpet manufacturing factory in Stratford" },
+                //            { "contractor.type", "company" },
+                //            { "contractor.company.name", "Lava Lamps Limited" },
+                //            { "contractor.company.location", "New Plymouth" },
+                //            { "disclosure_reason", "To provide marketing services to the Organisation" },
+                //            { "disclosure_access", true },
+                //            { "disclosure_access.details.persons", "sub-contractors, board members" }
+                //        }
+                //    }).GetAwaiter().GetResult();
 
-                Console.WriteLine(result.Body);
+                //Console.WriteLine(result.Body);
 
                 #endregion
             }
@@ -208,7 +209,7 @@ namespace DocGen.Tools.Runner
             //    }
             #endregion
 
-            //RenderTemplateAsync(serviceProvider).GetAwaiter().GetResult();
+            RenderTemplateAsync(serviceProvider).GetAwaiter().GetResult();
 
             Console.ReadLine();
         }
@@ -216,7 +217,7 @@ namespace DocGen.Tools.Runner
         private static async Task RenderTemplateAsync(IServiceProvider serviceProvider)
         {
             var templateRenderer = serviceProvider.GetRequiredService<IDocumentRenderer>();
-            var result = await templateRenderer.RenderAsync<TextDocumentResult>(
+            var result = await templateRenderer.RenderAsync<SerializableDocument>(
                 @"<document>
                     <page>
                         List 1
@@ -289,7 +290,7 @@ namespace DocGen.Tools.Runner
                     }
                 });
 
-            Console.WriteLine(result.Body);
+            Console.WriteLine(JsonConvert.SerializeObject(result.Instructions, Formatting.Indented));
         }
     }
 }

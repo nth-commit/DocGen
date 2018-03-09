@@ -1,4 +1,5 @@
 ﻿using DocGen.Api.Core.Documents;
+using DocGen.Templating.Rendering;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -19,8 +20,8 @@ namespace DocGen.Api.Controllers
         }
 
         [HttpPost("")]
-        [Produces("text/plain")]
-        public async Task<ContentResult> Create([FromQuery] string templateId)
+        [ProducesResponseType(typeof(SerializableDocument), 200)]
+        public async Task<IActionResult> Create([FromQuery] string templateId)
         {
             var document = await _documentService.CreateDocumentAsync(new DocumentCreate()
             {
@@ -31,7 +32,7 @@ namespace DocGen.Api.Controllers
                     .ToDictionary(kvp => kvp.Key, kvp => (dynamic)kvp.Value)
             });
 
-            return Content(document.Body);
+            return Ok(document);
         }
     }
 }

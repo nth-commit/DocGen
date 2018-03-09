@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DocGen.Templating.Rendering.Builders.V1.Text
 {
-    public class TextDocumentBuilderV1 : IDocumentBuilderV1<TextDocumentResult>
+    public class TextDocumentBuilderV1 : IDocumentBuilderV1<TextDocument>
     {
         private readonly StringBuilder _stringBuilder = new StringBuilder();
         private readonly List<int> _pageLocations = new List<int>();
@@ -19,7 +19,7 @@ namespace DocGen.Templating.Rendering.Builders.V1.Text
 
         public int MarkupVersion => 1;
 
-        public TextDocumentResult Result
+        public TextDocument Result
         {
             get
             {
@@ -28,7 +28,7 @@ namespace DocGen.Templating.Rendering.Builders.V1.Text
                     throw new InvalidOperationException("Rendering is not complete");
                 }
 
-                return new TextDocumentResult()
+                return new TextDocument()
                 {
                     Body = _stringBuilder.ToString(),
                     PageLocations = _pageLocations

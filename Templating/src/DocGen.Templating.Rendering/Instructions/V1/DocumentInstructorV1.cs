@@ -210,7 +210,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
 
         private async Task InstructWriteTextAsync(XText text, string reference = null)
         {
-            await InstructWriteTextAsync(text.Value, reference);
+            await InstructWriteTextAsync(text.Value.Trim(), reference);
         }
 
         private async Task InstructWriteTextAsync(string text, string reference = null)

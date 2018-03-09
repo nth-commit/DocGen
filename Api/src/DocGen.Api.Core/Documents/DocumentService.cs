@@ -27,7 +27,7 @@ namespace DocGen.Api.Core.Documents
             _documentRenderer = documentRenderer;
         }
 
-        public async Task<TextDocumentResult> CreateDocumentAsync(DocumentCreate create)
+        public async Task<SerializableDocument> CreateDocumentAsync(DocumentCreate create)
         {
             Validator.ValidateNotNull(create, nameof(create));
             Validator.Validate(create);
@@ -44,7 +44,7 @@ namespace DocGen.Api.Core.Documents
 
             ValidateDocumentAgainstTemplate(create, template);
 
-            return await _documentRenderer.RenderAsync<TextDocumentResult>(
+            return await _documentRenderer.RenderAsync<SerializableDocument>(
                 template.Markup,
                 template.MarkupVersion,
                 new DocumentRenderModel()
