@@ -127,7 +127,7 @@ export const reducerBase: ActionReducer<WizardState> = (state, action: WizardAct
         }
 
         step.inputs.forEach((input, inputIndex) => {
-          result[inputIndex] = skipValidation || (state.values[input.id] !== undefined && state.values[input.id] !== null);
+          result[inputIndex] = skipValidation || (values[input.id] !== undefined && values[input.id] !== null);
         });
 
         templateStepInputsValid[stepIndex] = result;

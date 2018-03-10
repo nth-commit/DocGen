@@ -64,8 +64,12 @@ export class WizardEffects {
     .ofType(WizardActionTypes.COMPLETE)
     .withLatestFrom(this.store)
     .do(([action, state]) => {
-      localStorage.setItem(this.getKey(state, 'values'), JSON.stringify(state.wizard.values)); // Used for document generation module
-      this.router.navigateByUrl(`/${state.wizard.template.id}/preview`);
+      const { template } = state.wizard;
+
+      const valuesKey = this.getKey(state, `${template.version}:values`);
+      localStorage.setItem(valuesKey, JSON.stringify(state.wizard.values)); // Used for document generation module
+
+      this.router.navigateByUrl(`/${template.id}/preview?version=${template.version}`);
     });
 
   @Effect({ dispatch: false }) clear$ = this.actions$
@@ -76,6 +80,6 @@ export class WizardEffects {
     });
 
     private getKey(state: State, suffix: string) {
-      return `templates:${state.wizard.template.id}:${suffix}`;
+      return `documents:${state.wizard.template.id}:${suffix}`;
     }
 }

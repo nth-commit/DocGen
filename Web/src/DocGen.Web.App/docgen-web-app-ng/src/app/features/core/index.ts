@@ -1,3 +1,5 @@
+export { CoreModule } from './core.module';
+
 export
 {
     Template,
@@ -15,3 +17,5 @@ export
 } from './models';
 
 export { InputValueCollectionUtility, TemplateUtility } from './utility';
+
+export { TemplateService } from './services/templates/template.service';

@@ -15,6 +15,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../../../environments/environment';
 import { EffectsModule } from '@ngrx/effects';
 import { WizardEffects } from './wizard.effects';
+import { CoreModule } from '../core';
 
 import { WizardRoutingModule } from './wizard-routing.module';
 
@@ -34,7 +35,8 @@ import { TemplateStepNavigationComponent } from './components/template-step-navi
     WizardRoutingModule,
     StoreModule.forFeature('wizard', reducer, { metaReducers }),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
-    EffectsModule.forFeature([WizardEffects])
+    EffectsModule.forFeature([WizardEffects]),
+    CoreModule
   ],
   declarations: [WizardPageComponent, TemplateStepInputComponent, TemplateStepComponent, TemplateStepNavigationComponent],
   providers: []

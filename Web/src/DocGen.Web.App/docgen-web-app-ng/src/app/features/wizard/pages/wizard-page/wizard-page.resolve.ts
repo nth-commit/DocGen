@@ -7,43 +7,29 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
 import { getAppSettings } from '../../../../app.settings';
-import { Template } from '../../../core';
+import { TemplateService, Template } from '../../../core';
 import { State, WizardState, Refresh, Begin } from '../../reducers';
 
 @Injectable()
 export class WizardPageResolve implements Resolve<Template> {
 
     constructor(
-        private http: Http,
+        private templateService: TemplateService,
         private store: Store<State>
     ) { }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<Template> {
         const templateId = route.paramMap.get('templateId');
 
-        const wizardStateJson = localStorage.getItem(`templates:${templateId}:wizard`);
+        const wizardStateJson = localStorage.getItem(`documents:${templateId}:wizard`);
         if (wizardStateJson) {
+            // TODO: Ensure template version is latest
             const wizardState: WizardState = JSON.parse(wizardStateJson);
             this.store.dispatch(new Refresh(wizardState));
             return new Promise(resolve => resolve(wizardState.template));
         } else {
-            const template$ = this.http.get(`${getAppSettings().Urls.Api}/templates/${templateId}`).map(r => {
-                const result: Template = r.json();
-
-                result.steps.forEach(s => {
-                    s.inputs.forEach(i => {
-                        let id = s.id;
-                        if (i.key) {
-                            id += `.${i.key}`;
-                        }
-                        i.id = id;
-                    });
-                });
-
-                return result;
-            });
-            const templatePromise = template$.toPromise();
-            templatePromise.then(template => this.store.dispatch(new Begin(template)));
+            const templatePromise = this.templateService.getLatestTemplate(templateId);
+            templatePromise.then(t => this.store.dispatch(new Begin(t)));
             return templatePromise;
         }
     }

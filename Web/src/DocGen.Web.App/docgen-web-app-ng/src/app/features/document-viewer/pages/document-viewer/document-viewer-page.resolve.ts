@@ -17,8 +17,9 @@ export class DocumentViewerPageResolve implements Resolve<TextDocument> {
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): TextDocument | Observable<TextDocument> | Promise<TextDocument> {
         const templateId = route.paramMap.get('templateId');
+        const templateVersion = route.queryParamMap.get('version') || '1';
 
-        const key = `templates:${templateId}:values`;
+        const key = `documents:${templateId}:${templateVersion}:values`;
         const inputValuesJson = localStorage.getItem(key);
 
         if (inputValuesJson) {
@@ -28,6 +29,7 @@ export class DocumentViewerPageResolve implements Resolve<TextDocument> {
 
             const params = new URLSearchParams();
             params.append('templateId', templateId);
+            params.append('templateVersion', templateVersion);
             Object.keys(inputValues).forEach(k => {
                 params.append(k, inputValues[k]);
             });

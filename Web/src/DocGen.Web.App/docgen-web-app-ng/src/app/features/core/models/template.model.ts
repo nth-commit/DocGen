@@ -3,7 +3,7 @@
 export interface Template {
     id: string;
     name: string;
-    verions: number;
+    version: number;
     description: string;
     markup: string;
     markupVersion: number;
