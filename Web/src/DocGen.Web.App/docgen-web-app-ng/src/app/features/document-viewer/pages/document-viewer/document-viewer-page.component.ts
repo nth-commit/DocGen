@@ -1,5 +1,5 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
@@ -21,12 +21,19 @@ export class DocumentViewerPageComponent implements OnInit {
   isToolbarVisible = true;
 
   constructor(
+    private router: Router,
     private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
     this.template$ = this.route.data.map(d => d.template);
     this.textDocument$ = this.route.data.map(d => d.textDocument);
+  }
+
+  onEditClick() {
+    this.template$.first().subscribe(t => {
+      this.router.navigateByUrl(t.id);
+    });
   }
 
   @HostListener('window:mousewheel', ['$event'])
