@@ -9,7 +9,7 @@ import { getAppSettings } from '../../../../app.settings';
 import { TextDocument, InputValueCollection } from '../../../core';
 
 @Injectable()
-export class DocumentViewerPageResolve implements Resolve<TextDocument> {
+export class TextDocumentResolve implements Resolve<TextDocument> {
 
     constructor(
         private http: Http

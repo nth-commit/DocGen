@@ -7,6 +7,22 @@
         transition: all 0.2s;
     }
 
+    mat-toolbar {
+
+        .template-name-container {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+
+            .template-name {
+            }
+        }
+
+        .fill-remaining-space {
+            flex: 1;
+        }
+    }
+
     &:not(.visible) {
         .toolbar-container {
             transform: translateY(-100%);

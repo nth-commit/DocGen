@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
-import { TextDocument } from '../../../core';
+import { Template, TextDocument } from '../../../core';
 
 @Component({
   selector: 'app-document-viewer-page',
@@ -13,6 +13,7 @@ import { TextDocument } from '../../../core';
 })
 export class DocumentViewerPageComponent implements OnInit {
 
+  template$: Observable<Template>;
   textDocument$: Observable<TextDocument>;
 
   lastScrollDirection: 'up' | 'down' = null;
@@ -24,6 +25,7 @@ export class DocumentViewerPageComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.template$ = this.route.data.map(d => d.template);
     this.textDocument$ = this.route.data.map(d => d.textDocument);
   }
 

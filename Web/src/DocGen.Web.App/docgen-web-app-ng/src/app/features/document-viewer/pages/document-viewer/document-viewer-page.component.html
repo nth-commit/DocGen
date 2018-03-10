@@ -1,7 +1,12 @@
 <div class="toolbar-position" [ngClass]="{ 'visible': isToolbarVisible }">
   <div class="toolbar-container">
     <mat-toolbar>
-      <span>My Application</span>
+      <div class="template-name-container">
+        <div class="template-name">{{ (template$ | async).name }}</div>
+      </div>
+      <button mat-raised-button color="accent" (click)="onEditClick($event)">EDIT</button>
+      <div class="fill-remaining-space"></div>
+      <button mat-raised-button color="primary" (click)="onSaveClick($event)">SAVE</button>
     </mat-toolbar>
   </div>
 </div>
