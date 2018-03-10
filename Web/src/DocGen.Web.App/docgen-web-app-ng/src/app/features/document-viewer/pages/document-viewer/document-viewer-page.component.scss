@@ -1,4 +1,20 @@
-div {
+.toolbar-position {
+    position: fixed;
+    width: 100%;
+
+    .toolbar-container {
+        position: relative;
+        transition: all 0.2s;
+    }
+
+    &:not(.visible) {
+        .toolbar-container {
+            transform: translateY(-100%);
+        }
+    }
+}
+
+.document-container {
     display: flex;
     justify-content: center;
     background-color: #eee;
