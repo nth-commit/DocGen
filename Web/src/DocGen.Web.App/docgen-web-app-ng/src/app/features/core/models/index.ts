@@ -11,4 +11,11 @@ export {
 export { InputValue } from './input-value.model';
 export { InputValueCollection} from './input-value-collection.model';
 
-export { TextDocument } from './text-document.model';
+export {
+    SerializedDocument,
+    Instruction,
+    ElementType,
+    WriteType,
+    TextInstruction,
+    TextInstructionBody
+} from './document.model';

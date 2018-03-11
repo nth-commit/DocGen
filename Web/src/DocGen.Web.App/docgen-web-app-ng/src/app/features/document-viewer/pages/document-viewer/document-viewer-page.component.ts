@@ -4,7 +4,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
-import { Template, TextDocument } from '../../../core';
+import { Template } from '../../../core';
+import { TextDocumentResult, SerializedDocumentResult, DocumentType } from '../../models';
 
 @Component({
   selector: 'app-document-viewer-page',
@@ -14,7 +15,8 @@ import { Template, TextDocument } from '../../../core';
 export class DocumentViewerPageComponent implements OnInit {
 
   template$: Observable<Template>;
-  textDocument$: Observable<TextDocument>;
+  document$: Observable<TextDocumentResult | SerializedDocumentResult>;
+  documentType$: Observable<DocumentType>;
 
   lastScrollDirection: 'up' | 'down' = null;
   isMouseOverToolbar = false;
@@ -27,7 +29,8 @@ export class DocumentViewerPageComponent implements OnInit {
 
   ngOnInit() {
     this.template$ = this.route.data.map(d => d.template);
-    this.textDocument$ = this.route.data.map(d => d.textDocument);
+    this.document$ = this.route.data.map(d => d.document);
+    this.documentType$ = this.document$.map(d => d.type);
   }
 
   onEditClick() {

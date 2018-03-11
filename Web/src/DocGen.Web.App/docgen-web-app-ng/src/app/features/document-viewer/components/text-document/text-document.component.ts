@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import { TextDocument } from '../../../core';
+import { TextDocumentResult } from '../../models';
 
 @Component({
   selector: 'app-document-viewer-text-document',
@@ -8,7 +8,7 @@ import { TextDocument } from '../../../core';
   styleUrls: ['./text-document.component.scss']
 })
 export class TextDocumentComponent implements OnInit {
-  @Input() textDocument: TextDocument;
+  @Input() textDocument: TextDocumentResult;
 
   constructor() { }
 

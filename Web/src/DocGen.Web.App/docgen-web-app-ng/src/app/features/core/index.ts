@@ -13,7 +13,12 @@ export
     InputValue,
     InputValueCollection,
 
-    TextDocument
+    SerializedDocument,
+    Instruction,
+    ElementType,
+    WriteType,
+    TextInstruction,
+    TextInstructionBody
 } from './models';
 
 export { InputValueCollectionUtility, TemplateUtility } from './utility';
