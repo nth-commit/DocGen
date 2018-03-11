@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import * as jsPDF from 'jspdf';
+import * as PDFDocument from '../../../../../thirdparty/pdfkit';
+import * as blobStream from '../../../../../thirdparty/blob-stream';
 
 import { SerializableDocument } from '../../../core';
 
@@ -10,21 +11,20 @@ export class PdfDocumentRendererService {
 
   constructor() { }
 
-  render(document: SerializableDocument): string {
-    const pdfDocument: jsPDF = new jsPDF();
+  render(document: SerializableDocument): Promise<string> {
+    const pdfDoc = new PDFDocument();
 
-    pdfDocument.setFontSize(12);
+    const stream = pdfDoc.pipe(blobStream());
+    pdfDoc.text('Hello world!');
+    pdfDoc.save();
+    pdfDoc.end();
 
-    pdfDocument.text('Hello world!', 0, 4);
+    return new Promise(resolve => {
+      stream.on('finish', () => {
+        resolve(stream.toBlobURL('application/pdf'));
+      });
+    });
 
-    return pdfDocument.output('bloburi');
+    // return new Promise(resolve => resolve(''));
   }
-}
-
-declare interface jsPDF {
-  setFontSize(size: number): jsPDF;
-  text(text: string | string[], x?: number, y?: number): jsPDF;
-
-  output(type: 'bloburi'): string;
-  output<T>(type: string): T;
 }

@@ -20,7 +20,8 @@ export class PdfDocumentComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    const result = this.pdfDocumentRenderer.render(this.serializableDocument);
-    this.pdfBlobUri = this.domSanitizer.bypassSecurityTrustResourceUrl(result);
+    this.pdfDocumentRenderer.render(this.serializableDocument).then(result => {
+      this.pdfBlobUri = this.domSanitizer.bypassSecurityTrustResourceUrl(result);
+    });
   }
 }
