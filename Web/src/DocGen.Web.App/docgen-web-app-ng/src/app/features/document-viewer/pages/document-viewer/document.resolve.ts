@@ -6,8 +6,8 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
 import { getAppSettings } from '../../../../app.settings';
-import { InputValueCollection, SerializedDocument } from '../../../core';
-import { DocumentResult, SerializedDocumentResult, TextDocumentResult, DocumentType } from '../../models';
+import { InputValueCollection, SerializableDocument } from '../../../core';
+import { DocumentResult, SerializableDocumentResult, TextDocumentResult, DocumentType } from '../../models';
 
 @Injectable()
 export class DocumentResolve implements Resolve<DocumentResult> {
@@ -62,7 +62,7 @@ export class DocumentResolve implements Resolve<DocumentResult> {
                 if (documentType === 'text') {
                     return new TextDocumentResult(r.text());
                 } else {
-                    return new SerializedDocumentResult(r.json());
+                    return new SerializableDocumentResult(r.json());
                 }
             })
             .toPromise();

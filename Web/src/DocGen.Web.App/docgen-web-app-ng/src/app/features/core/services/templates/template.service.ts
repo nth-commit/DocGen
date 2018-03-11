@@ -17,6 +17,10 @@ export class TemplateService {
   }
 
   getTemplate(id: string, version: number): Promise<Template> {
+    if (!id) {
+      throw new Error('Invalid template id');
+    }
+
     if (version !== null) {
       const templateJson = localStorage.getItem(this.getTemplateKey(id, version));
       if (templateJson) {

@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
 import { Template } from '../../../core';
-import { TextDocumentResult, SerializedDocumentResult, DocumentType } from '../../models';
+import { TextDocumentResult, SerializableDocumentResult, DocumentType } from '../../models';
 
 @Component({
   selector: 'app-document-viewer-page',
@@ -15,7 +15,7 @@ import { TextDocumentResult, SerializedDocumentResult, DocumentType } from '../.
 export class DocumentViewerPageComponent implements OnInit {
 
   template$: Observable<Template>;
-  document$: Observable<TextDocumentResult | SerializedDocumentResult>;
+  document$: Observable<TextDocumentResult | SerializableDocumentResult>;
   documentType$: Observable<DocumentType>;
 
   lastScrollDirection: 'up' | 'down' = null;

@@ -12,7 +12,7 @@ export { InputValue } from './input-value.model';
 export { InputValueCollection} from './input-value-collection.model';
 
 export {
-    SerializedDocument,
+    SerializableDocument,
     Instruction,
     ElementType,
     WriteType,

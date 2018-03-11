@@ -1,5 +1,5 @@
-export interface SerializedDocument {
-    instruction: Instruction[];
+export interface SerializableDocument {
+    instructions: Instruction[];
 }
 
 export interface Instruction<TBody = any> {

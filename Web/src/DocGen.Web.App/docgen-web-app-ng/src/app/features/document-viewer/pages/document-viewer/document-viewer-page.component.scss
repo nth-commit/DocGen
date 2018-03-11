@@ -30,10 +30,20 @@
     }
 }
 
-.document-container {
+.text-document-container {
     display: flex;
     justify-content: center;
     background-color: #eee;
     padding-top: 100px;
     padding-bottom: 50px;
+
+}
+
+app-document-viewer-pdf-document {
+    display: block;
+    width: 100%;
+
+    // Magic! (Some function of iframe + the toolbar height)
+    height: calc(100vh - 70px);
+    padding-top: 66px;
 }

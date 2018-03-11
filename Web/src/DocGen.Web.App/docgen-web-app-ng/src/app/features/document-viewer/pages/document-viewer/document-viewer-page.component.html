@@ -10,8 +10,12 @@
     </mat-toolbar>
   </div>
 </div>
-<div class="document-container">
+<div class="text-document-container" *ngIf="(documentType$ | async) === 'text'">
   <app-document-viewer-text-document
     [textDocument]="document$ | async">
   </app-document-viewer-text-document>
 </div>
+<app-document-viewer-pdf-document
+  *ngIf="(documentType$ | async) === 'pdf'"
+  [serializableDocument]="(document$ | async).document">
+</app-document-viewer-pdf-document>

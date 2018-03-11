@@ -1,4 +1,4 @@
-import { SerializedDocument } from '../../core';
+import { SerializableDocument } from '../../core';
 
 export type DocumentType = 'text' | 'pdf';
 
@@ -12,7 +12,7 @@ export class TextDocumentResult implements DocumentResult<string> {
     constructor(public document: string) { }
 }
 
-export class SerializedDocumentResult implements DocumentResult<SerializedDocument> {
+export class SerializableDocumentResult implements DocumentResult<SerializableDocument> {
     readonly type = 'pdf';
-    constructor(public document: SerializedDocument) { }
+    constructor(public document: SerializableDocument) { }
 }

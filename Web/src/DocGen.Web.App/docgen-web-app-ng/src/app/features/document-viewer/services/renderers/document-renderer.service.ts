@@ -1,3 +1,5 @@
-export interface IDocumentRenderer {
+import { SerializableDocument } from '../../../core';
 
+export interface IDocumentRenderer {
+    render(document: SerializableDocument): string;
 }

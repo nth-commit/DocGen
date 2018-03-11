@@ -13,7 +13,7 @@ export
     InputValue,
     InputValueCollection,
 
-    SerializedDocument,
+    SerializableDocument,
     Instruction,
     ElementType,
     WriteType,
