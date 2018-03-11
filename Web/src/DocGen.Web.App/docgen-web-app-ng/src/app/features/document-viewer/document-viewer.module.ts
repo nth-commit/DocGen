@@ -5,7 +5,7 @@ import { MatToolbarModule, MatButtonModule } from '@angular/material';
 
 import { DocumentViewerRoutingModule } from './document-viewer-routing.module';
 
-import { PdfDocumentRendererService } from './services/renderers';
+import { DocumentRenderingService } from './services/document-rendering/document-rendering.service';
 
 import { DocumentViewerPageComponent } from './pages/document-viewer/document-viewer-page.component';
 import { TextDocumentComponent } from './components/text-document/text-document.component';
@@ -18,7 +18,7 @@ import { PdfDocumentComponent } from './components/pdf-document/pdf-document.com
     DocumentViewerRoutingModule
   ],
   providers: [
-    PdfDocumentRendererService
+    DocumentRenderingService
   ],
   declarations: [
     DocumentViewerPageComponent,

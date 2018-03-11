@@ -28,6 +28,7 @@ namespace DocGen.Templating.Rendering.Builders.V1.Serializable
 
                 return new SerializableDocument()
                 {
+                    MarkupVersion = MarkupVersion,
                     Instructions = _instructions
                 };
             }

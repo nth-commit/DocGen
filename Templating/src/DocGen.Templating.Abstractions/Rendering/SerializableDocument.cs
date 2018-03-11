@@ -6,6 +6,8 @@ namespace DocGen.Templating.Rendering
 {
     public class SerializableDocument
     {
+        public int MarkupVersion { get; set; }
+
         public IEnumerable<Instruction> Instructions { get; set; }
     }
 }

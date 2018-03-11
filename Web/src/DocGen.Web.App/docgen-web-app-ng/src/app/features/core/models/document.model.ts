@@ -1,4 +1,5 @@
 export interface SerializableDocument {
+    markupVersion: number;
     instructions: Instruction[];
 }
 

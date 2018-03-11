@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
-import { PdfDocumentRendererService } from '../../services/renderers';
+import { DocumentRenderingService } from '../../services/document-rendering/document-rendering.service';
 import { SerializableDocument } from '../../../core';
 
 @Component({
@@ -15,12 +15,12 @@ export class PdfDocumentComponent implements OnInit {
   pdfBlobUri: SafeResourceUrl;
 
   constructor(
-    private pdfDocumentRenderer: PdfDocumentRendererService,
+    private documentRenderingService: DocumentRenderingService,
     private domSanitizer: DomSanitizer,
   ) { }
 
   ngOnInit() {
-    this.pdfDocumentRenderer.render(this.serializableDocument).then(result => {
+    this.documentRenderingService.render(this.serializableDocument, 'pdf').then(result => {
       this.pdfBlobUri = this.domSanitizer.bypassSecurityTrustResourceUrl(result);
     });
   }
