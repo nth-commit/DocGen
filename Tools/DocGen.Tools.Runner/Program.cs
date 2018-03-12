@@ -217,7 +217,7 @@ namespace DocGen.Tools.Runner
         private static async Task RenderTemplateAsync(IServiceProvider serviceProvider)
         {
             var templateRenderer = serviceProvider.GetRequiredService<IDocumentRenderer>();
-            var result = await templateRenderer.RenderAsync<SerializableDocument>(
+            var result = await templateRenderer.RenderAsync<SerializableDocument_OLD>(
                 @"<document>
                     <page>
                         List 1

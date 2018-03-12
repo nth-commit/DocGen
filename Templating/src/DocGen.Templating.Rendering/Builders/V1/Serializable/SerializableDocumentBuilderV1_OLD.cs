@@ -4,22 +4,20 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
-using System.Linq;
 
 namespace DocGen.Templating.Rendering.Builders.V1.Serializable
 {
-    public class SerializableDocumentBuilderV1 : IDocumentBuilderV1<SerializableDocument>
+    public class SerializableDocumentBuilderV1_OLD : IDocumentBuilderV1<SerializableDocument_OLD>
     {
-        private readonly List<Instruction> _instructions = new List<Instruction>();
+        private readonly List<Instruction_OLD> _instructions = new List<Instruction_OLD>();
         private readonly Stack<string> _currentConditionals = new Stack<string>();
-        private readonly List<string> _pendingText = new List<string>();
 
         private bool _isRendering = false;
         private bool _isComplete = false;
 
         public int MarkupVersion => 1;
 
-        public SerializableDocument Result
+        public SerializableDocument_OLD Result
         {
             get
             {
@@ -28,7 +26,7 @@ namespace DocGen.Templating.Rendering.Builders.V1.Serializable
                     throw new InvalidOperationException("Rendering is not complete");
                 }
 
-                return new SerializableDocument()
+                return new SerializableDocument_OLD()
                 {
                     MarkupVersion = MarkupVersion,
                     Instructions = _instructions
@@ -63,132 +61,94 @@ namespace DocGen.Templating.Rendering.Builders.V1.Serializable
 
         public Task BeginWritePageAsync(DocumentInstructionContextV1 context)
         {
-            DebugAssertTextFlushed();
-            _instructions.Add(new BeginWritePageInstruction());
+            if (!context.IsFirstChild)
+            {
+                Debug.Assert(context.Previous == "page");
+            }
+
+            AddInstruction(ElementType.Page, WriteType.BeginWrite);
+
             return Task.CompletedTask;
         }
 
         public Task EndWritePageAsync(DocumentInstructionContextV1 context)
         {
-            FlushText();
-            _instructions.Add(new EndWritePageInstruction());
+            AddInstruction(ElementType.Page, WriteType.EndWrite);
+
             return Task.CompletedTask;
         }
 
         public Task BeginWriteBlockAsync(DocumentInstructionContextV1 context)
         {
-            FlushText();
-
-            if (!context.IsFirstChild)
-            {
-                WriteParagraphBreak();
-            }
+            AddInstruction(ElementType.Block, WriteType.BeginWrite);
 
             return Task.CompletedTask;
         }
 
         public Task EndWriteBlockAsync(DocumentInstructionContextV1 context)
         {
-            FlushText();
+            AddInstruction(ElementType.Block, WriteType.EndWrite);
+
             return Task.CompletedTask;
         }
 
         public Task BeginWriteListAsync(DocumentInstructionContextV1 context)
         {
-            FlushText();
-
-            if (!context.IsFirstChild)
-            {
-                WriteParagraphBreak();
-            }
-
-            _instructions.Add(new BeginWriteListInstruction());
+            AddInstruction(ElementType.List, WriteType.BeginWrite);
 
             return Task.CompletedTask;
         }
 
         public Task EndWriteListAsync(DocumentInstructionContextV1 context)
         {
-            DebugAssertTextFlushed(); // List cannot contain text elements
-            _instructions.Add(new EndWriteListInstruction());
+            AddInstruction(ElementType.List, WriteType.EndWrite);
+
             return Task.CompletedTask;
         }
 
         public Task BeginWriteListItemAsync(int index, DocumentInstructionContextV1 context)
         {
-            FlushText();
-
-            if (!context.IsFirstChild)
-            {
-                WriteParagraphBreak();
-            }
-
-            _instructions.Add(new BeginWriteListItemInstruction());
+            AddInstruction(ElementType.ListItem, WriteType.BeginWrite);
 
             return Task.CompletedTask;
         }
 
         public Task EndWriteListItemAsync(DocumentInstructionContextV1 context)
         {
-            FlushText();
-            _instructions.Add(new EndWriteListItemInstruction());
+            AddInstruction(ElementType.ListItem, WriteType.EndWrite);
+
             return Task.CompletedTask;
         }
 
         public Task BeginConditionalAsync(string expression, DocumentInstructionContextV1 context)
         {
-            FlushText();
             _currentConditionals.Push(expression);
+
             return Task.CompletedTask;
         }
 
         public Task EndCondititionalAsync(DocumentInstructionContextV1 context)
         {
-            FlushText();
             _currentConditionals.Pop();
+
             return Task.CompletedTask;
         }
 
         public Task WriteTextAsync(string text, string reference, DocumentInstructionContextV1 context)
         {
-            if (IsBlockElement(context.Previous))
-            {
-                // Text should flow to new paragraph if it follows a block element.
-                WriteParagraphBreak();
-            }
-
-            if (string.IsNullOrEmpty(reference))
-            {
-                _pendingText.Add(text);
-            }
-            else
-            {
-                // If this is from a reference, then we want to generate an instruction which contains only this reference.
-                FlushText();
-                _instructions.Add(new WriteTextInstruction(text, reference, _currentConditionals.AsEnumerable()));
-            }
+            _instructions.Add(new TextInstruction_OLD(
+                ElementType.Text,
+                WriteType.Write,
+                _currentConditionals.ToArray(),
+                text,
+                reference));
 
             return Task.CompletedTask;
         }
 
-        private void WriteParagraphBreak()
+        private void AddInstruction(ElementType elementType, WriteType writeType)
         {
-            _instructions.Add(new WriteParagraphBreakInstruction());
+            _instructions.Add(new Instruction_OLD(elementType, writeType, _currentConditionals.ToArray()));
         }
-
-        private bool IsBlockElement(string element)
-        {
-            return element == "block" || element == "list" || element == "list-item";
-        }
-
-        private void FlushText()
-        {
-            _instructions.Add(new WriteTextInstruction(
-                string.Join(string.Empty, _pendingText),
-                null,
-                _currentConditionals.AsEnumerable()));
-        }
-
-        private void DebugAssertTextFlushed() => Debug.Assert(_pendingText.Count() == 0);
     }
 }

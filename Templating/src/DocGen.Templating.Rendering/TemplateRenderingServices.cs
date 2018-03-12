@@ -22,7 +22,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IDocumentInstructor<IDocumentBuilderV1>, DocumentInstructorV1>();
             services.AddTransient<IDocumentInstructor, DocumentInstructorV1>();
             services.AddTransient<IDocumentBuilder<TextDocument>, TextDocumentBuilderV1>();
-            services.AddTransient<IDocumentBuilder<SerializableDocument>, SerializableDocumentBuilderV1>();
+            services.AddTransient<IDocumentBuilder<SerializableDocument_OLD>, SerializableDocumentBuilderV1_OLD>();
 
             return services;
         }

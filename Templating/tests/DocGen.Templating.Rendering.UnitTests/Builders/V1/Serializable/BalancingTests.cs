@@ -42,9 +42,9 @@ namespace DocGen.Templating.Rendering.Builders.V1.Serializable
             }
         }
 
-        private async Task<SerializableDocument> GetResultAsync(string markup, DocumentRenderModel model = null)
+        private async Task<SerializableDocument_OLD> GetResultAsync(string markup, DocumentRenderModel model = null)
         {
-            var builder = new SerializableDocumentBuilderV1();
+            var builder = new SerializableDocumentBuilderV1_OLD();
 
             await new DocumentInstructorV1().InstructRenderingAsync(
                 @"<document><page><inline>1<data>reference</data></inline></page></document>",

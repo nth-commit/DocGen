@@ -4,30 +4,79 @@ using System.Text;
 
 namespace DocGen.Templating.Rendering
 {
-    public class Instruction
+    public abstract class Instruction
     {
-        public ElementType ElementType { get; private set; }
+        public InstructionType Type { get; set; }
 
-        public WriteType WriteType { get; private set; }
+        public Instruction(InstructionType type) { }
+    }
 
-        public IEnumerable<string> Conditions { get; private set; }
-
-        public Instruction(ElementType elementType, WriteType writeType, IEnumerable<string> conditions)
+    public class BeginWritePageInstruction : Instruction
+    {
+        public BeginWritePageInstruction() : base(InstructionType.BeginWritePage)
         {
-            ElementType = elementType;
-            WriteType = writeType;
-            Conditions = conditions;
         }
     }
 
-    public class Instruction<TBody> : Instruction
+    public class EndWritePageInstruction : Instruction
     {
-        public TBody Body { get; private set; }
-
-        public Instruction(ElementType elementType, WriteType writeType, IEnumerable<string> conditions, TBody body)
-            : base(elementType, writeType, conditions)
+        public EndWritePageInstruction() : base(InstructionType.EndWritePage)
         {
-            Body = body;
+        }
+    }
+
+    public class BeginWriteListInstruction : Instruction
+    {
+        public BeginWriteListInstruction() : base(InstructionType.BeginWriteList)
+        {
+        }
+    }
+
+    public class EndWriteListInstruction : Instruction
+    {
+        public EndWriteListInstruction() : base(InstructionType.EndWriteList)
+        {
+        }
+    }
+
+    public class BeginWriteListItemInstruction : Instruction
+    {
+        public BeginWriteListItemInstruction() : base(InstructionType.BeginWriteListItem)
+        {
+        }
+    }
+
+    public class EndWriteListItemInstruction : Instruction
+    {
+        public EndWriteListItemInstruction() : base(InstructionType.EndWriteListItem)
+        {
+        }
+    }
+
+    public class WriteParagraphBreakInstruction : Instruction
+    {
+        public WriteParagraphBreakInstruction() : base(InstructionType.WriteParagraphBreak)
+        {
+        }
+    }
+
+    public class WriteTextInstruction : Instruction
+    {
+        public string Text { get; set; }
+
+        public string Reference { get; set; }
+
+        public IEnumerable<string> Conditions { get; set; }
+
+        public WriteTextInstruction(
+            string text,
+            string reference,
+            IEnumerable<string> conditions)
+            : base(InstructionType.WriteText)
+        {
+            Text = text;
+            Reference = reference;
+            Conditions = conditions;
         }
     }
 }

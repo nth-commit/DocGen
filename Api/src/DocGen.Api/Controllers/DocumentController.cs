@@ -20,7 +20,7 @@ namespace DocGen.Api.Controllers
         }
 
         [HttpPost("")]
-        [ProducesResponseType(typeof(SerializableDocument), 200)]
+        [ProducesResponseType(typeof(SerializableDocument_OLD), 200)]
         public async Task<IActionResult> Create([FromQuery] string templateId)
         {
             var documentCreate = new DocumentCreate()
