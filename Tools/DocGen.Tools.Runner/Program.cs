@@ -37,6 +37,7 @@ namespace DocGen.Tools.Runner
             });
             services.AddTemplatingValidationServices();
             services.AddTemplatingRenderingServices();
+            services.AddTemplatingRenderingPdfServices();
 
             services.AddTransient<IRemoteIpAddressAccessor, StubbedRemoteIpAddressAccessor>();
 
