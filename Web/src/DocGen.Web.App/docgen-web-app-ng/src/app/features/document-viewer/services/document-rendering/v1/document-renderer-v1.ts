@@ -1,12 +1,20 @@
-import { SerializableDocument, Instruction, TextInstruction, TextInstructionBody, ElementType, WriteType } from '../../../../core';
+import {
+  SerializableDocument,
+  Instruction,
+  InstructionType,
+
+  BeginWriteListInstruction, BeginWriteListItemInstruction, BeginWritePageInstruction,
+  EndWriteListInstruction, EndWriteListItemInstruction, EndWritePageInstruction,
+  WriteParagraphBreakInstruction, WriteTextInstruction,
+
+  isBeginWriteList, isBeginWriteListItem, isBeginWritePage,
+  isEndWriteList, isEndWriteListItem, isEndWritePage,
+  isWriteParagraphBreak, isWriteText
+} from '../../../../core';
 
 import { IDocumentRenderer } from '../document-renderer.interface';
 import { IDocumentBuilderV1 } from './document-builder-v1.interface';
 import { PdfDocumentBuilderV1 } from './builders/pdf/pdf-document-builder-v1';
-
-function isTextInstruction(instruction: Instruction): instruction is TextInstruction {
-  return instruction.elementType === ElementType.Text;
-}
 
 export class DocumentRendererV1 implements IDocumentRenderer {
 
@@ -22,8 +30,37 @@ export class DocumentRendererV1 implements IDocumentRenderer {
     await builder.beginWriteDocument();
 
     document.instructions.forEach(async i => {
-      if (isTextInstruction(i)) {
-        await builder.writeText(i.body.text, i.body.reference, i.conditions.length > 0);
+
+      if (isBeginWritePage(i)) {
+        await builder.beginWritePage();
+      }
+
+      if (isBeginWriteList(i)) {
+        await builder.beginWriteList();
+      }
+
+      if (isBeginWriteListItem(i)) {
+        await builder.beginWriteListItem();
+      }
+
+      if (isEndWritePage(i)) {
+        await builder.endWritePage();
+      }
+
+      if (isEndWriteList(i)) {
+        await builder.endWriteList();
+      }
+
+      if (isEndWriteListItem(i)) {
+        await builder.endWriteListItem();
+      }
+
+      if (isWriteParagraphBreak(i)) {
+        await builder.writeParagraphBreak();
+      }
+
+      if (isWriteText(i)) {
+        await builder.writeText(i.text, i.reference, i.conditions);
       }
     });
 

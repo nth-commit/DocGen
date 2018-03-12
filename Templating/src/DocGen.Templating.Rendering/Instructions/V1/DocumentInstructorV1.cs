@@ -1,4 +1,5 @@
-﻿using DocGen.Templating.Rendering.Builders.V1;
+﻿using DocGen.Shared.Core.Dynamic;
+using DocGen.Templating.Rendering.Builders.V1;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,6 +17,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
         private DocumentInstructionContextV1 _context;
         private IDocumentBuilderV1 _builder;
         private DocumentRenderModel _model;
+        private bool _includeMetadata = false;
         private Dictionary<string, string> _valuesByReference;
         private Dictionary<int, int> _listItemIndexContinueOffsetByNestingLevel;
 
@@ -33,6 +35,9 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             _model = model;
             _valuesByReference = _model.Items.ToDictionary(i => i.Reference, i => i.Value);
             _listItemIndexContinueOffsetByNestingLevel = new Dictionary<int, int>();
+
+            if (_model.Options.TryGetValue("includeMetadata", out string includeMetadata) &&
+                bool.TryParse(includeMetadata, out _includeMetadata)) { }
 
             XDocument document = null;
             using (var sr = new StringReader(markup))
@@ -227,7 +232,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             }
 
             _context = _context.BeforeBegin("text");
-            await _builder.WriteTextAsync(text, reference, _context);
+            await _builder.WriteTextAsync(text, _includeMetadata ? reference : null, _context);
             _context = _context.AfterBegin().BeforeEnd().AfterEnd();
         }
 
@@ -238,7 +243,10 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             {
                 if (conditionalResult)
                 {
-                    await _builder.BeginConditionalAsync(conditionalExpression, _context);
+                    if (_includeMetadata)
+                    {
+                        await _builder.BeginConditionalAsync(conditionalExpression, _context);
+                    }
                 }
                 else
                 {
@@ -250,7 +258,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
 
             await writeAction();
 
-            if (!string.IsNullOrEmpty(conditionalExpression))
+            if (!string.IsNullOrEmpty(conditionalExpression) && _includeMetadata)
             {
                 await _builder.EndCondititionalAsync(_context);
             }

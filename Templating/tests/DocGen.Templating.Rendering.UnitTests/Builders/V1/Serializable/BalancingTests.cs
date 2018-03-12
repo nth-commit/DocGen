@@ -10,6 +10,26 @@ namespace DocGen.Templating.Rendering.Builders.V1.Serializable
 {
     public class BalancingTests
     {
+        private static readonly List<InstructionType> __beginInstructionTypes = new List<InstructionType>()
+        {
+            InstructionType.BeginWritePage, InstructionType.BeginWriteList, InstructionType.BeginWriteListItem
+        };
+
+        private static readonly List<InstructionType> __endInstructionTypes = new List<InstructionType>()
+        {
+            InstructionType.EndWritePage, InstructionType.EndWriteList, InstructionType.EndWriteListItem
+        };
+
+        private static readonly Dictionary<InstructionType, string> __instructionNamesByType = new Dictionary<InstructionType, string>()
+        {
+            { InstructionType.BeginWritePage, "page" },
+            { InstructionType.EndWritePage, "page" },
+            { InstructionType.BeginWriteList, "list" },
+            { InstructionType.EndWriteList, "list" },
+            { InstructionType.BeginWriteListItem, "list-item" },
+            { InstructionType.EndWriteListItem, "list-item" },
+        };
+
         [Fact]
         public async Task TestBalanced_1()
         {
@@ -27,24 +47,24 @@ namespace DocGen.Templating.Rendering.Builders.V1.Serializable
                     }
                 });
 
-            var elementTypeStack = new Stack<ElementType>();
+            var elementTypeStack = new Stack<string>();
             foreach (var instruction in result.Instructions)
             {
-                if (instruction.WriteType == WriteType.BeginWrite)
+                if (__beginInstructionTypes.Contains(instruction.Type))
                 {
-                    elementTypeStack.Push(instruction.ElementType);
+                    elementTypeStack.Push(__instructionNamesByType[instruction.Type]);
                 }
-                else if (instruction.WriteType == WriteType.EndWrite)
+                else if (__endInstructionTypes.Contains(instruction.Type))
                 {
                     var expectedElementType = elementTypeStack.Pop();
-                    Assert.Equal(expectedElementType, instruction.ElementType);
+                    Assert.Equal(expectedElementType, __instructionNamesByType[instruction.Type]);
                 }
             }
         }
 
-        private async Task<SerializableDocument_OLD> GetResultAsync(string markup, DocumentRenderModel model = null)
+        private async Task<SerializableDocument> GetResultAsync(string markup, DocumentRenderModel model = null)
         {
-            var builder = new SerializableDocumentBuilderV1_OLD();
+            var builder = new SerializableDocumentBuilderV1();
 
             await new DocumentInstructorV1().InstructRenderingAsync(
                 @"<document><page><inline>1<data>reference</data></inline></page></document>",

@@ -15,10 +15,28 @@ export
 
     SerializableDocument,
     Instruction,
-    ElementType,
-    WriteType,
-    TextInstruction,
-    TextInstructionBody
+    InstructionType,
+
+    BeginWriteListInstruction,
+    BeginWriteListItemInstruction,
+    BeginWritePageInstruction,
+    EndWriteListInstruction,
+    EndWriteListItemInstruction,
+    EndWritePageInstruction,
+    WriteBreakInstruction,
+    WriteParagraphBreakInstruction,
+    WriteSignaturePlaceholder,
+    WriteTextInstruction,
+
+    isBeginWriteList,
+    isBeginWriteListItem,
+    isBeginWritePage,
+    isEndWriteList,
+    isEndWriteListItem,
+    isEndWritePage,
+    isWriteBreak,
+    isWriteParagraphBreak,
+    isWriteText
 } from './models';
 
 export { InputValueCollectionUtility, TemplateUtility } from './utility';

@@ -17,5 +17,7 @@ namespace DocGen.Api.Core.Documents
 
         [Required]
         public IDictionary<string, dynamic> InputValues { get; set; }
+
+        public IDictionary<string, string> TemplatingOptions { get; set; } = new Dictionary<string, string>();
     }
 }

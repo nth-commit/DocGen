@@ -27,8 +27,8 @@ namespace DocGen.Api.Core.Documents
             _documentRenderer = documentRenderer;
         }
 
-        public Task<SerializableDocument_OLD> CreateSerializableDocumentAsync(DocumentCreate create)
-            => CreateDocumentAsync<SerializableDocument_OLD>(create);
+        public Task<SerializableDocument> CreateSerializableDocumentAsync(DocumentCreate create)
+            => CreateDocumentAsync<SerializableDocument>(create);
 
         public Task<TextDocument> CreateTextDocumentAsync(DocumentCreate create)
             => CreateDocumentAsync<TextDocument>(create);
@@ -62,7 +62,8 @@ namespace DocGen.Api.Core.Documents
                     {
                         Reference = kvp.Key,
                         Value = ((object)kvp.Value).ToString()
-                    })
+                    }),
+                    Options = create.TemplatingOptions
                 });
         }
 

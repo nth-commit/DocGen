@@ -14,8 +14,26 @@ export { InputValueCollection} from './input-value-collection.model';
 export {
     SerializableDocument,
     Instruction,
-    ElementType,
-    WriteType,
-    TextInstruction,
-    TextInstructionBody
+    InstructionType,
+
+    BeginWriteListInstruction,
+    BeginWriteListItemInstruction,
+    BeginWritePageInstruction,
+    EndWriteListInstruction,
+    EndWriteListItemInstruction,
+    EndWritePageInstruction,
+    WriteBreakInstruction,
+    WriteParagraphBreakInstruction,
+    WriteSignaturePlaceholder,
+    WriteTextInstruction,
+
+    isBeginWriteList,
+    isBeginWriteListItem,
+    isBeginWritePage,
+    isEndWriteList,
+    isEndWriteListItem,
+    isEndWritePage,
+    isWriteBreak,
+    isWriteParagraphBreak,
+    isWriteText
 } from './document.model';

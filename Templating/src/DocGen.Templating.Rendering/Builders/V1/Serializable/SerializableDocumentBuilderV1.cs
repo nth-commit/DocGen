@@ -183,12 +183,17 @@ namespace DocGen.Templating.Rendering.Builders.V1.Serializable
 
         private void FlushText()
         {
-            _instructions.Add(new WriteTextInstruction(
-                string.Join(string.Empty, _pendingText),
-                null,
-                _currentConditionals.AsEnumerable()));
+            if (_pendingText.Any())
+            {
+                _instructions.Add(new WriteTextInstruction(
+                    string.Join(string.Empty, _pendingText),
+                    null,
+                    _currentConditionals.AsEnumerable()));
+
+                _pendingText.Clear();
+            }
         }
 
-        private void DebugAssertTextFlushed() => Debug.Assert(_pendingText.Count() == 0);
+        private void DebugAssertTextFlushed() => Debug.Assert(!_pendingText.Any());
     }
 }

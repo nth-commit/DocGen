@@ -19,7 +19,7 @@ export class DocumentResolve implements Resolve<DocumentResult> {
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<DocumentResult> {
         const templateId = route.paramMap.get('templateId');
         const templateVersion = route.queryParamMap.get('version') || '1';
-        const documentType: DocumentType = (<DocumentType>route.queryParamMap.get('type')) || 'text';
+        const documentType: DocumentType = (<DocumentType>route.queryParamMap.get('type')) || 'pdf';
 
         const key = `documents:${templateId}:${templateVersion}:values`;
         const inputValuesJson = localStorage.getItem(key);
@@ -30,6 +30,7 @@ export class DocumentResolve implements Resolve<DocumentResult> {
 
             params.append('templateId', templateId);
             params.append('templateVersion', templateVersion);
+            params.append('includeMetadata', false.toString());
             Object.keys(inputValues).forEach(k => {
                 params.append(k, inputValues[k]);
             });

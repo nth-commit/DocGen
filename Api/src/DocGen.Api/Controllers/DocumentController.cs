@@ -20,8 +20,10 @@ namespace DocGen.Api.Controllers
         }
 
         [HttpPost("")]
-        [ProducesResponseType(typeof(SerializableDocument_OLD), 200)]
-        public async Task<IActionResult> Create([FromQuery] string templateId)
+        [ProducesResponseType(typeof(SerializableDocument), 200)]
+        public async Task<IActionResult> Create(
+            [FromQuery] string templateId,
+            [FromQuery] string includeMetadata)
         {
             var documentCreate = new DocumentCreate()
             {
@@ -29,7 +31,11 @@ namespace DocGen.Api.Controllers
                 TemplateVersion = 1, // TODO
                 InputValues = Request.Query
                     .Where(kvp => kvp.Key != nameof(templateId))
-                    .ToDictionary(kvp => kvp.Key, kvp => (dynamic)kvp.Value)
+                    .ToDictionary(kvp => kvp.Key, kvp => (dynamic)kvp.Value),
+                TemplatingOptions = new Dictionary<string, string>()
+                {
+                    { "includeMetadata", includeMetadata }
+                }
             };
 
             if (Request.ContentType == "text/plain")

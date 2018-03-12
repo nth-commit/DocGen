@@ -8,7 +8,10 @@ namespace DocGen.Templating.Rendering
     {
         public InstructionType Type { get; set; }
 
-        public Instruction(InstructionType type) { }
+        public Instruction(InstructionType type)
+        {
+            Type = type;
+        }
     }
 
     public class BeginWritePageInstruction : Instruction

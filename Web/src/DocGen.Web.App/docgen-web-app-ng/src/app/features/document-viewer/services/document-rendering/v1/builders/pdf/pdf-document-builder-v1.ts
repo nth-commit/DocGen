@@ -48,28 +48,44 @@ export class PdfDocumentBuilderV1 implements IDocumentBuilderV1 {
     });
   }
 
-  beginPageDocument(): Promise<void> { return IDENTITY_PROMISE; }
-  endPageDocument(): Promise<void> { return IDENTITY_PROMISE; }
+  beginWritePage(): Promise<void> { return IDENTITY_PROMISE; }
 
-  writeText(text: string, reference: string): Promise<void> {
-    const currentFillColor = this._fillColor;
-    if (reference) {
-      this._pdfDocument.fillColor(RGB_REFERENCE);
-    }
+  endWritePage(): Promise<void> { return IDENTITY_PROMISE; }
 
-    this._pdfDocument.text(text, {
-      continued: true
-    });
+  beginWriteList(): Promise<void> { return IDENTITY_PROMISE; }
 
-    if (reference) {
-      this._pdfDocument.fillColor(currentFillColor);
-    }
+  endWriteList(): Promise<void> { return IDENTITY_PROMISE; }
+
+  beginWriteListItem(): Promise<void> { return IDENTITY_PROMISE; }
+
+  endWriteListItem(): Promise<void> { return IDENTITY_PROMISE; }
+
+  writeParagraphBreak(): Promise<void> {
+    this._pdfDocument.moveDown();
+    this._pdfDocument.text('');
 
     return IDENTITY_PROMISE;
   }
 
-  private writeParagraphBreak() {
-    this._pdfDocument.moveDown();
+  writeText(text: string, reference: string, conditions: string[]): Promise<void> {
+    const currentFillColor = this._fillColor;
+    const hasCondition = conditions.length > 0;
+
+    if (reference) {
+      this._pdfDocument.fillColor(RGB_REFERENCE);
+    } else if (hasCondition) {
+      this._pdfDocument.fillColor(RGB_CONDITIONAL);
+    }
+
+    this._pdfDocument.text(text, {
+      continued: false
+    });
+
+    if (reference || hasCondition) {
+      this._pdfDocument.fillColor(currentFillColor);
+    }
+
+    return IDENTITY_PROMISE;
   }
 
   private setFillColor(fillColor: [number, number, number]) {
