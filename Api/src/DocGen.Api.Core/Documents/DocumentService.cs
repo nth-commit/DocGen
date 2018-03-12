@@ -62,8 +62,7 @@ namespace DocGen.Api.Core.Documents
                     {
                         Reference = kvp.Key,
                         Value = ((object)kvp.Value).ToString()
-                    }),
-                    Options = create.TemplatingOptions
+                    })
                 });
         }
 

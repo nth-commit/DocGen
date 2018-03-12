@@ -30,9 +30,8 @@ export class DocumentResolve implements Resolve<DocumentResult> {
 
             params.append('templateId', templateId);
             params.append('templateVersion', templateVersion);
-            params.append('includeMetadata', false.toString());
             Object.keys(inputValues).forEach(k => {
-                params.append(k, inputValues[k]);
+                params.append(`v_${k}`, inputValues[k]);
             });
 
             return this.getDocumentResultBody(documentType, params);

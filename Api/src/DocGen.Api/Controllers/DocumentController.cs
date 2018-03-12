@@ -23,19 +23,17 @@ namespace DocGen.Api.Controllers
         [ProducesResponseType(typeof(SerializableDocument), 200)]
         public async Task<IActionResult> Create(
             [FromQuery] string templateId,
-            [FromQuery] string includeMetadata)
+            [FromQuery] string templateVersion)
         {
             var documentCreate = new DocumentCreate()
             {
                 TemplateId = templateId,
-                TemplateVersion = 1, // TODO
+                TemplateVersion = int.Parse(templateVersion),
                 InputValues = Request.Query
-                    .Where(kvp => kvp.Key != nameof(templateId))
-                    .ToDictionary(kvp => kvp.Key, kvp => (dynamic)kvp.Value),
-                TemplatingOptions = new Dictionary<string, string>()
-                {
-                    { "includeMetadata", includeMetadata }
-                }
+                    .Where(kvp => kvp.Key.StartsWith("v_"))
+                    .ToDictionary(
+                        kvp => kvp.Key.Substring("v_".Count()),
+                        kvp => (dynamic)kvp.Value)
             };
 
             if (Request.ContentType == "text/plain")

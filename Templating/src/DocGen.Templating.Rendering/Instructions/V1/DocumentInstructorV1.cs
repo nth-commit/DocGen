@@ -17,7 +17,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
         private DocumentInstructionContextV1 _context;
         private IDocumentBuilderV1 _builder;
         private DocumentRenderModel _model;
-        private bool _includeMetadata = false;
+        private bool _includeMetadata = true;
         private Dictionary<string, string> _valuesByReference;
         private Dictionary<int, int> _listItemIndexContinueOffsetByNestingLevel;
 
@@ -35,9 +35,6 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             _model = model;
             _valuesByReference = _model.Items.ToDictionary(i => i.Reference, i => i.Value);
             _listItemIndexContinueOffsetByNestingLevel = new Dictionary<int, int>();
-
-            if (_model.Options.TryGetValue("includeMetadata", out string includeMetadata) &&
-                bool.TryParse(includeMetadata, out _includeMetadata)) { }
 
             XDocument document = null;
             using (var sr = new StringReader(markup))
@@ -223,7 +220,14 @@ namespace DocGen.Templating.Rendering.Instructions.V1
         {
             if (Regex.Match(text, @"^\s").Success)
             {
-                text = " " + text.TrimStart();
+                if (_context.IsFirstChild || _context.IsPreviousSiblingBlockLike)
+                {
+                    text = text.TrimStart();
+                }
+                else
+                {
+                    text = " " + text.TrimStart();
+                }
             }
 
             if (Regex.Match(text, @"\s$").Success)

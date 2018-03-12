@@ -18,6 +18,7 @@ export class PdfDocumentBuilderV1 implements IDocumentBuilderV1 {
   private _pdfDocument: PDFKit.PDFDocument;
   private _stream: any;
   private _fillColor: [number, number, number];
+  private _highlightDynamic = false;
 
   get result(): string {
     if (!this._pdfDocument) {
@@ -61,9 +62,16 @@ export class PdfDocumentBuilderV1 implements IDocumentBuilderV1 {
   endWriteListItem(): Promise<void> { return IDENTITY_PROMISE; }
 
   writeParagraphBreak(): Promise<void> {
+    this._pdfDocument.text(' ');
     this._pdfDocument.moveDown();
     this._pdfDocument.text('');
+    return IDENTITY_PROMISE;
+  }
 
+  writeBreak(): Promise<void> {
+    this._pdfDocument.text('');
+    this._pdfDocument.moveDown();
+    this._pdfDocument.text('');
     return IDENTITY_PROMISE;
   }
 
@@ -71,18 +79,22 @@ export class PdfDocumentBuilderV1 implements IDocumentBuilderV1 {
     const currentFillColor = this._fillColor;
     const hasCondition = conditions.length > 0;
 
-    if (reference) {
-      this._pdfDocument.fillColor(RGB_REFERENCE);
-    } else if (hasCondition) {
-      this._pdfDocument.fillColor(RGB_CONDITIONAL);
+    if (this._highlightDynamic) {
+      if (reference) {
+        this._pdfDocument.fillColor(RGB_REFERENCE);
+      } else if (hasCondition) {
+        this._pdfDocument.fillColor(RGB_CONDITIONAL);
+      }
     }
 
     this._pdfDocument.text(text, {
-      continued: false
+      continued: true
     });
 
-    if (reference || hasCondition) {
-      this._pdfDocument.fillColor(currentFillColor);
+    if (this._highlightDynamic) {
+      if (reference || hasCondition) {
+        this._pdfDocument.fillColor(currentFillColor);
+      }
     }
 
     return IDENTITY_PROMISE;

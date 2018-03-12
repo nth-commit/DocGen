@@ -13,6 +13,7 @@ export interface IDocumentBuilderV1 {
     endWriteListItem(): Promise<void>;
 
     writeParagraphBreak(): Promise<void>;
+    writeBreak(): Promise<void>;
     writeText(text: string, reference: string, conditions: string[]): Promise<void>;
 }
 
