@@ -9,4 +9,9 @@
     <ProjectReference Include="..\DocGen.Templating.Rendering.Abstractions\DocGen.Templating.Rendering.Abstractions.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="iTextSharp" Version="5.5.13" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.0.0" />
+  </ItemGroup>
+
 </Project>

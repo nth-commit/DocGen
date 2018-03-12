@@ -14,7 +14,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddTemplatingRenderingPdfServices(
             this IServiceCollection services)
         {
-            services.AddTransient<IDocumentBuilder<PdfDocumentResult>, PdfDocumentBuilderV1>();
+            services.AddTransient<IDocumentBuilder<PdfDocument>, PdfDocumentBuilderV1>();
             return services;
         }
     }

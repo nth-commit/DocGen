@@ -5,6 +5,7 @@ using DocGen.Shared.Core.Dynamic;
 using DocGen.Shared.Framework;
 using DocGen.Shared.Validation;
 using DocGen.Templating.Rendering;
+using DocGen.Templating.Rendering.Pdf;
 using DocGen.Templating.Validation;
 using DocGen.Templating.Validation.V1;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +15,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -218,7 +220,7 @@ namespace DocGen.Tools.Runner
         private static async Task RenderTemplateAsync(IServiceProvider serviceProvider)
         {
             var templateRenderer = serviceProvider.GetRequiredService<IDocumentRenderer>();
-            var result = await templateRenderer.RenderAsync<SerializableDocument>(
+            var result = await templateRenderer.RenderAsync<PdfDocument>(
                 @"<document>
                     <page>
                         List 1
@@ -291,7 +293,8 @@ namespace DocGen.Tools.Runner
                     }
                 });
 
-            Console.WriteLine(JsonConvert.SerializeObject(result.Instructions, Formatting.Indented));
+            File.WriteAllBytes($"{DateTime.Now.Ticks}.pdf", result.Contents);
+            //Console.WriteLine(JsonConvert.SerializeObject(result.Instructions, Formatting.Indented));
         }
     }
 }
