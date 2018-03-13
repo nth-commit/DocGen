@@ -1,19 +1,19 @@
 export interface IDocumentBuilderV1 {
     result: string;
-    beginWriteDocument(): Promise<void>;
-    endWriteDocument(): Promise<void>;
+    beginWriteDocument(): Promise<void> | void;
+    endWriteDocument(): Promise<void> | void;
 
-    beginWritePage(): Promise<void>;
-    endWritePage(): Promise<void>;
+    beginWritePage(): Promise<void> | void;
+    endWritePage(): Promise<void> | void;
 
-    beginWriteList(): Promise<void>;
-    endWriteList(): Promise<void>;
+    beginWriteList(): Promise<void> | void;
+    endWriteList(): Promise<void> | void;
 
-    beginWriteListItem(): Promise<void>;
-    endWriteListItem(): Promise<void>;
+    beginWriteListItem(indexPath: number[]): Promise<void> | void;
+    endWriteListItem(): Promise<void> | void;
 
-    writeParagraphBreak(): Promise<void>;
-    writeBreak(): Promise<void>;
-    writeText(text: string, reference: string, conditions: string[]): Promise<void>;
+    writeParagraphBreak(): Promise<void> | void;
+    writeBreak(): Promise<void> | void;
+    writeText(text: string, reference: string, conditions: string[]): Promise<void> | void;
 }
 

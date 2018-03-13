@@ -15,7 +15,9 @@ export interface BeginWriteListInstruction extends Instruction { }
 
 export interface EndWriteListInstruction extends Instruction { }
 
-export interface BeginWriteListItemInstruction extends Instruction { }
+export interface BeginWriteListItemInstruction extends Instruction {
+    indexPath: number[];
+}
 
 export interface EndWriteListItemInstruction extends Instruction { }
 

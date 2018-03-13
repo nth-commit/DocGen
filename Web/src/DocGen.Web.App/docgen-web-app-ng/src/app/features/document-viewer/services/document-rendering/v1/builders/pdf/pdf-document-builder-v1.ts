@@ -6,8 +6,6 @@ import { SerializableDocument } from '../../../../../../core';
 
 import { IDocumentBuilderV1 } from '../../document-builder-v1.interface';
 
-const IDENTITY_PROMISE = new Promise<void>(resolve => resolve());
-
 const RGB_DEFAULT: [number, number, number] = [0, 0, 0];
 const RGB_CONDITIONAL: [number, number, number] = [201, 44, 44];
 const RGB_REFERENCE: [number, number, number] = [201, 191, 46];
@@ -32,14 +30,13 @@ export class PdfDocumentBuilderV1 implements IDocumentBuilderV1 {
     return this._result;
   }
 
-  beginWriteDocument(): Promise<void> {
+  beginWriteDocument(): Promise<void> | void {
     this._pdfDocument = new PDFDocument();
     this._stream = this._pdfDocument.pipe(blobStream());
     this.setFillColor(RGB_DEFAULT);
-    return IDENTITY_PROMISE;
   }
 
-  endWriteDocument(): Promise<void> {
+  endWriteDocument(): Promise<void> | void {
     this._pdfDocument.end();
     return new Promise(resolve => {
       this._stream.on('finish', () => {
@@ -49,33 +46,36 @@ export class PdfDocumentBuilderV1 implements IDocumentBuilderV1 {
     });
   }
 
-  beginWritePage(): Promise<void> { return IDENTITY_PROMISE; }
+  beginWritePage(): Promise<void> | void { }
 
-  endWritePage(): Promise<void> { return IDENTITY_PROMISE; }
+  endWritePage(): Promise<void> | void { }
 
-  beginWriteList(): Promise<void> { return IDENTITY_PROMISE; }
+  beginWriteList(): Promise<void> | void { }
 
-  endWriteList(): Promise<void> { return IDENTITY_PROMISE; }
+  endWriteList(): Promise<void> | void { }
 
-  beginWriteListItem(): Promise<void> { return IDENTITY_PROMISE; }
+  beginWriteListItem(indexPath: number[]): Promise<void> | void {
+    const prefix = indexPath.reduce((acc, curr, i) => acc + `${curr + 1}.`, '');
+    this._pdfDocument.text(prefix + ' ', {
+      continued: true
+    });
+  }
 
-  endWriteListItem(): Promise<void> { return IDENTITY_PROMISE; }
+  endWriteListItem(): Promise<void> | void { }
 
-  writeParagraphBreak(): Promise<void> {
+  writeParagraphBreak(): Promise<void> | void {
     this._pdfDocument.text(' ');
     this._pdfDocument.moveDown();
     this._pdfDocument.text('');
-    return IDENTITY_PROMISE;
   }
 
-  writeBreak(): Promise<void> {
+  writeBreak(): Promise<void> | void {
     this._pdfDocument.text('');
     this._pdfDocument.moveDown();
     this._pdfDocument.text('');
-    return IDENTITY_PROMISE;
   }
 
-  writeText(text: string, reference: string, conditions: string[]): Promise<void> {
+  writeText(text: string, reference: string, conditions: string[]): Promise<void> | void {
     const currentFillColor = this._fillColor;
     const hasCondition = conditions.length > 0;
 
@@ -96,8 +96,6 @@ export class PdfDocumentBuilderV1 implements IDocumentBuilderV1 {
         this._pdfDocument.fillColor(currentFillColor);
       }
     }
-
-    return IDENTITY_PROMISE;
   }
 
   private setFillColor(fillColor: [number, number, number]) {

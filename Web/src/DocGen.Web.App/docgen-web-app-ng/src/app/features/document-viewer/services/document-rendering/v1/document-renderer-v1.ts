@@ -27,45 +27,54 @@ export class DocumentRendererV1 implements IDocumentRenderer {
       throw new Error('Invalid operation; unrecognized document type');
     }
 
-    await builder.beginWriteDocument();
+    await this.invokeInstruction(() => builder.beginWriteDocument());
 
     document.instructions.forEach(async i => {
 
       if (isBeginWritePage(i)) {
-        await builder.beginWritePage();
+        await this.invokeInstruction(() => builder.beginWritePage());
       }
 
       if (isBeginWriteList(i)) {
-        await builder.beginWriteList();
+        await this.invokeInstruction(() => builder.beginWriteList());
       }
 
       if (isBeginWriteListItem(i)) {
-        await builder.beginWriteListItem();
+        await this.invokeInstruction(() => builder.beginWriteListItem(i.indexPath));
       }
 
       if (isEndWritePage(i)) {
-        await builder.endWritePage();
+        await this.invokeInstruction(() => builder.endWritePage());
       }
 
       if (isEndWriteList(i)) {
-        await builder.endWriteList();
+        await this.invokeInstruction(() => builder.endWriteList());
       }
 
       if (isEndWriteListItem(i)) {
-        await builder.endWriteListItem();
+        await this.invokeInstruction(() => builder.endWriteListItem());
       }
 
       if (isWriteParagraphBreak(i)) {
-        await builder.writeParagraphBreak();
+        await this.invokeInstruction(() => builder.writeParagraphBreak());
       }
 
       if (isWriteText(i)) {
-        await builder.writeText(i.text, i.reference, i.conditions);
+        await this.invokeInstruction(() => builder.writeText(i.text, i.reference, i.conditions));
       }
     });
 
-    await builder.endWriteDocument();
+    await this.invokeInstruction(() => builder.endWriteDocument());
 
     return builder.result;
+  }
+
+  private async invokeInstruction(instructionFunc: (() => Promise<void> | void)): Promise<void> {
+    const result = instructionFunc();
+    if (result) {
+      await result;
+    } else {
+      await new Promise<void>(resolve => resolve());
+    }
   }
 }

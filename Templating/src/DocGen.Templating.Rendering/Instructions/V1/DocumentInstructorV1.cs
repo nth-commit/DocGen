@@ -124,7 +124,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
                     {
                         int continuedListIndex = listItemIndexContinueOffset + i - conditionallyExcludedListItems;
                         _context = _context.BeforeBeginListItem(continuedListIndex);
-                        await _builder.BeginWriteListItemAsync(continuedListIndex, _context);
+                        await _builder.BeginWriteListItemAsync(_context.ListItemIndexPath, _context);
                         _context = _context.AfterBegin();
 
                         await TraverseContainerElementAsync(listItem);

@@ -23,33 +23,33 @@ namespace DocGen.Templating.Rendering.Instructions.V1
 
         public bool IsPreviousSiblingBlockLike => !IsFirstChild && BlockLikeElements.Contains(Previous);
 
-        public IEnumerable<int> ListItemPath { get; private set; } = Enumerable.Empty<int>();
+        public IEnumerable<int> ListItemIndexPath { get; private set; } = Enumerable.Empty<int>();
 
         public DocumentInstructionContextV1 BeforeBeginListItem(int index)
         {
             var other = BeforeBegin("list-item");
-            other.ListItemPath = ListItemPath.Concat(index);
+            other.ListItemIndexPath = ListItemIndexPath.Concat(index);
             return other;
         }
 
         public DocumentInstructionContextV1 AfterEndListItem()
         {
             var other = AfterEnd();
-            other.ListItemPath = ListItemPath.Take(ListItemPath.Count() - 1);
+            other.ListItemIndexPath = ListItemIndexPath.Take(ListItemIndexPath.Count() - 1);
             return other;
         }
 
         public DocumentInstructionContextV1 BeforeBegin(string element) => new DocumentInstructionContextV1()
         {
             Path = Path.Concat(element),
-            ListItemPath = ListItemPath,
+            ListItemIndexPath = ListItemIndexPath,
             Previous = Previous
         };
 
         public DocumentInstructionContextV1 AfterBegin() => new DocumentInstructionContextV1()
         {
             Path = Path,
-            ListItemPath = ListItemPath,
+            ListItemIndexPath = ListItemIndexPath,
             Previous = null
         };
 
@@ -58,7 +58,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
         public DocumentInstructionContextV1 AfterEnd() => new DocumentInstructionContextV1()
         {
             Path = Path.Take(Path.Count() - 1),
-            ListItemPath = ListItemPath,
+            ListItemIndexPath = ListItemIndexPath,
             Previous = Path.Last()
         };
     }

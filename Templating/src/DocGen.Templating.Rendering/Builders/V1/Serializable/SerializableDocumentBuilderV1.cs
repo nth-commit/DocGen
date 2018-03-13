@@ -114,7 +114,7 @@ namespace DocGen.Templating.Rendering.Builders.V1.Serializable
             return Task.CompletedTask;
         }
 
-        public Task BeginWriteListItemAsync(int index, DocumentInstructionContextV1 context)
+        public Task BeginWriteListItemAsync(IEnumerable<int> indexPath, DocumentInstructionContextV1 context)
         {
             FlushText();
 
@@ -123,7 +123,7 @@ namespace DocGen.Templating.Rendering.Builders.V1.Serializable
                 WriteParagraphBreak();
             }
 
-            _instructions.Add(new BeginWriteListItemInstruction());
+            _instructions.Add(new BeginWriteListItemInstruction(indexPath));
 
             return Task.CompletedTask;
         }

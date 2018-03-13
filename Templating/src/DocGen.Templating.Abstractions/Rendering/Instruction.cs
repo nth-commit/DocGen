@@ -44,8 +44,11 @@ namespace DocGen.Templating.Rendering
 
     public class BeginWriteListItemInstruction : Instruction
     {
-        public BeginWriteListItemInstruction() : base(InstructionType.BeginWriteListItem)
+        public IEnumerable<int> IndexPath { get; set; }
+
+        public BeginWriteListItemInstruction(IEnumerable<int> indexPath) : base(InstructionType.BeginWriteListItem)
         {
+            IndexPath = indexPath;
         }
     }
 

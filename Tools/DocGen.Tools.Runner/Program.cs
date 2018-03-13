@@ -5,7 +5,6 @@ using DocGen.Shared.Core.Dynamic;
 using DocGen.Shared.Framework;
 using DocGen.Shared.Validation;
 using DocGen.Templating.Rendering;
-using DocGen.Templating.Rendering.Pdf;
 using DocGen.Templating.Validation;
 using DocGen.Templating.Validation.V1;
 using Microsoft.Extensions.Configuration;
@@ -39,7 +38,6 @@ namespace DocGen.Tools.Runner
             });
             services.AddTemplatingValidationServices();
             services.AddTemplatingRenderingServices();
-            services.AddTemplatingRenderingPdfServices();
 
             services.AddTransient<IRemoteIpAddressAccessor, StubbedRemoteIpAddressAccessor>();
 
@@ -220,7 +218,7 @@ namespace DocGen.Tools.Runner
         private static async Task RenderTemplateAsync(IServiceProvider serviceProvider)
         {
             var templateRenderer = serviceProvider.GetRequiredService<IDocumentRenderer>();
-            var result = await templateRenderer.RenderAsync<PdfDocument>(
+            var result = await templateRenderer.RenderAsync<SerializableDocument>(
                 @"<document>
                     <page>
                         List 1
@@ -293,8 +291,7 @@ namespace DocGen.Tools.Runner
                     }
                 });
 
-            File.WriteAllBytes($"{DateTime.Now.Ticks}.pdf", result.Contents);
-            //Console.WriteLine(JsonConvert.SerializeObject(result.Instructions, Formatting.Indented));
+            Console.WriteLine(JsonConvert.SerializeObject(result.Instructions, Formatting.Indented));
         }
     }
 }

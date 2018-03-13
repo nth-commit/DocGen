@@ -118,7 +118,7 @@ namespace DocGen.Templating.Rendering.Builders.V1.Text
             return Task.CompletedTask;
         }
 
-        public Task BeginWriteListItemAsync(int index, DocumentInstructionContextV1 context)
+        public Task BeginWriteListItemAsync(IEnumerable<int> indexPath, DocumentInstructionContextV1 context)
         {
             if (!context.IsFirstChild)
             {
@@ -176,7 +176,7 @@ namespace DocGen.Templating.Rendering.Builders.V1.Text
 
         private void AppendIndentation(DocumentInstructionContextV1 context)
         {
-            foreach (var listItemIndex in context.ListItemPath)
+            foreach (var listItemIndex in context.ListItemIndexPath)
             {
                 _stringBuilder.Append("\t");
             }
@@ -186,7 +186,7 @@ namespace DocGen.Templating.Rendering.Builders.V1.Text
         {
             AppendIndentation(context);
 
-            foreach (var listItemIndex in context.ListItemPath)
+            foreach (var listItemIndex in context.ListItemIndexPath)
             {
                 _stringBuilder.Append((listItemIndex + 1) + ".");
             }
