@@ -8,9 +8,16 @@ namespace DocGen.Templating.Rendering
     {
         public InstructionType Type { get; set; }
 
+#if DEBUG
+        public string TypeName { get; set; }
+#endif
+
         public Instruction(InstructionType type)
         {
             Type = type;
+#if DEBUG
+            TypeName = type.ToString();
+#endif
         }
     }
 

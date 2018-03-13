@@ -242,10 +242,10 @@ namespace DocGen.Templating.Rendering.Instructions.V1
 
         private async Task WriteConditionalElementAsync(XElement conditionalElement, Func<Task> writeAction, Action onConditionFailed = null)
         {
-            var (conditionalResult, conditionalExpression) = GetElementConditionalValue(conditionalElement);
-            if (!string.IsNullOrEmpty(conditionalExpression))
+            var (hasCondition, conditionResult, conditionalExpression) = GetElementConditionalValue(conditionalElement);
+            if (hasCondition)
             {
-                if (conditionalResult)
+                if (conditionResult)
                 {
                     if (_includeMetadata)
                     {
@@ -262,22 +262,22 @@ namespace DocGen.Templating.Rendering.Instructions.V1
 
             await writeAction();
 
-            if (!string.IsNullOrEmpty(conditionalExpression) && _includeMetadata)
+            if (hasCondition && conditionResult && _includeMetadata)
             {
                 await _builder.EndCondititionalAsync(_context);
             }
         }
 
-        private (bool conditional, string reference) GetElementConditionalValue(XElement element)
+        private (bool hasCondition, bool conditionResult, string conditionalExpression) GetElementConditionalValue(XElement element)
         {
             var ifAttribute = element.Attributes().FirstOrDefault(a => a.Name == "if");
             if (ifAttribute != null)
             {
                 var ifExpressionSplit = ifAttribute.Value.Split('=').Select(s => s.Trim()).ToArray();
                 var reference = ifExpressionSplit[0];
-                return (_valuesByReference[reference] == ifExpressionSplit[1], reference);
+                return (true, _valuesByReference[reference] == ifExpressionSplit[1], reference);
             }
-            return (false, null);
+            return (false, false, null);
         }
 
         private void AssertElementName(XElement element, string name)

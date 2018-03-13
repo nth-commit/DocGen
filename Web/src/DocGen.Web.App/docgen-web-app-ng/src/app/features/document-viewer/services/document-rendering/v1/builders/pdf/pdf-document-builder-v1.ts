@@ -10,6 +10,9 @@ const RGB_DEFAULT: [number, number, number] = [0, 0, 0];
 const RGB_CONDITIONAL: [number, number, number] = [201, 44, 44];
 const RGB_REFERENCE: [number, number, number] = [201, 191, 46];
 
+const LIST_LABEL_SIZE = 30;
+const LIST_INDENT_SIZE = 30;
+
 export class PdfDocumentBuilderV1 implements IDocumentBuilderV1 {
 
   private _result = null;
@@ -17,6 +20,7 @@ export class PdfDocumentBuilderV1 implements IDocumentBuilderV1 {
   private _stream: any;
   private _fillColor: [number, number, number];
   private _highlightDynamic = false;
+  private _listNestingCount = 0;
 
   get result(): string {
     if (!this._pdfDocument) {
@@ -34,6 +38,31 @@ export class PdfDocumentBuilderV1 implements IDocumentBuilderV1 {
     this._pdfDocument = new PDFDocument();
     this._stream = this._pdfDocument.pipe(blobStream());
     this.setFillColor(RGB_DEFAULT);
+
+    // this.writeParagraphBreak();
+
+    const writeText = text => {
+      this.writeText(text, null, []);
+    };
+
+    const writeSimpleListItem = (text, indexPath) => {
+      this.beginWriteListItem(indexPath);
+      writeText(text);
+      this.endWriteListItem();
+    };
+
+    // this.beginWritePage();
+
+    // writeText('This is a list example');
+    // this.writeParagraphBreak();
+
+    // this.beginWriteList();
+    // writeSimpleListItem('First list item', [0]);
+    // this.writeParagraphBreak();
+    // writeSimpleListItem('Second list item', [1]);
+    // this.endWriteList();
+
+    // this.endWritePage();
   }
 
   endWriteDocument(): Promise<void> | void {
@@ -50,9 +79,16 @@ export class PdfDocumentBuilderV1 implements IDocumentBuilderV1 {
 
   endWritePage(): Promise<void> | void { }
 
-  beginWriteList(): Promise<void> | void { }
+  beginWriteList(): Promise<void> | void {
+    this._listNestingCount++;
+    this.updateListIndentation();
+  }
 
-  endWriteList(): Promise<void> | void { }
+  endWriteList(): Promise<void> | void {
+    this.updateListIndentation();
+    this._listNestingCount--;
+    this.writeParagraphBreak();
+  }
 
   beginWriteListItem(indexPath: number[]): Promise<void> | void {
     const prefix = indexPath.reduce((acc, curr, i) => acc + `${curr + 1}.`, '');
@@ -61,10 +97,12 @@ export class PdfDocumentBuilderV1 implements IDocumentBuilderV1 {
     });
   }
 
-  endWriteListItem(): Promise<void> | void { }
+  endWriteListItem(): Promise<void> | void {
+    this._pdfDocument.text(' '); // Terminate continuation
+  }
 
   writeParagraphBreak(): Promise<void> | void {
-    this._pdfDocument.text(' ');
+    this._pdfDocument.text(' '); // Terminates continuation
     this._pdfDocument.moveDown();
     this._pdfDocument.text('');
   }
@@ -101,5 +139,15 @@ export class PdfDocumentBuilderV1 implements IDocumentBuilderV1 {
   private setFillColor(fillColor: [number, number, number]) {
     this._fillColor = fillColor;
     this._pdfDocument.fillColor(fillColor);
+  }
+
+  private updateListIndentation() {
+    this._pdfDocument.text(
+      '',
+      this._pdfDocument.page.margins.left + (this._listNestingCount - 1) * LIST_INDENT_SIZE,
+      this._pdfDocument.y,
+      {
+        continued: true
+      });
   }
 }
