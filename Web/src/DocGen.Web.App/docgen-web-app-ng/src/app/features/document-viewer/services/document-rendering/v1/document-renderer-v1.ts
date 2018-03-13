@@ -27,44 +27,50 @@ export class DocumentRendererV1 implements IDocumentRenderer {
       throw new Error('Invalid operation; unrecognized document type');
     }
 
-    await this.invokeInstruction(() => builder.beginWriteDocument());
+    let instructionId = 0;
 
-    document.instructions.forEach(async i => {
+    instructionId++;
+    await this.invokeInstruction(() => builder.beginWriteDocument(instructionId));
 
-      if (isBeginWritePage(i)) {
-        await this.invokeInstruction(() => builder.beginWritePage());
+    document.instructions.forEach(async (instruction, instructionIndex) => {
+      instructionId += instructionIndex + 1;
+
+      if (isBeginWritePage(instruction)) {
+        await this.invokeInstruction(() => builder.beginWritePage(instructionId));
       }
 
-      if (isBeginWriteList(i)) {
-        await this.invokeInstruction(() => builder.beginWriteList());
+      if (isBeginWriteList(instruction)) {
+        await this.invokeInstruction(() => builder.beginWriteList(instructionId));
       }
 
-      if (isBeginWriteListItem(i)) {
-        await this.invokeInstruction(() => builder.beginWriteListItem(i.indexPath));
+      if (isBeginWriteListItem(instruction)) {
+        await this.invokeInstruction(() => builder.beginWriteListItem(instructionId, instruction.indexPath));
       }
 
-      if (isEndWritePage(i)) {
-        await this.invokeInstruction(() => builder.endWritePage());
+      if (isEndWritePage(instruction)) {
+        await this.invokeInstruction(() => builder.endWritePage(instructionId));
       }
 
-      if (isEndWriteList(i)) {
-        await this.invokeInstruction(() => builder.endWriteList());
+      if (isEndWriteList(instruction)) {
+        await this.invokeInstruction(() => builder.endWriteList(instructionId));
       }
 
-      if (isEndWriteListItem(i)) {
-        await this.invokeInstruction(() => builder.endWriteListItem());
+      if (isEndWriteListItem(instruction)) {
+        await this.invokeInstruction(() => builder.endWriteListItem(instructionId));
       }
 
-      if (isWriteParagraphBreak(i)) {
-        await this.invokeInstruction(() => builder.writeParagraphBreak());
+      if (isWriteParagraphBreak(instruction)) {
+        await this.invokeInstruction(() => builder.writeParagraphBreak(instructionId));
       }
 
-      if (isWriteText(i)) {
-        await this.invokeInstruction(() => builder.writeText(i.text, i.reference, i.conditions));
+      if (isWriteText(instruction)) {
+        await this.invokeInstruction(() =>
+          builder.writeText(instructionId, instruction.text, instruction.reference, instruction.conditions));
       }
     });
 
-    await this.invokeInstruction(() => builder.endWriteDocument());
+    instructionId++;
+    await this.invokeInstruction(() => builder.endWriteDocument(instructionId));
 
     return builder.result;
   }
