@@ -13,9 +13,6 @@ const RGB_REFERENCE: [number, number, number] = [201, 191, 46];
 const LIST_LABEL_SIZE = 30;
 const LIST_INDENT_SIZE = 15;
 
-const longString = 'The Organisation agrees to make the Confidential Information available to the' +
-' Contractor in accordance with the terms and conditions set out in this agreement.';
-
 export class PdfDocumentBuilderV1 implements IDocumentBuilderV1 {
 
   private _result = null;
@@ -67,8 +64,8 @@ export class PdfDocumentBuilderV1 implements IDocumentBuilderV1 {
   }
 
   beginWriteListItem(instructionId: number, indexPath: number[]): Promise<void> | void {
-    const prefix = indexPath.reduce((acc, curr, i) => acc + `${curr + 1}.`, '');
-    this.writeListItemLabel(prefix);
+    // const prefix = indexPath.reduce((acc, curr, i) => acc + `${curr + 1}.`, '');
+    this.writeListItemLabel(this.formatListItemIndexPath(indexPath));
   }
 
   endWriteListItem(instructionId: number): Promise<void> | void { }
@@ -184,4 +181,37 @@ export class PdfDocumentBuilderV1 implements IDocumentBuilderV1 {
   private isInsideList(): boolean {
     return this._listNestingCount > 0;
   }
+
+  private formatListItemIndexPath(indexPath: number[]) {
+    switch (indexPath.length) {
+      case 1:
+        return `${indexPath[0] + 1}.`;
+      case 2:
+        return `${indexPath[0] + 1}.${indexPath[1] + 1}.`;
+      case 3:
+        return `${String.fromCharCode(97 + indexPath[2] % 26)}.`;
+      case 4:
+        return `${romanize(indexPath[3]).toLowerCase()}.`;
+      case 5:
+        return `${indexPath[4] + 1}.`;
+      default:
+        throw new Error('Expected a value between 1 and 5');
+    }
+
+  }
+}
+
+// tslint:disable
+function romanize (num): string {
+  if (!+num)
+      return NaN;
+  var digits = String(+num).split(""),
+      key = ["","C","CC","CCC","CD","D","DC","DCC","DCCC","CM",
+             "","X","XX","XXX","XL","L","LX","LXX","LXXX","XC",
+             "","I","II","III","IV","V","VI","VII","VIII","IX"],
+      roman = "",
+      i = 3;
+  while (i--)
+      roman = (key[+digits.pop() + (i * 10)] || "") + roman;
+  return Array(+digits.join("") + 1).join("M") + roman;
 }
