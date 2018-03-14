@@ -64,7 +64,6 @@ export class PdfDocumentBuilderV1 implements IDocumentBuilderV1 {
   }
 
   beginWriteListItem(instructionId: number, indexPath: number[]): Promise<void> | void {
-    // const prefix = indexPath.reduce((acc, curr, i) => acc + `${curr + 1}.`, '');
     this.writeListItemLabel(this.formatListItemIndexPath(indexPath));
   }
 
@@ -191,7 +190,7 @@ export class PdfDocumentBuilderV1 implements IDocumentBuilderV1 {
       case 3:
         return `${String.fromCharCode(97 + indexPath[2] % 26)}.`;
       case 4:
-        return `${romanize(indexPath[3]).toLowerCase()}.`;
+        return `${romanize(indexPath[3] + 1).toLowerCase()}.`;
       case 5:
         return `${indexPath[4] + 1}.`;
       default:
@@ -202,9 +201,10 @@ export class PdfDocumentBuilderV1 implements IDocumentBuilderV1 {
 }
 
 // tslint:disable
-function romanize (num): string {
+function romanize (num: number): string {
   if (!+num)
-      return NaN;
+      return '';
+
   var digits = String(+num).split(""),
       key = ["","C","CC","CCC","CD","D","DC","DCC","DCCC","CM",
              "","X","XX","XXX","XL","L","LX","LXX","LXXX","XC",
