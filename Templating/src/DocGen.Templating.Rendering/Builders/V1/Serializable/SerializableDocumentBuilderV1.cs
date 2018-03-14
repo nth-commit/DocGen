@@ -116,7 +116,7 @@ namespace DocGen.Templating.Rendering.Builders.V1.Serializable
 
         public Task BeginWriteListItemAsync(IEnumerable<int> indexPath, DocumentInstructionContextV1 context)
         {
-            FlushText();
+            DebugAssertTextFlushed(); // List cannot contain text elements
 
             if (!context.IsFirstChild)
             {

@@ -12,59 +12,59 @@ import { DocumentResult, SerializableDocumentResult, TextDocumentResult, Documen
 @Injectable()
 export class DocumentResolve implements Resolve<DocumentResult> {
 
-    constructor(
-        private http: Http
-    ) { }
+  constructor(
+    private http: Http
+  ) { }
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<DocumentResult> {
-        const templateId = route.paramMap.get('templateId');
-        const templateVersion = route.queryParamMap.get('version') || '1';
-        const documentType: DocumentType = (<DocumentType>route.queryParamMap.get('type')) || 'pdf';
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<DocumentResult> {
+    const templateId = route.paramMap.get('templateId');
+    const templateVersion = route.queryParamMap.get('version') || '1';
+    const documentType: DocumentType = (<DocumentType>route.queryParamMap.get('type')) || 'pdf';
 
-        const key = `documents:${templateId}:${templateVersion}:values`;
-        const inputValuesJson = localStorage.getItem(key);
+    const key = `documents:${templateId}:${templateVersion}:values`;
+    const inputValuesJson = localStorage.getItem(key);
 
-        if (inputValuesJson) {
-            const inputValues = JSON.parse(inputValuesJson);
-            const params = new URLSearchParams();
+    if (inputValuesJson) {
+      const inputValues = JSON.parse(inputValuesJson);
+      const params = new URLSearchParams();
 
-            params.append('templateId', templateId);
-            params.append('templateVersion', templateVersion);
-            Object.keys(inputValues).forEach(k => {
-                params.append(`v_${k}`, inputValues[k]);
-            });
+      params.append('templateId', templateId);
+      params.append('templateVersion', templateVersion);
+      Object.keys(inputValues).forEach(k => {
+        params.append(`v_${k}`, inputValues[k]);
+      });
 
-            return this.getDocumentResultBody(documentType, params);
-        }
-
-        throw new Error('Input values expected in local storage');
+      return this.getDocumentResultBody(documentType, params);
     }
 
-    private getDocumentResultBody(documentType: DocumentType, documentCreationParams: URLSearchParams): Promise<DocumentResult> {
-        const documentUrl = `${getAppSettings().Urls.Api}/documents`;
+    throw new Error('Input values expected in local storage');
+  }
 
-        let contentType: string = null;
+  private getDocumentResultBody(documentType: DocumentType, documentCreationParams: URLSearchParams): Promise<DocumentResult> {
+    const documentUrl = `${getAppSettings().Urls.Api}/documents`;
+
+    let contentType: string = null;
+    if (documentType === 'text') {
+      contentType = 'text/plain';
+    } else if (documentType === 'pdf') {
+      contentType = 'application/json';
+    } else {
+      throw new Error('Unrecognised document type');
+    }
+
+    const document$ = this.http.post(documentUrl, {}, {
+      headers: new Headers({ 'Content-Type': contentType }),
+      params: documentCreationParams
+    });
+
+    return document$
+      .map(r => {
         if (documentType === 'text') {
-            contentType = 'text/plain';
-        } else if (documentType === 'pdf') {
-            contentType = 'application/json';
+          return new TextDocumentResult(r.text());
         } else {
-            throw new Error('Unrecognised document type');
+          return new SerializableDocumentResult(r.json());
         }
-
-        const document$ = this.http.post(documentUrl, {}, {
-            headers: new Headers({ 'Content-Type': contentType }),
-            params: documentCreationParams
-        });
-
-        return document$
-            .map(r => {
-                if (documentType === 'text') {
-                    return new TextDocumentResult(r.text());
-                } else {
-                    return new SerializableDocumentResult(r.json());
-                }
-            })
-            .toPromise();
-    }
+      })
+      .toPromise();
+  }
 }

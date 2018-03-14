@@ -11,7 +11,7 @@ const RGB_CONDITIONAL: [number, number, number] = [201, 44, 44];
 const RGB_REFERENCE: [number, number, number] = [201, 191, 46];
 
 const LIST_LABEL_SIZE = 30;
-const LIST_INDENT_SIZE = 30;
+const LIST_INDENT_SIZE = 15;
 
 const longString = 'The Organisation agrees to make the Confidential Information available to the' +
 ' Contractor in accordance with the terms and conditions set out in this agreement.';
@@ -42,54 +42,6 @@ export class PdfDocumentBuilderV1 implements IDocumentBuilderV1 {
     this._pdfDocument = new PDFDocument();
     this._stream = this._pdfDocument.pipe(blobStream());
     this.setFillColor(RGB_DEFAULT);
-
-    const invokeInstruction = (instructionFunc: ((instructionId: number, ...args: any[]) => void), ...args) => {
-      instructionId++;
-      instructionFunc.call(this, instructionId, ...args);
-    };
-
-    const writeText = text => {
-      invokeInstruction(this.writeText, text, null, []);
-    };
-
-    const writeParagraphBreak = () => invokeInstruction(this.writeParagraphBreak);
-    const beginWriteList = () => invokeInstruction(this.beginWriteList);
-    const endWriteList = () => invokeInstruction(this.endWriteList);
-    const beginWriteListItem = (indexPath) => invokeInstruction(this.beginWriteListItem, indexPath);
-    const endWriteListItem = () => invokeInstruction(this.endWriteListItem);
-
-    const writeSimpleListItem = (text, indexPath) => {
-      beginWriteListItem(indexPath);
-      writeText(text);
-      endWriteListItem();
-    };
-
-    invokeInstruction(this.beginWritePage);
-
-    writeText(longString);
-    writeText(' This breaks the two long strings. ');
-    writeText(longString);
-    writeParagraphBreak();
-
-    beginWriteList();
-    writeSimpleListItem('First list item', [0]);
-    writeParagraphBreak();
-    writeSimpleListItem('Second list item', [1]);
-    writeParagraphBreak();
-
-    beginWriteListItem([2]);
-    writeText('Some text');
-    writeParagraphBreak();
-    beginWriteList();
-    writeSimpleListItem(longString, [2, 0]);
-    writeParagraphBreak();
-    writeSimpleListItem(longString, [2, 1]);
-    endWriteList();
-
-
-    endWriteList();
-
-    invokeInstruction(this.endWritePage);
   }
 
   endWriteDocument(instructionId: number): Promise<void> | void {
@@ -112,29 +64,22 @@ export class PdfDocumentBuilderV1 implements IDocumentBuilderV1 {
 
   endWriteList(instructionId: number): Promise<void> | void {
     this._listNestingCount--;
-    this.writeParagraphBreak(instructionId);
   }
 
   beginWriteListItem(instructionId: number, indexPath: number[]): Promise<void> | void {
     const prefix = indexPath.reduce((acc, curr, i) => acc + `${curr + 1}.`, '');
-    // this.writeIndentedText(prefix + ' ', false, false);
     this.writeListItemLabel(prefix);
   }
 
-  endWriteListItem(instructionId: number): Promise<void> | void {
-    this._pdfDocument.text(' '); // Terminate continuation
-  }
+  endWriteListItem(instructionId: number): Promise<void> | void { }
 
   writeParagraphBreak(instructionId: number): Promise<void> | void {
     this._pdfDocument.text(' '); // Terminates continuation
     this._pdfDocument.moveDown();
-    this._pdfDocument.text('');
   }
 
   writeBreak(instructionId: number): Promise<void> | void {
-    this._pdfDocument.text('');
-    this._pdfDocument.moveDown();
-    this._pdfDocument.text('');
+    throw new Error('Not implemented');
   }
 
   writeText(instructionId: number, text: string, reference: string, conditions: string[]): Promise<void> | void {
@@ -149,12 +94,19 @@ export class PdfDocumentBuilderV1 implements IDocumentBuilderV1 {
       }
     }
 
-    // TODO: Use instruction ID to decide whether to add width to text or not (continue should work)
-    if (this._lastTextInstructionId === instructionId - 1) {
+    if (this.wasLastInstructionText(instructionId)) {
       this._pdfDocument.text(text, { continued: true });
     } else {
-      // this.writeIndentedText(text, true, true);
-      this.writeIndentedParagraph(text);
+      if (this.isInsideList()) {
+        this.beginWriteNestedParagraph(text);
+      } else {
+        const page = this._pdfDocument.page;
+
+        this._pdfDocument.text(text, page.margins.left, this._pdfDocument.y, {
+          continued: true,
+          width: page.width - page.margins.left - page.margins.right
+        });
+      }
     }
 
     if (this._highlightDynamic) {
@@ -171,21 +123,30 @@ export class PdfDocumentBuilderV1 implements IDocumentBuilderV1 {
     this._pdfDocument.fillColor(fillColor);
   }
 
-  private writeIndentedParagraph(text: string) {
+  private beginWriteNestedParagraph(text: string) {
+    if (!this.isInsideList()) {
+      throw new Error('Invalid operation; should not write list label outside of list');
+    }
+
     const page = this._pdfDocument.page;
 
     const margin = page.margins.left;
-    const listIndentCount = Math.max(this._listNestingCount - 1, 0); // Don't indent the first list
+    const listIndentCount = this._listNestingCount - 1; // Don't indent the first list
     const listIndentPadding = listIndentCount * LIST_INDENT_SIZE;
-    const listLabelPadding = this._listNestingCount === 0 ? 0 : (this._listNestingCount + 1) * LIST_LABEL_SIZE;
+    const listLabelPadding = this._listNestingCount * LIST_LABEL_SIZE;
 
-    const padding = margin + listIndentPadding + listLabelPadding;
-    const width = page.width - page.margins.right - padding;
+    const positionX = margin + listIndentPadding + listLabelPadding;
+    const width = page.width - page.margins.right - positionX;
+
+    let positionY = this._pdfDocument.y;
+    if (this._listNestingCount > 0) {
+      positionY -= this._pdfDocument.currentLineHeight(true);
+    }
 
     this._pdfDocument.text(
       text,
-      padding,
-      this._pdfDocument.y,
+      positionX,
+      positionY,
       {
         continued: true,
         width
@@ -193,12 +154,16 @@ export class PdfDocumentBuilderV1 implements IDocumentBuilderV1 {
   }
 
   private writeListItemLabel(text: string) {
+    if (!this.isInsideList()) {
+      throw new Error('Invalid operation; should not write list label outside of list');
+    }
+
     const page = this._pdfDocument.page;
 
     const margin = page.margins.left;
-    const listIndentCount = Math.max(this._listNestingCount - 1, 0); // Don't indent the first list
+    const listIndentCount = this._listNestingCount - 1; // Don't indent the first list
     const listIndentPadding = listIndentCount * LIST_INDENT_SIZE;
-    const listLabelPadding = this._listNestingCount === 0 ? 0 : this._listNestingCount * LIST_LABEL_SIZE;
+    const listLabelPadding = listIndentCount === 0 ? 0 : listIndentCount * LIST_LABEL_SIZE;
 
     const padding = margin + listIndentPadding + listLabelPadding;
     const width = page.width - page.margins.right - padding;
@@ -212,32 +177,11 @@ export class PdfDocumentBuilderV1 implements IDocumentBuilderV1 {
       });
   }
 
-  private writeIndentedText(text: string, includeListItemLabel: boolean, continued: boolean) {
-    const page = this._pdfDocument.page;
-
-    const margin = page.margins.left;
-    const listIndentCount = Math.max(this._listNestingCount - 1, 0); // Don't indent the first list
-    const listIndentPadding = listIndentCount * LIST_INDENT_SIZE;
-    const listLabelPadding = this._listNestingCount === 0 ? 0 : this._listNestingCount + (includeListItemLabel ? 1 : 0) * LIST_LABEL_SIZE;
-
-    const padding = margin + listIndentPadding + listLabelPadding;
-    const width = page.width - page.margins.right - padding;
-
-    this._pdfDocument.text(
-      text,
-      padding,
-      this._pdfDocument.y - this._pdfDocument.currentLineHeight(true),
-      {
-        continued,
-        width
-      });
+  private wasLastInstructionText(currentInstructionId: number): boolean {
+    return this._lastTextInstructionId === currentInstructionId - 1;
   }
 
-  private getListIndentation(includeListItemLabel: boolean) {
-    const margin = this._pdfDocument.page.margins.left;
-    const listIndentPadding = (this._listNestingCount - 1) * LIST_INDENT_SIZE;
-    const listLabelPadding = (this._listNestingCount - 1 + (includeListItemLabel ? 1 : 0)) * LIST_LABEL_SIZE;
-
-    return margin + listIndentPadding + listLabelPadding;
+  private isInsideList(): boolean {
+    return this._listNestingCount > 0;
   }
 }

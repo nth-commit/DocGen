@@ -32,8 +32,8 @@ export class DocumentRendererV1 implements IDocumentRenderer {
     instructionId++;
     await this.invokeInstruction(() => builder.beginWriteDocument(instructionId));
 
-    document.instructions.forEach(async (instruction, instructionIndex) => {
-      instructionId += instructionIndex + 1;
+    document.instructions.forEach(async instruction => {
+      instructionId++;
 
       if (isBeginWritePage(instruction)) {
         await this.invokeInstruction(() => builder.beginWritePage(instructionId));
