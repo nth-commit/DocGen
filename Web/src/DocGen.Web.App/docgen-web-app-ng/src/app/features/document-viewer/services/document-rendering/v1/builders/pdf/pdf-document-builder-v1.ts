@@ -20,8 +20,11 @@ export class PdfDocumentBuilderV1 implements IDocumentBuilderV1 {
   private _stream: any;
   private _fillColor: [number, number, number];
   private _highlightDynamic = false;
+
+  // Move these to a write context at a higher level
   private _listNestingCount = 0;
   private _lastTextInstructionId = -1;
+  private _lastParagraphBreak = -1;
 
   get result(): string {
     if (!this._pdfDocument) {
@@ -43,7 +46,7 @@ export class PdfDocumentBuilderV1 implements IDocumentBuilderV1 {
 
   endWriteDocument(instructionId: number): Promise<void> | void {
     this._pdfDocument.end();
-    return new Promise(resolve => {
+    return new Promise<void>(resolve => {
       this._stream.on('finish', () => {
         this._result = this._stream.toBlobURL('application/pdf');
         resolve();
@@ -72,6 +75,7 @@ export class PdfDocumentBuilderV1 implements IDocumentBuilderV1 {
   writeParagraphBreak(instructionId: number): Promise<void> | void {
     this._pdfDocument.text(' '); // Terminates continuation
     this._pdfDocument.moveDown();
+    this._lastParagraphBreak = instructionId;
   }
 
   writeBreak(instructionId: number): Promise<void> | void {
@@ -88,6 +92,10 @@ export class PdfDocumentBuilderV1 implements IDocumentBuilderV1 {
       } else if (hasCondition) {
         this._pdfDocument.fillColor(RGB_CONDITIONAL);
       }
+    }
+
+    if (this._lastParagraphBreak === instructionId - 1 && this.isInsideList()) {
+        this._pdfDocument.moveDown(); // HACK: I don't understand why.
     }
 
     if (this.wasLastInstructionText(instructionId)) {
