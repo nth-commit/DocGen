@@ -17,6 +17,7 @@
               <xs:element ref="inline" minOccurs="0" maxOccurs="unbounded"></xs:element>
               <xs:element ref="data" minOccurs="0" maxOccurs="unbounded"></xs:element>
               <xs:element ref="list" minOccurs="0" maxOccurs="unbounded"></xs:element>
+              <xs:element ref="signature" minOccurs="0" maxOccurs="unbounded"></xs:element>
             </xs:choice>
             <xs:attribute name="if" type="type_if" />
           </xs:complexType>
@@ -75,6 +76,14 @@
     </xs:complexType>
   </xs:element>
 
+  <xs:element name="signature">
+    <xs:complexType>
+      <xs:attribute name="if" type="type_if"></xs:attribute>
+      <xs:attribute name="signer" type="type_signature_signer"></xs:attribute>
+      <xs:attribute name="representing" type="type_signature_representing"></xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
   <xs:complexType name="type_data">
     <xs:simpleContent>
       <xs:extension base="type_reference">
@@ -92,6 +101,18 @@
   <xs:simpleType name="type_if">
     <xs:restriction base="xs:string">
       <xs:pattern value="([a-z_]+[a-z_0-9]*)(.[a-z_]+[a-z_0-9]*)*\s*=\s[a-z0-9]+" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="type_signature_signer">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="([a-z_]+[a-z_0-9]*)(.[a-z_]+[a-z_0-9]*)*"></xs:pattern>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="type_signature_representing">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="([a-z_]+[a-z_0-9]*)(.[a-z_]+[a-z_0-9]*)*"></xs:pattern>
     </xs:restriction>
   </xs:simpleType>
 </xs:schema>
