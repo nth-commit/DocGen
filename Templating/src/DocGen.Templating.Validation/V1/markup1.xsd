@@ -32,6 +32,7 @@
       <xs:choice maxOccurs="unbounded">
         <xs:element ref="data" minOccurs="0" maxOccurs="unbounded"></xs:element>
         <xs:element ref="inline" minOccurs="0" maxOccurs="unbounded"></xs:element>
+        <xs:element ref="signature" minOccurs="0" maxOccurs="unbounded"></xs:element>
       </xs:choice>
       <xs:attribute name="if" type="type_if" />
     </xs:complexType>
@@ -71,6 +72,7 @@
         <xs:element ref="data" minOccurs="0" maxOccurs="unbounded"></xs:element>
         <xs:element ref="inline" minOccurs="0" maxOccurs="unbounded"></xs:element>
         <xs:element ref="list" minOccurs="0" maxOccurs="unbounded"></xs:element>
+        <xs:element ref="signature" minOccurs="0" maxOccurs="unbounded"></xs:element>
       </xs:choice>
       <xs:attribute name="if" type="type_if" />
     </xs:complexType>
@@ -79,7 +81,7 @@
   <xs:element name="signature">
     <xs:complexType>
       <xs:attribute name="if" type="type_if"></xs:attribute>
-      <xs:attribute name="signer" type="type_signature_signer"></xs:attribute>
+      <xs:attribute name="signer" use="required" type="type_signature_signer"></xs:attribute>
       <xs:attribute name="representing" type="type_signature_representing"></xs:attribute>
     </xs:complexType>
   </xs:element>

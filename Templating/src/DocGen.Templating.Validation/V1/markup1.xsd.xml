@@ -17,10 +17,7 @@
         </list>
       </list-item>
     </list>
-
-    <signature if="contractor.type = person" />
-
-
+    
     <signature signer="organisation.representative.name" representing="organisation.name"></signature>
 
     <signature if="contractor.type = person" signer="contractor.person.name"></signature>

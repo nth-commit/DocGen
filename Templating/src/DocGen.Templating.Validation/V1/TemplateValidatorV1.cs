@@ -18,7 +18,7 @@ namespace DocGen.Templating.Validation.V1
         {
             var referencesByName = references.ToDictionary(r => r.Name);
 
-            var dataExpressions = new Dictionary<string, IList<LineInfo>>();
+            var referenceExpressions = new Dictionary<string, IList<LineInfo>>();
             var ifExpressions = new Dictionary<string, IList<LineInfo>>();
 
             document
@@ -28,10 +28,10 @@ namespace DocGen.Templating.Validation.V1
                    if (element.Name.LocalName == "data")
                    {
                        var expression = ((XText)element.FirstNode).Value;
-                       if (!dataExpressions.TryGetValue(expression, out IList<LineInfo> occurences))
+                       if (!referenceExpressions.TryGetValue(expression, out IList<LineInfo> occurences))
                        {
                            occurences = new List<LineInfo>();
-                           dataExpressions.Add(expression, occurences);
+                           referenceExpressions.Add(expression, occurences);
                        }
 
                        var elementLineInfo = (IXmlLineInfo)element;
@@ -64,10 +64,10 @@ namespace DocGen.Templating.Validation.V1
 
             var errors = new List<TemplateSyntaxError>();
 
-            var usedReferencesFromData = ValidateDataExpressions(errors, dataExpressions, referencesByName);
+            var usedReferences = ValidateDataExpressions(errors, referenceExpressions, referencesByName);
             var usedReferencesFromIf = ValidateIfExpressions(errors, ifExpressions, referencesByName);
 
-            var unusedReferenceNames = referencesByName.Keys.Except(usedReferencesFromData.Union(usedReferencesFromIf));
+            var unusedReferenceNames = referencesByName.Keys.Except(usedReferences.Union(usedReferencesFromIf));
             errors.AddRange(unusedReferenceNames.Select(r => new TemplateSyntaxError
             {
                 Message = $"Unused reference: \"{r}\"",
