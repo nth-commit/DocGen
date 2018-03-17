@@ -174,43 +174,44 @@ namespace DocGen.Tools.Runner
             }
 
             #region Create template markup
-            //try
-            //    {
-            //        var service1 = serviceProvider.GetRequiredService<ITemplateValidator>();
-            //        service1.Validate(
-            //            @"<document>
-            //                <page>
-            //                    <block if=""contractor.type = company"">
-            //                        This is some conditionally displayed stuff.
-            //                    </block>
-            //                    <inline>Inline content</inline>
-            //                    <data>contractor.company.name</data>
-            //                </page>
-            //            </document>",
-            //            1,
-            //            new List<ReferenceDefinition>()
-            //            {
-            //                ReferenceDefinition.StringFrom("contractor.type", new string[] { "company", "person", "god" }),
-            //                ReferenceDefinition.String("contractor.company.name"),
-            //                ReferenceDefinition.String("test")
-            //            });
-            //    }
-            //    catch (InvalidTemplateSyntaxException ex)
-            //    {
-            //        ex.Errors.ForEach(e =>
-            //        {
-            //            var error = e.Message;
-            //            if (e.LineNumber > -1)
-            //            {
-            //                error += $" {e.LineNumber}:{e.LinePosition}";
-            //            }
-            //            Console.WriteLine(error);
-            //        });
-            //        Console.ReadLine();
-            //    }
+            try
+            {
+                //var service1 = serviceProvider.GetRequiredService<ITemplateValidator>();
+                //service1.Validate(
+                //    @"<document>
+                //            <page>
+                //                <block if=""contractor.type = company"">
+                //                    This is some conditionally displayed stuff.
+                //                </block>
+                //                <signature signer='contractor.company.name' representing='contractor.company.name'></signature>
+                //                <inline>Inline content</inline>
+                //                <data>contractor.company.name</data>
+                //            </page>
+                //        </document>",
+                //    1,
+                //    new List<ReferenceDefinition>()
+                //    {
+                //            ReferenceDefinition.StringFrom("contractor.type", new string[] { "company", "person", "god" }),
+                //            ReferenceDefinition.String("contractor.company.name"),
+                //            ReferenceDefinition.String("test")
+                //    });
+            }
+            catch (InvalidTemplateSyntaxException ex)
+            {
+                ex.Errors.ForEach(e =>
+                {
+                    var error = e.Message;
+                    if (e.LineNumber > -1)
+                    {
+                        error += $" {e.LineNumber}:{e.LinePosition}";
+                    }
+                    Console.WriteLine(error);
+                });
+                Console.ReadLine();
+            }
             #endregion
 
-            RenderTemplateAsync(serviceProvider).GetAwaiter().GetResult();
+            //RenderTemplateAsync(serviceProvider).GetAwaiter().GetResult();
 
             Console.ReadLine();
         }

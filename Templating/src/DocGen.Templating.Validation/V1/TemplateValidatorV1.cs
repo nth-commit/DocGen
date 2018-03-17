@@ -25,13 +25,13 @@ namespace DocGen.Templating.Validation.V1
                .Descendants()
                .ForEach(element =>
                {
-                   if (element.Name.LocalName == "data")
+                   var elementReferenceExpressions = GetReferenceExpressions(element);
+                   foreach (var referenceExpression in elementReferenceExpressions)
                    {
-                       var expression = ((XText)element.FirstNode).Value;
-                       if (!referenceExpressions.TryGetValue(expression, out IList<LineInfo> occurences))
+                       if (!referenceExpressions.TryGetValue(referenceExpression, out IList<LineInfo> occurences))
                        {
                            occurences = new List<LineInfo>();
-                           referenceExpressions.Add(expression, occurences);
+                           referenceExpressions.Add(referenceExpression, occurences);
                        }
 
                        var elementLineInfo = (IXmlLineInfo)element;
@@ -79,6 +79,33 @@ namespace DocGen.Templating.Validation.V1
             if (errors.Any())
             {
                 throw new InvalidTemplateSyntaxException(errors);
+            }
+        }
+
+        private IEnumerable<string> GetReferenceExpressions(XElement element)
+        {
+            if (element.Name.LocalName == "data")
+            {
+                return new List<string>() { ((XText)element.FirstNode).Value };
+            }
+            else if (element.Name.LocalName == "signature")
+            {
+                var result = new List<string>();
+
+                var signerAttribute = element.Attributes().Single(a => a.Name == "signer");
+                result.Add(signerAttribute.Value);
+
+                var representingAttribute = element.Attributes().FirstOrDefault(a => a.Name == "representing");
+                if (representingAttribute != null)
+                {
+                    result.Add(representingAttribute.Value);
+                }
+
+                return result;
+            }
+            else
+            {
+                return Enumerable.Empty<string>();
             }
         }
 
