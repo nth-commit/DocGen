@@ -48,7 +48,7 @@ namespace DocGen.Api.Core.Templates
             var template = _mapper.Map<Template>(create);
             await ValidateTemplateHasUniqueIdAsync(template);
 
-            ValidateTemplateMarkup(template);
+            ValidateTemplateMarkup(template, create.ErrorSuppressions);
 
             if (dryRun)
             {
@@ -114,8 +114,9 @@ namespace DocGen.Api.Core.Templates
             var isParentStep = stepsById.Any(kvp => kvp.Key.StartsWith(stepId) && kvp.Value.Index != stepIndex);
             if (isParentStep && step.Inputs.Count() > 1)
             {
+                // TODO: Unnecessarily restrictive?
                 // Parent step is allowed to have one input, this is useful for branching to child steps.
-                stepErrors.Add("A step that has sub-steps must not contain any inputs", stepErrorPath);
+                //stepErrors.Add("A step that has sub-steps must not contain any inputs", stepErrorPath);
             }
             else if (!isParentStep && !step.Inputs.Any())
             {
@@ -193,7 +194,6 @@ namespace DocGen.Api.Core.Templates
                     }
                 }
             });
-
 
             ValidateTemplateStepInputs(step, stepErrors, stepErrorPath);
         }
@@ -317,7 +317,7 @@ namespace DocGen.Api.Core.Templates
             }
         }
 
-        private void ValidateTemplateMarkup(Template template)
+        private void ValidateTemplateMarkup(Template template, IEnumerable<TemplateErrorSuppression> errorSuppressions)
         {
             var references = template.Steps.SelectMany(s => s.Inputs.Select(i =>
             {
@@ -347,7 +347,7 @@ namespace DocGen.Api.Core.Templates
                 }
             }));
 
-            _templateMarkupValidator.Validate(template.Markup, template.MarkupVersion, references);
+            _templateMarkupValidator.Validate(template.Markup, template.MarkupVersion, references, errorSuppressions);
         }
     }
 }

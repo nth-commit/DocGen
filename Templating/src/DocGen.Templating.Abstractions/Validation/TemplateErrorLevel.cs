@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DocGen.Templating.Validation
 {
-    public enum TemplateSyntaxErrorLevel
+    public enum TemplateErrorLevel
     {
         Unknown = 0,
 

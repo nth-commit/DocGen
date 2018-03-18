@@ -18,11 +18,11 @@ namespace DocGen.Templating.Validation.V1
                 {
                     ReferenceDefinition.String("known_reference")
                 },
-                new TemplateSyntaxError[]
+                new TemplateError[]
                 {
-                    new TemplateSyntaxError()
+                    new TemplateError()
                     {
-                        Code = TemplateSyntaxErrorCode.UnknownReference,
+                        Code = TemplateErrorCode.UnknownReference,
                         LineNumber = 3,
                         LinePosition = 16
                     }
@@ -38,11 +38,11 @@ namespace DocGen.Templating.Validation.V1
                 {
                     ReferenceDefinition.StringFrom("known_reference", new string[] { "person" })
                 },
-                new TemplateSyntaxError[]
+                new TemplateError[]
                 {
-                    new TemplateSyntaxError()
+                    new TemplateError()
                     {
-                        Code = TemplateSyntaxErrorCode.UnknownReference,
+                        Code = TemplateErrorCode.UnknownReference,
                         LineNumber = 4,
                         LinePosition = 13
                     }
@@ -52,7 +52,7 @@ namespace DocGen.Templating.Validation.V1
         private static void RunValidation(
             string testName,
             IEnumerable<ReferenceDefinition> references,
-            IEnumerable<TemplateSyntaxError> expectedErrors)
+            IEnumerable<TemplateError> expectedErrors)
         {
             Utility.RunValidation<TemplateValidatorV1>(1, testName, references, expectedErrors);
         }

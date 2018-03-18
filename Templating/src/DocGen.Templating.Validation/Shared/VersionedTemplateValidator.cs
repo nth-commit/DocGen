@@ -13,6 +13,11 @@ namespace DocGen.Templating.Validation.Shared
 {
     public abstract class VersionedTemplateValidator : IVersionedTemplateValidator
     {
+        private static readonly IEnumerable<TemplateErrorCode> AllowedErrorSuppressionCodes = new TemplateErrorCode[]
+        {
+            TemplateErrorCode.UnusedReference
+        };
+
         private readonly ISchemaFileLocator _schemaFileLocator;
 
         public VersionedTemplateValidator(
@@ -21,10 +26,20 @@ namespace DocGen.Templating.Validation.Shared
             _schemaFileLocator = schemaFileLocator;
         }
 
-        public void Validate(string markup, IEnumerable<ReferenceDefinition> references)
+        public void Validate(
+            string markup,
+            IEnumerable<ReferenceDefinition> references,
+            IEnumerable<TemplateErrorSuppression> errorSuppressions)
         {
+            var errorSuppressionCodes = errorSuppressions.Select(s => s.Code).Distinct();
+            var invalidErrorSuppressionCodes = errorSuppressionCodes.Except(AllowedErrorSuppressionCodes);
+            if (invalidErrorSuppressionCodes.Any())
+            {
+                throw new Exception("Invalid error suppression codes");
+            }
+
             var document = GetSchemaValidatedDocument(markup);
-            ValidateExpressions(document, references);
+            ValidateExpressions(document, references, errorSuppressions);
         }
 
         private XDocument GetSchemaValidatedDocument(string markup)
@@ -43,17 +58,17 @@ namespace DocGen.Templating.Validation.Shared
                 settings.ValidationFlags |= XmlSchemaValidationFlags.ProcessSchemaLocation;
                 settings.ValidationFlags |= XmlSchemaValidationFlags.ReportValidationWarnings;
 
-                var errors = new List<TemplateSyntaxError>();
+                var errors = new List<TemplateError>();
                 settings.ValidationEventHandler += (object sender, ValidationEventArgs e) =>
                 {
                     var lineInfo = (IXmlLineInfo)sender;
-                    errors.Add(new TemplateSyntaxError()
+                    errors.Add(new TemplateError()
                     {
                         Message = e.Message,
                         LineNumber = lineInfo.LineNumber,
                         LinePosition = lineInfo.LinePosition,
-                        Code = TemplateSyntaxErrorCode.InvalidSchema,
-                        Level = TemplateSyntaxErrorLevel.Error
+                        Code = TemplateErrorCode.InvalidSchema,
+                        Level = TemplateErrorLevel.Error
                     });
                 };
 
@@ -97,7 +112,10 @@ namespace DocGen.Templating.Validation.Shared
 
         public abstract int MarkupVersion { get; }
 
-        protected abstract void ValidateExpressions(XDocument document, IEnumerable<ReferenceDefinition> references);
+        protected abstract void ValidateExpressions(
+            XDocument document,
+            IEnumerable<ReferenceDefinition> references,
+            IEnumerable<TemplateErrorSuppression> errorSuppressions);
 
         #endregion
     }

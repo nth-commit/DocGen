@@ -7,9 +7,9 @@ namespace DocGen.Templating.Validation
 {
     public class InvalidTemplateSyntaxException : Exception
     {
-        public IEnumerable<TemplateSyntaxError> Errors { get; set; }
+        public IEnumerable<TemplateError> Errors { get; set; }
 
-        public InvalidTemplateSyntaxException(IEnumerable<TemplateSyntaxError> errors) : base("Invalid template syntax")
+        public InvalidTemplateSyntaxException(IEnumerable<TemplateError> errors) : base("Invalid template syntax")
         {
             Errors = errors.OrderBy(e => e.LineNumber).ThenBy(e => e.LinePosition);
         }

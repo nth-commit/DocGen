@@ -16,7 +16,11 @@ namespace DocGen.Templating.Validation
             _templateVersionedMarkupValidators = templateVersionedMarkupValidators;
         }
 
-        public void Validate(string markup, int markupVersion, IEnumerable<ReferenceDefinition> references)
+        public void Validate(
+            string markup,
+            int markupVersion,
+            IEnumerable<ReferenceDefinition> references,
+            IEnumerable<TemplateErrorSuppression> errorSuppressions)
         {
             var validator = _templateVersionedMarkupValidators.FirstOrDefault(v => v.MarkupVersion == markupVersion);
 
@@ -25,7 +29,7 @@ namespace DocGen.Templating.Validation
                 throw new MarkupVersionNotSupportedException();
             }
             
-            validator.Validate(markup, references);
+            validator.Validate(markup, references, errorSuppressions);
         }
     }
 }

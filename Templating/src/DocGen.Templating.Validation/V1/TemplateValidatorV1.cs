@@ -14,7 +14,10 @@ namespace DocGen.Templating.Validation.V1
 
         public override int MarkupVersion => 1;
 
-        protected override void ValidateExpressions(XDocument document, IEnumerable<ReferenceDefinition> references)
+        protected override void ValidateExpressions(
+            XDocument document,
+            IEnumerable<ReferenceDefinition> references,
+            IEnumerable<TemplateErrorSuppression> errorSuppressions)
         {
             var referencesByName = references.ToDictionary(r => r.Name);
 
@@ -62,21 +65,26 @@ namespace DocGen.Templating.Validation.V1
                    }
                });
 
-            var errors = new List<TemplateSyntaxError>();
+            var errors = new List<TemplateError>();
 
             var usedReferences = ValidateDataExpressions(errors, referenceExpressions, referencesByName);
             var usedReferencesFromIf = ValidateIfExpressions(errors, ifExpressions, referencesByName);
 
             var unusedReferenceNames = referencesByName.Keys.Except(usedReferences.Union(usedReferencesFromIf));
-            errors.AddRange(unusedReferenceNames.Select(r => new TemplateSyntaxError
+            errors.AddRange(unusedReferenceNames.Select(r => new TemplateError
             {
                 Message = $"Unused reference: \"{r}\"",
-                Code = TemplateSyntaxErrorCode.UnusedReference,
-                Level = TemplateSyntaxErrorLevel.Warning,
-                LineNumber = -1
+                Code = TemplateErrorCode.UnusedReference,
+                Level = TemplateErrorLevel.Warning,
+                LineNumber = -1,
+                Target = r
             }));
 
-            if (errors.Any())
+            var unsuppressedErrors = errors.Where(e => !errorSuppressions.Any(s =>
+                s.Target == e.Target &&
+                s.Code == e.Code));
+
+            if (unsuppressedErrors.Any())
             {
                 throw new InvalidTemplateSyntaxException(errors);
             }
@@ -109,7 +117,7 @@ namespace DocGen.Templating.Validation.V1
             }
         }
 
-        private HashSet<string> ValidateDataExpressions(List<TemplateSyntaxError> errors, Dictionary<string, IList<LineInfo>> dataExpressions, IDictionary<string, ReferenceDefinition> referencesByName)
+        private HashSet<string> ValidateDataExpressions(List<TemplateError> errors, Dictionary<string, IList<LineInfo>> dataExpressions, IDictionary<string, ReferenceDefinition> referencesByName)
         {
             var (validReferences, invalidReferences) = dataExpressions
                 .Fork(expr => IsValidReference(expr.Key, referencesByName));
@@ -120,7 +128,7 @@ namespace DocGen.Templating.Validation.V1
             return validReferences.Select(expr => expr.Key).ToHashSet();
         }
 
-        private HashSet<string> ValidateIfExpressions(List<TemplateSyntaxError> errors, Dictionary<string, IList<LineInfo>> ifExpressions, IDictionary<string, ReferenceDefinition> referencesByName)
+        private HashSet<string> ValidateIfExpressions(List<TemplateError> errors, Dictionary<string, IList<LineInfo>> ifExpressions, IDictionary<string, ReferenceDefinition> referencesByName)
         {
             var ifExpressionsSplit = ifExpressions.ToDictionary(
                 kvp => kvp.Key,
@@ -155,13 +163,14 @@ namespace DocGen.Templating.Validation.V1
                 })
                 .Where(x => !x.IsValid)
                 .SelectMany(x => x.Expression.Value
-                    .Select(lineInfo => new TemplateSyntaxError()
+                    .Select(lineInfo => new TemplateError()
                     {
                         Message = x.InvalidReason,
-                        Code = TemplateSyntaxErrorCode.InvalidValue,
-                        Level = TemplateSyntaxErrorLevel.Error,
+                        Code = TemplateErrorCode.InvalidValue,
+                        Level = TemplateErrorLevel.Error,
                         LineNumber = lineInfo.LineNumber,
                         LinePosition = lineInfo.LinePosition,
+                        Target = x.Expression.Key
                     })));
 
             errors.AddRange(validIfReferences
@@ -170,12 +179,13 @@ namespace DocGen.Templating.Validation.V1
                     ifExpressionSplit => ifExpressionSplit.Lhs,
                     ifExpressionSplit => ifExpressionSplit.Rhs)
                 .SelectMany(g => GetUnusedValues(g.Key, g, referencesByName)
-                .Select(unusedValue => new TemplateSyntaxError()
+                .Select(unusedValue => new TemplateError()
                 {
                     Message = $"Unused value: \"{unusedValue}\"",
-                    Code = TemplateSyntaxErrorCode.UnusedValue,
-                    Level = TemplateSyntaxErrorLevel.Warning,
-                    LineNumber = -1
+                    Code = TemplateErrorCode.UnusedValue,
+                    Level = TemplateErrorLevel.Warning,
+                    LineNumber = -1,
+                    Target = unusedValue
                 })));
 
             return validIfReferences.Select(expr => ifExpressionsSplit[expr.Key].Lhs).ToHashSet();
@@ -228,15 +238,16 @@ namespace DocGen.Templating.Validation.V1
             return (true, null);
         }
 
-        private TemplateSyntaxError GetUnknownReferenceError(LineInfo lineInfo, string unknownReference)
+        private TemplateError GetUnknownReferenceError(LineInfo lineInfo, string unknownReference)
         {
-            return new TemplateSyntaxError()
+            return new TemplateError()
             {
                 Message = $"{unknownReference} is not a known reference",
-                Code = TemplateSyntaxErrorCode.UnknownReference,
-                Level = TemplateSyntaxErrorLevel.Error,
+                Code = TemplateErrorCode.UnknownReference,
+                Level = TemplateErrorLevel.Error,
                 LineNumber = lineInfo.LineNumber,
-                LinePosition = lineInfo.LinePosition
+                LinePosition = lineInfo.LinePosition,
+                Target = unknownReference
             };
         }
 

@@ -13,7 +13,7 @@ namespace DocGen.Templating.Validation
             int version,
             string testName,
             IEnumerable<ReferenceDefinition> references,
-            IEnumerable<TemplateSyntaxError> expectedErrors) where TMarkupValidator : VersionedTemplateValidator
+            IEnumerable<TemplateError> expectedErrors) where TMarkupValidator : VersionedTemplateValidator
         {
             var validator = (VersionedTemplateValidator)Activator.CreateInstance(
                 typeof(TMarkupValidator), new SchemaFileLocator(Directory.GetCurrentDirectory()));
@@ -34,16 +34,16 @@ namespace DocGen.Templating.Validation
             }
         }
 
-        private class TemplateSyntaxErrorEqualityComparer : IEqualityComparer<TemplateSyntaxError>
+        private class TemplateSyntaxErrorEqualityComparer : IEqualityComparer<TemplateError>
         {
-            public bool Equals(TemplateSyntaxError x, TemplateSyntaxError y)
+            public bool Equals(TemplateError x, TemplateError y)
             {
                 return x.Code == y.Code &&
                     x.LineNumber == y.LineNumber &&
                     x.LinePosition == y.LinePosition;
             }
 
-            public int GetHashCode(TemplateSyntaxError obj)
+            public int GetHashCode(TemplateError obj)
             {
                 return 1;
             }

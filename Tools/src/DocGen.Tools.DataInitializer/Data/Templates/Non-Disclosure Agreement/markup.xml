@@ -102,7 +102,7 @@
     <block if="contractor.type = company">Name of representative:</block>
     <block></block>
     <block>Date:</block>
-    <!--<signature if="contractor.type = person" signer="contractor.person.name"></signature>
-    <signature if="contractor.type = company" signer="contractor.company.representative" representing="contractor.company.name"></signature>-->
+    <signature if="contractor.type = person" signer="contractor.person.name"></signature>
+    <signature if="contractor.type = company" signer="contractor.company.representative.name" representing="contractor.company.name"></signature>
   </page>
 </document>

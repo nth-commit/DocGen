@@ -1,7 +1,9 @@
 ﻿using DocGen.Shared.Validation;
+using DocGen.Templating.Validation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Text;
 
 namespace DocGen.Api.Core.Templates
@@ -26,5 +28,7 @@ namespace DocGen.Api.Core.Templates
         [EnumerableNotEmpty]
         [ValidateEnumerableElements]
         public IEnumerable<TemplateStepCreate> Steps { get; set; }
+
+        public IEnumerable<TemplateErrorSuppression> ErrorSuppressions { get; set; } = Enumerable.Empty<TemplateErrorSuppression>();
     }
 }
