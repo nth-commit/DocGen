@@ -23,12 +23,14 @@ namespace DocGen.Api.Controllers
         [ProducesResponseType(typeof(SerializableDocument), 200)]
         public async Task<IActionResult> Create(
             [FromQuery] string templateId,
-            [FromQuery] string templateVersion)
+            [FromQuery] string templateVersion,
+            [FromQuery] bool signDocument)
         {
             var documentCreate = new DocumentCreate()
             {
                 TemplateId = templateId,
                 TemplateVersion = int.Parse(templateVersion),
+                IsDocumentSigned = signDocument,
                 InputValues = Request.Query
                     .Where(kvp => kvp.Key.StartsWith("v_"))
                     .ToDictionary(

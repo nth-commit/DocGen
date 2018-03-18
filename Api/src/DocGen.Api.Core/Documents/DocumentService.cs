@@ -75,6 +75,11 @@ namespace DocGen.Api.Core.Documents
         {
             var inputValueErrors = new ModelErrorDictionary();
 
+            if (create.IsDocumentSigned.HasValue && template.SigningType != TemplateSigningType.Optional)
+            {
+                inputValueErrors.Add("Expected template signing to be optional when document signed flag is set", nameof(create.IsDocumentSigned));
+            }
+
             // Store the traversed values so we can easily analyse conditional inputs. It's fine to just store them as strings as we
             // have already validated their types and value comparison will work for stringified booleans and numbers.
             var validInputStringValues = new Dictionary<string, string>();
@@ -97,8 +102,9 @@ namespace DocGen.Api.Core.Documents
                     }
                     else if (condition.Type == TemplateComponentConditionType.IsDocumentSigned)
                     {
-                        // TODO: Document creation should accept something to indicate IsDocumentSigned (only if TemplateSignType is optional)
-                        return true;
+                        // Skip this step if the contract won't be signed
+                        return template.SigningType == TemplateSigningType.NotSigned ||
+                            template.SigningType == TemplateSigningType.Optional && create.IsDocumentSigned.GetValueOrDefault();
                     }
                     return false;
                 });

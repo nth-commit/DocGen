@@ -15,9 +15,9 @@ namespace DocGen.Api.Core.Documents
         [Range(0, int.MaxValue)]
         public int TemplateVersion { get; set; }
 
+        public bool? IsDocumentSigned { get; set; }
+
         [Required]
         public IDictionary<string, dynamic> InputValues { get; set; }
-
-        public IDictionary<string, string> TemplatingOptions { get; set; } = new Dictionary<string, string>();
     }
 }

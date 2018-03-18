@@ -43,7 +43,7 @@ namespace DocGen.Api.Core.Templates
         {
             Validator.ValidateNotNull(create, nameof(create));
             Validator.Validate(create);
-            ValidateTemplateSteps(create.Steps);
+            ValidateTemplateSteps(create, create.Steps);
 
             var template = _mapper.Map<Template>(create);
             await ValidateTemplateHasUniqueIdAsync(template);
@@ -70,7 +70,7 @@ namespace DocGen.Api.Core.Templates
             catch (EntityNotFoundException) { }
         }
 
-        private void ValidateTemplateSteps(IEnumerable<TemplateStepCreate> steps)
+        private void ValidateTemplateSteps(TemplateCreate create, IEnumerable<TemplateStepCreate> steps)
         {
             // TODO: Validate allowed characters in name
 
@@ -95,7 +95,7 @@ namespace DocGen.Api.Core.Templates
 
             var stepErrors = new ModelErrorDictionary();
             var stepsById = stepsByIdLookup.ToDictionary(g => g.Key, g => g.Single());
-            stepsById.ForEach(kvp => ValidateTemplateStep(kvp.Key, stepsById, stepErrors));
+            stepsById.ForEach(kvp => ValidateTemplateStep(create, kvp.Key, stepsById, stepErrors));
 
             if (stepErrors.HasErrors)
             {
@@ -103,7 +103,7 @@ namespace DocGen.Api.Core.Templates
             }
         }
 
-        private void ValidateTemplateStep(string stepId, Dictionary<string, IndexedElement<TemplateStepCreate>> stepsById, ModelErrorDictionary stepErrors)
+        private void ValidateTemplateStep(TemplateCreate create, string stepId, Dictionary<string, IndexedElement<TemplateStepCreate>> stepsById, ModelErrorDictionary stepErrors)
         {
             var indexedStep = stepsById[stepId];
             var step = indexedStep.Element;
@@ -129,6 +129,7 @@ namespace DocGen.Api.Core.Templates
             step.Conditions.ForEach((condition, conditionIndex) =>
             {
                 var stepConditionErrorPath = stepConditionsErrorPath.Concat(conditionIndex);
+                var stepConditionTypeErrorPath = stepConditionErrorPath.Concat(nameof(TemplateStepCondition.Type));
                 var stepConditionTypeDataErrorPath = stepConditionErrorPath.Concat(nameof(TemplateStepCondition.TypeData));
 
                 if (condition.Type == TemplateComponentConditionType.EqualsPreviousInputValue)
@@ -191,6 +192,13 @@ namespace DocGen.Api.Core.Templates
                         {
                             stepErrors.Add("Could not find a step from given path", previousInputIdErrorPath);
                         }
+                    }
+                }
+                else if (condition.Type == TemplateComponentConditionType.IsDocumentSigned)
+                {
+                    if (create.SigningType == TemplateSigningType.NotSigned)
+                    {
+                        stepErrors.Add("Step condition cannot be on document signing if the template does not allow signing", stepConditionTypeErrorPath);
                     }
                 }
             });
