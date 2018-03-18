@@ -114,17 +114,16 @@ export const reducerBase: ActionReducer<WizardState> = (state, action: WizardAct
       const templateStepInputsValid: boolean[][] = [];
       state.template.steps.forEach((step, stepIndex) => {
         const result: boolean[] = [];
-        let skipValidation = false;
 
-        if (step.conditionType === TemplateStepConditionType.EqualsPreviousInputValue) {
-          const expectedPreviousInputValue = step.conditionTypeData.PreviousInputValue;
-          const previousInputId = step.conditionTypeData.PreviousInputId;
+        const skipValidation = step.conditions.every(c => {
+          if (c.type === TemplateStepConditionType.EqualsPreviousInputValue) {
+            const expectedPreviousInputValue = c.typeData.PreviousInputValue;
+            const previousInputId = c.typeData.PreviousInputId;
 
-          if (state.values[previousInputId] !== expectedPreviousInputValue) {
-            // All inputs are valid based on the fact it is not required by condition
-            skipValidation = true;
+            return state.values[previousInputId] !== expectedPreviousInputValue;
           }
-        }
+          return false;
+        });
 
         step.inputs.forEach((input, inputIndex) => {
           result[inputIndex] = skipValidation || (values[input.id] !== undefined && values[input.id] !== null);
@@ -212,8 +211,21 @@ export const reducer: ActionReducer<WizardState> = (state, action: WizardAction)
     });
 
     state.nextStepIndex = state.template.steps
-      .findIndex((s, i) => i > state.currentStepIndex &&
-        (!s.conditionType || state.values[s.conditionTypeData.PreviousInputId] === s.conditionTypeData.PreviousInputValue));
+      .findIndex((s, i) => {
+        if (i <= state.currentStepIndex) {
+          return false;
+        }
+
+        const allConditionsMet = s.conditions.every(c => {
+          if (c.type === TemplateStepConditionType.EqualsPreviousInputValue) {
+            return state.values[c.typeData.PreviousInputId] === c.typeData.PreviousInputValue;
+          }
+
+          return false;
+        });
+
+        return allConditionsMet;
+      });
 
     state.hasNextStep = state.nextStepIndex > -1;
 

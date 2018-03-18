@@ -103,7 +103,7 @@ namespace DocGen.Api.Core.Documents
                     return false;
                 });
 
-                if (allConditionsMet)
+                if (!allConditionsMet)
                 {
                     return;
                 }
