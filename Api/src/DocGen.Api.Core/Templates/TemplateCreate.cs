@@ -20,6 +20,9 @@ namespace DocGen.Api.Core.Templates
         [Range(1, int.MaxValue)]
         public int MarkupVersion { get; set; }
 
+        [NotValue(TemplateSigningType.Unknown)]
+        public TemplateSigningType SigningType { get; set; }
+
         [EnumerableNotEmpty]
         [ValidateEnumerableElements]
         public IEnumerable<TemplateStepCreate> Steps { get; set; }

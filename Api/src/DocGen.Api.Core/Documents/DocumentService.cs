@@ -81,21 +81,31 @@ namespace DocGen.Api.Core.Documents
 
             template.Steps.ForEach(templateStep =>
             {
-                if (templateStep.ConditionType == TemplateComponentConditionType.EqualsPreviousInputValue)
+                var allConditionsMet = templateStep.Conditions.All(condition =>
                 {
-                    var expectedPreviousInputValue = DynamicUtility.Unwrap<string>(() => templateStep.ConditionTypeData.PreviousInputValue);
-                    var previousInputId = DynamicUtility.Unwrap<string>(() => templateStep.ConditionTypeData.PreviousInputId);
-
-                    if (string.IsNullOrEmpty(expectedPreviousInputValue) || string.IsNullOrEmpty(previousInputId))
+                    if (condition.Type == TemplateComponentConditionType.EqualsPreviousInputValue)
                     {
-                        throw new Exception("Internal error: invalid template");
-                    }
+                        var expectedPreviousInputValue = DynamicUtility.Unwrap<string>(() => condition.TypeData.PreviousInputValue);
+                        var previousInputId = DynamicUtility.Unwrap<string>(() => condition.TypeData.PreviousInputId);
 
-                    if (!validInputStringValues.ContainsKey(previousInputId) || !expectedPreviousInputValue.Equals(validInputStringValues[previousInputId]))
-                    {
-                        // Skip this step
-                        return;
+                        if (string.IsNullOrEmpty(expectedPreviousInputValue) || string.IsNullOrEmpty(previousInputId))
+                        {
+                            throw new Exception("Internal error: invalid template");
+                        }
+
+                        return validInputStringValues.ContainsKey(previousInputId) && expectedPreviousInputValue.Equals(validInputStringValues[previousInputId]);
                     }
+                    else if (condition.Type == TemplateComponentConditionType.IsDocumentSigned)
+                    {
+                        // TODO: Document creation should accept something to indicate IsDocumentSigned (only if TemplateSignType is optional)
+                        return true;
+                    }
+                    return false;
+                });
+
+                if (allConditionsMet)
+                {
+                    return;
                 }
 
                 var templateStepId = templateStep.Id;

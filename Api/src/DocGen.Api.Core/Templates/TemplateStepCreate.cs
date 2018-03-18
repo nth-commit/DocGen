@@ -19,27 +19,13 @@ namespace DocGen.Api.Core.Templates
         [StringNotNullOrEmpty]
         public string Description { get; set; }
 
-        [NotValue(TemplateComponentConditionType.Unknown)]
-        public TemplateComponentConditionType? ConditionType { get; set; }
-
-        [ValidateAgainstTypeIf(typeof(TemplateStepConditionTypeData_EqualsPreviousInputValue), nameof(ConditionType), TemplateComponentConditionType.EqualsPreviousInputValue)]
-        public dynamic ConditionTypeData { get; set; }
+        [ValidateEnumerableElements]
+        public IEnumerable<TemplateStepCondition> Conditions { get; set; } = Enumerable.Empty<TemplateStepCondition>();
 
         [ValidateEnumerableElements]
         public IEnumerable<TemplateStepInputCreate> Inputs { get; set; } = Enumerable.Empty<TemplateStepInputCreate>(); // Can be empty if a parent step.
 
         [RegularExpression(Constants.TemplateComponentReferenceRegexPattern)]
         public string ParentReference { get; set; }
-    }
-
-    public class TemplateStepConditionTypeData { }
-
-    public class TemplateStepConditionTypeData_EqualsPreviousInputValue : TemplateStepConditionTypeData
-    {
-        [RegularExpression(Constants.TemplateStepInputKeyRegexPattern)]
-        public string PreviousInputId { get; set; }
-
-        [Required]
-        public dynamic PreviousInputValue { get; set; }
     }
 }

@@ -124,69 +124,76 @@ namespace DocGen.Api.Core.Templates
                 stepErrors.Add("Step must have at least one inputs", stepErrorPath);
             }
 
-            if (step.ConditionType == TemplateComponentConditionType.EqualsPreviousInputValue)
+            var stepConditionsErrorPath = stepErrorPath.Concat(nameof(TemplateStepCreate.Conditions));
+            step.Conditions.ForEach((condition, conditionIndex) =>
             {
-                var stepConditionErrorPath = stepErrorPath.Concat(nameof(TemplateStepCreate.ConditionTypeData));
-                var previousInputIdErrorPath = stepConditionErrorPath.Concat(nameof(TemplateStepConditionTypeData_EqualsPreviousInputValue.PreviousInputId));
-                var previousInputValueErrorPath = stepConditionErrorPath.Concat(nameof(TemplateStepConditionTypeData_EqualsPreviousInputValue.PreviousInputValue));
+                var stepConditionErrorPath = stepConditionsErrorPath.Concat(conditionIndex);
+                var stepConditionTypeDataErrorPath = stepConditionErrorPath.Concat(nameof(TemplateStepCondition.TypeData));
 
-                var previousInputId = DynamicUtility.Unwrap<string>(() => step.ConditionTypeData.PreviousInputId);
-                if (string.IsNullOrEmpty(previousInputId))
+                if (condition.Type == TemplateComponentConditionType.EqualsPreviousInputValue)
                 {
-                    stepErrors.Add("Must have a greater than than or equal to 1", previousInputIdErrorPath);
-                }
-                else
-                {
-                    if (TryGetStepFromInputReference(previousInputId, stepsById, out IndexedElement<TemplateStepCreate> indexedPreviousStep))
+                    var previousInputIdErrorPath = stepConditionTypeDataErrorPath.Concat(nameof(TemplateStepConditionTypeData_EqualsPreviousInputValue.PreviousInputId));
+                    var previousInputValueErrorPath = stepConditionTypeDataErrorPath.Concat(nameof(TemplateStepConditionTypeData_EqualsPreviousInputValue.PreviousInputValue));
+
+                    var previousInputId = DynamicUtility.Unwrap<string>(() => condition.TypeData.PreviousInputId);
+                    if (string.IsNullOrEmpty(previousInputId))
                     {
-                        if (indexedPreviousStep.Index >= stepIndex)
-                        {
-                            stepErrors.Add("Must reference a previous step", previousInputIdErrorPath);
-                        }
-                        else
-                        {
-                            var previousInput = GetTemplateStepInput(previousInputId, indexedPreviousStep.Element);
-                            if (previousInput == null)
-                            {
-                                stepErrors.Add("Could not find input from given path", previousInputIdErrorPath);
-                            }
-                            else
-                            {
-                                if (previousInput.Type == TemplateStepInputType.Checkbox)
-                                {
-                                    try
-                                    {
-                                        DynamicUtility.UnwrapValue<bool>(() => step.ConditionTypeData.PreviousInputValue);
-                                    }
-                                    catch (RuntimeBinderException)
-                                    {
-                                        stepErrors.Add("Expected boolean", previousInputValueErrorPath);
-                                    }
-                                }
-                                else if (previousInput.Type == TemplateStepInputType.Radio)
-                                {
-                                    try
-                                    {
-                                        DynamicUtility.Unwrap<string>(() => step.ConditionTypeData.PreviousInputValue);
-                                    }
-                                    catch (RuntimeBinderException)
-                                    {
-                                        throw;
-                                    }
-                                }
-                                else
-                                {
-                                    stepErrors.Add("Type of previous input is not supported for conditions", previousInputValueErrorPath);
-                                }
-                            }
-                        }
+                        stepErrors.Add("Must have a greater than than or equal to 1", previousInputIdErrorPath);
                     }
                     else
                     {
-                        stepErrors.Add("Could not find a step from given path", previousInputIdErrorPath);
+                        if (TryGetStepFromInputReference(previousInputId, stepsById, out IndexedElement<TemplateStepCreate> indexedPreviousStep))
+                        {
+                            if (indexedPreviousStep.Index >= stepIndex)
+                            {
+                                stepErrors.Add("Must reference a previous step", previousInputIdErrorPath);
+                            }
+                            else
+                            {
+                                var previousInput = GetTemplateStepInput(previousInputId, indexedPreviousStep.Element);
+                                if (previousInput == null)
+                                {
+                                    stepErrors.Add("Could not find input from given path", previousInputIdErrorPath);
+                                }
+                                else
+                                {
+                                    if (previousInput.Type == TemplateStepInputType.Checkbox)
+                                    {
+                                        try
+                                        {
+                                            DynamicUtility.UnwrapValue<bool>(() => condition.TypeData.PreviousInputValue);
+                                        }
+                                        catch (RuntimeBinderException)
+                                        {
+                                            stepErrors.Add("Expected boolean", previousInputValueErrorPath);
+                                        }
+                                    }
+                                    else if (previousInput.Type == TemplateStepInputType.Radio)
+                                    {
+                                        try
+                                        {
+                                            DynamicUtility.Unwrap<string>(() => condition.TypeData.PreviousInputValue);
+                                        }
+                                        catch (RuntimeBinderException)
+                                        {
+                                            throw;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        stepErrors.Add("Type of previous input is not supported for conditions", previousInputValueErrorPath);
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            stepErrors.Add("Could not find a step from given path", previousInputIdErrorPath);
+                        }
                     }
                 }
-            }
+            });
+
 
             ValidateTemplateStepInputs(step, stepErrors, stepErrorPath);
         }
