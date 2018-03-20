@@ -16,6 +16,7 @@ namespace DocGen.Templating.Rendering.Builders.V1.Serializable
 
         private bool _isRendering = false;
         private bool _isComplete = false;
+        private DocumentRenderModel _model = null;
 
         public int MarkupVersion => 1;
 
@@ -28,15 +29,18 @@ namespace DocGen.Templating.Rendering.Builders.V1.Serializable
                     throw new InvalidOperationException("Rendering is not complete");
                 }
 
-                return new SerializableDocument()
+                var result = new SerializableDocument()
                 {
                     MarkupVersion = MarkupVersion,
-                    Instructions = _instructions
+                    Instructions = _instructions,
+                    IsSigned = _model.Sign
                 };
+
+                return result;
             }
         }
 
-        public Task BeginWriteDocumentAsync(DocumentInstructionContextV1 context)
+        public Task BeginWriteDocumentAsync(DocumentRenderModel model, DocumentInstructionContextV1 context)
         {
             if (_isRendering || _isComplete)
             {
@@ -44,6 +48,7 @@ namespace DocGen.Templating.Rendering.Builders.V1.Serializable
             }
 
             _isRendering = true;
+            _model = model;
 
             return Task.CompletedTask;
         }

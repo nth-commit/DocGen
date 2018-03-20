@@ -36,7 +36,7 @@ namespace DocGen.Templating.Rendering.Builders.V1.Text
             }
         }
 
-        public Task BeginWriteDocumentAsync(DocumentInstructionContextV1 context)
+        public Task BeginWriteDocumentAsync(DocumentRenderModel model, DocumentInstructionContextV1 context)
         {
             if (_isRendering || _isComplete)
             {

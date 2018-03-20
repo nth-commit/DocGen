@@ -62,7 +62,11 @@ namespace DocGen.Api.Core.Documents
                     {
                         Reference = kvp.Key,
                         Value = ((object)kvp.Value).ToString()
-                    })
+                    }),
+                    Sign = template.SigningType == TemplateSigningType.NotSigned ? false :
+                        template.SigningType == TemplateSigningType.Required ? true :
+                        template.SigningType == TemplateSigningType.Optional ? create.GetIsSigned() :
+                        throw new InvalidOperationException()
                 });
         }
 
@@ -75,9 +79,23 @@ namespace DocGen.Api.Core.Documents
         {
             var inputValueErrors = new ModelErrorDictionary();
 
-            if (create.IsSigned.HasValue && template.SigningType != TemplateSigningType.Optional)
+            if (template.SigningType == TemplateSigningType.Optional)
             {
-                inputValueErrors.Add("Expected template signing to be optional when document signed flag is set", nameof(create.IsSigned));
+                if (!create.InputValues.ContainsKey("document_signed"))
+                {
+                    inputValueErrors.Add(
+                        $"Expected \"document_signed\" input to be present when {nameof(TemplateSigningType)} is {nameof(TemplateSigningType.Optional)}",
+                        nameof(create.InputValues));
+                }
+            }
+            else
+            {
+                if (create.InputValues.ContainsKey("document_signed"))
+                {
+                    inputValueErrors.Add(
+                        $"Expected \"document_signed\" input to be absent when {nameof(TemplateSigningType)} is not {nameof(TemplateSigningType.Optional)}",
+                        nameof(create.InputValues));
+                }
             }
 
             // Store the traversed values so we can easily analyse conditional inputs. It's fine to just store them as strings as we
@@ -104,7 +122,7 @@ namespace DocGen.Api.Core.Documents
                     {
                         // Skip this step if the contract won't be signed
                         return template.SigningType == TemplateSigningType.NotSigned ||
-                            template.SigningType == TemplateSigningType.Optional && create.IsSigned.GetValueOrDefault();
+                            template.SigningType == TemplateSigningType.Optional && create.GetIsSigned();
                     }
                     return false;
                 });

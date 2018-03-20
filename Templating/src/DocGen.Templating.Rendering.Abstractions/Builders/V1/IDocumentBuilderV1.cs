@@ -9,7 +9,7 @@ namespace DocGen.Templating.Rendering.Builders.V1
 {
     public interface IDocumentBuilderV1 : IDocumentBuilder
     {
-        Task BeginWriteDocumentAsync(DocumentInstructionContextV1 context);
+        Task BeginWriteDocumentAsync(DocumentRenderModel model, DocumentInstructionContextV1 context);
 
         Task EndWriteDocumentAsync(DocumentInstructionContextV1 context);
 

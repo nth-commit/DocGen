@@ -30,7 +30,6 @@ namespace DocGen.Api.Controllers
             {
                 TemplateId = templateId,
                 TemplateVersion = int.Parse(templateVersion),
-                IsSigned = sign,
                 InputValues = Request.Query
                     .Where(kvp => kvp.Key.StartsWith("v_"))
                     .ToDictionary(

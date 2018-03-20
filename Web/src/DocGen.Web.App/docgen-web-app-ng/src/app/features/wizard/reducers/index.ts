@@ -262,6 +262,8 @@ export const reducer: ActionReducer<WizardState> = (state, action: WizardAction)
         const allConditionsMet = s.conditions.every(c => {
           if (c.type === TemplateStepConditionType.EqualsPreviousInputValue) {
             return state.values[c.typeData.PreviousInputId] === c.typeData.PreviousInputValue;
+          } else if (c.type === TemplateStepConditionType.IsDocumentSigned) {
+            return state.template.signingType === TemplateSigningType.Required;
           }
 
           return false;

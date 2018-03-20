@@ -45,7 +45,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             var root = document.Root;
 
             _context = _context.BeforeBegin(document.Root.Name.LocalName);
-            await builder.BeginWriteDocumentAsync(_context);
+            await builder.BeginWriteDocumentAsync(model, _context);
             _context = _context.AfterBegin();
 
             foreach (var page in root.Elements())
