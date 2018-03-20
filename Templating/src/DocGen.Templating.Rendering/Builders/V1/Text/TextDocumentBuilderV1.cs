@@ -145,6 +145,16 @@ namespace DocGen.Templating.Rendering.Builders.V1.Text
             return Task.CompletedTask;
         }
 
+        public Task BeginWriteSigningAreaAsync(DocumentInstructionContextV1 context)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task EndWriteSigningAreaAsync(DocumentInstructionContextV1 context)
+        {
+            return Task.CompletedTask;
+        }
+
         public Task WriteTextAsync(string text, string expression, DocumentInstructionContextV1 context)
         {
             if (IsParagraphElement(context.Previous))

@@ -154,6 +154,16 @@ namespace DocGen.Templating.Rendering.Builders.V1.Serializable
             return Task.CompletedTask;
         }
 
+        public Task BeginWriteSigningAreaAsync(DocumentInstructionContextV1 context)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task EndWriteSigningAreaAsync(DocumentInstructionContextV1 context)
+        {
+            return Task.CompletedTask;
+        }
+
         public Task WriteTextAsync(string text, string reference, DocumentInstructionContextV1 context)
         {
             if (IsBlockElement(context.Previous))

@@ -1,4 +1,5 @@
-﻿using MoreLinq;
+﻿using DocGen.Templating.Internal;
+using MoreLinq;
 using System;
 using System.Collections.Generic;
 using System.IO;

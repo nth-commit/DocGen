@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -18,7 +19,6 @@ namespace DocGen.Templating.Rendering.Instructions.V1
         private IDocumentBuilderV1 _builder;
         private DocumentRenderModel _model;
         private bool _includeMetadata = true;
-        private Dictionary<string, string> _valuesByReference;
         private Dictionary<int, int> _listItemIndexContinueOffsetByNestingLevel;
 
         public int MarkupVersion => 1;
@@ -33,7 +33,6 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             _context = new DocumentInstructionContextV1();
             _builder = builder;
             _model = model;
-            _valuesByReference = _model.Items.ToDictionary(i => i.Reference, i => i.Value);
             _listItemIndexContinueOffsetByNestingLevel = new Dictionary<int, int>();
 
             XDocument document = null;
@@ -44,15 +43,17 @@ namespace DocGen.Templating.Rendering.Instructions.V1
 
             var root = document.Root;
 
+            var valuesByReference = _model.Items.ToDictionary(i => i.Reference, i => i.Value);
+
             _context = _context.BeforeBegin(document.Root.Name.LocalName);
             await builder.BeginWriteDocumentAsync(model, _context);
             _context = _context.AfterBegin();
 
             foreach (var page in root.Elements())
             {
-                await WriteConditionalElementAsync(page, async () =>
+                await WriteConditionalElementAsync(page, valuesByReference, async () =>
                 {
-                    await InstructPageRenderingAsync(page);
+                    await InstructPageRenderingAsync(page, valuesByReference);
                 });
             }
 
@@ -61,7 +62,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             _context = _context.AfterEnd();
         }
 
-        private async Task InstructPageRenderingAsync(XElement page)
+        private async Task InstructPageRenderingAsync(XElement page, Dictionary<string, string> valuesByReference)
         {
             AssertElementName(page, "page");
 
@@ -69,14 +70,14 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             await _builder.BeginWritePageAsync(_context);
             _context = _context.AfterBegin();
 
-            await TraverseContainerElementAsync(page);
+            await TraverseContainerElementAsync(page, valuesByReference);
 
             _context = _context.BeforeEnd();
             await _builder.EndWritePageAsync(_context);
             _context = _context.AfterEnd();
         }
 
-        private async Task InstructBlockRenderingAsync(XElement block)
+        private async Task InstructBlockRenderingAsync(XElement block, Dictionary<string, string> valuesByReference)
         {
             AssertElementName(block, "block");
 
@@ -84,14 +85,14 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             await _builder.BeginWriteBlockAsync(_context);
             _context = _context.AfterBegin();
 
-            await TraverseContainerElementAsync(block);
+            await TraverseContainerElementAsync(block, valuesByReference);
 
             _context = _context.BeforeEnd();
             await _builder.EndWriteBlockAsync(_context);
             _context = _context.AfterEnd();
         }
 
-        private async Task InstructListRenderingAsync(XElement list)
+        private async Task InstructListRenderingAsync(XElement list, Dictionary<string, string> valuesByReference)
         {
             AssertElementName(list, "list");
 
@@ -120,6 +121,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
 
                 await WriteConditionalElementAsync(
                     listItem,
+                    valuesByReference,
                     async () =>
                     {
                         int continuedListIndex = listItemIndexContinueOffset + i - conditionallyExcludedListItems;
@@ -127,7 +129,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
                         await _builder.BeginWriteListItemAsync(_context.ListItemIndexPath, _context);
                         _context = _context.AfterBegin();
 
-                        await TraverseContainerElementAsync(listItem);
+                        await TraverseContainerElementAsync(listItem, valuesByReference);
 
                         _context = _context.BeforeEnd();
                         await _builder.EndWriteListItemAsync(_context);
@@ -143,7 +145,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             _listItemIndexContinueOffsetByNestingLevel[listNestingLevel] += listItems.Count;
         }
 
-        private async Task TraverseContainerElementAsync(XElement container)
+        private async Task TraverseContainerElementAsync(XElement container, Dictionary<string, string> valuesByReference)
         {
             foreach (var node in container.Nodes())
             {
@@ -155,30 +157,34 @@ namespace DocGen.Templating.Rendering.Instructions.V1
                 {
                     var element = (XElement)node;
 
-                    await WriteConditionalElementAsync(element, async () =>
+                    await WriteConditionalElementAsync(element, valuesByReference, async () =>
                     {
                         if (element.Name.LocalName == "inline")
                         {
-                            await InstructWriteInlineAsync(element);
+                            await InstructWriteInlineAsync(element, valuesByReference);
                         }
                         else if (element.Name.LocalName == "data")
                         {
-                            await InstructWriteDataAsync(element);
+                            await InstructWriteDataAsync(element, valuesByReference);
                         }
                         else if (element.Name.LocalName == "block")
                         {
-                            await InstructBlockRenderingAsync(element);
+                            await InstructBlockRenderingAsync(element, valuesByReference);
                         }
                         else if (element.Name.LocalName == "list")
                         {
-                            await InstructListRenderingAsync(element);
+                            await InstructListRenderingAsync(element, valuesByReference);
+                        }
+                        else if (element.Name.LocalName == "signature")
+                        {
+                            await InstructWriteSignatureAsync(element, valuesByReference);
                         }
                     });
                 }
             }
         }
 
-        private async Task InstructWriteInlineAsync(XElement inline)
+        private async Task InstructWriteInlineAsync(XElement inline, Dictionary<string, string> valuesByReference)
         {
             AssertElementName(inline, "inline");
 
@@ -193,7 +199,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
                     var element = node as XElement;
                     if (element != null && element.Name.LocalName == "data")
                     {
-                        await InstructWriteDataAsync(element);
+                        await InstructWriteDataAsync(element, valuesByReference);
                     }
                     else
                     {
@@ -203,12 +209,12 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             }
         }
 
-        private async Task InstructWriteDataAsync(XElement data)
+        private async Task InstructWriteDataAsync(XElement data, Dictionary<string, string> valuesByReference)
         {
             AssertElementName(data, "data");
 
             var reference = ((XText)data.FirstNode).Value;
-            await InstructWriteTextAsync(_valuesByReference[reference], reference);
+            await InstructWriteTextAsync(valuesByReference[reference], reference);
         }
 
         private async Task InstructWriteTextAsync(XText text, string reference = null)
@@ -240,9 +246,49 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             _context = _context.AfterBegin().BeforeEnd().AfterEnd();
         }
 
-        private async Task WriteConditionalElementAsync(XElement conditionalElement, Func<Task> writeAction, Action onConditionFailed = null)
+        private async Task InstructWriteSignatureAsync(XElement signatureElement, Dictionary<string, string> valuesByReference)
         {
-            var (hasCondition, conditionResult, conditionalExpression) = GetElementConditionalValue(conditionalElement);
+            var signatureValuesByReference = new Dictionary<string, string>()
+            {
+                { "sign", _model.Sign.ToString().ToLowerInvariant() }
+            };
+
+            var signerAttribute = signatureElement.Attributes().SingleOrDefault(a => a.Name == "signer");
+            signatureValuesByReference.Add("person", valuesByReference[signerAttribute.Value]);
+
+            var representingAttribute = signatureElement.Attributes().FirstOrDefault(a => a.Name == "representing");
+            if (representingAttribute == null)
+            {
+                signatureValuesByReference.Add("representing", false.ToString().ToLowerInvariant());
+            }
+            else
+            {
+                signatureValuesByReference.Add("representing", true.ToString().ToLowerInvariant());
+                signatureValuesByReference.Add("company", valuesByReference[representingAttribute.Value]);
+            }
+
+            await _builder.BeginWriteSigningAreaAsync(_context);
+            await WritePartialAsync("signature", signatureValuesByReference);
+            await _builder.EndWriteSigningAreaAsync(_context);
+        }
+
+        private async Task WritePartialAsync(string partialName, Dictionary<string, string> valuesByReference)
+        {
+            var assemblyDir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            var partialPath = Path.Combine(assemblyDir, "Instructions", $"V{MarkupVersion}", "Partials", $"{partialName}.partial.xml");
+
+            XDocument document = null;
+            using (var sr = new StringReader(File.ReadAllText(partialPath)))
+            {
+                document = XDocument.Load(sr);
+            }
+
+            await TraverseContainerElementAsync(document.Root.Elements().Single(), valuesByReference);
+        }
+
+        private async Task WriteConditionalElementAsync(XElement conditionalElement, Dictionary<string, string> valuesByReference, Func<Task> writeAction, Action onConditionFailed = null)
+        {
+            var (hasCondition, conditionResult, conditionalExpression) = GetElementConditionalValue(conditionalElement, valuesByReference);
             if (hasCondition)
             {
                 if (conditionResult)
@@ -268,14 +314,14 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             }
         }
 
-        private (bool hasCondition, bool conditionResult, string conditionalExpression) GetElementConditionalValue(XElement element)
+        private (bool hasCondition, bool conditionResult, string conditionalExpression) GetElementConditionalValue(XElement element, Dictionary<string, string> valuesByReference)
         {
             var ifAttribute = element.Attributes().FirstOrDefault(a => a.Name == "if");
             if (ifAttribute != null)
             {
                 var ifExpressionSplit = ifAttribute.Value.Split('=').Select(s => s.Trim()).ToArray();
                 var reference = ifExpressionSplit[0];
-                return (true, _valuesByReference[reference] == ifExpressionSplit[1], reference);
+                return (true, valuesByReference[reference] == ifExpressionSplit[1], reference);
             }
             return (false, false, null);
         }

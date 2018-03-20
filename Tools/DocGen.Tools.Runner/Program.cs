@@ -138,27 +138,27 @@ namespace DocGen.Tools.Runner
 
                 #region Create document
 
-                //var service = serviceProvider.GetRequiredService<DocumentService>();
-                //var result = service.CreateDocumentAsync(
-                //    new DocumentCreate()
-                //    {
-                //        TemplateId = "non-disclosure-agreement",
-                //        TemplateVersion = 1,
-                //        InputValues = new Dictionary<string, dynamic>()
-                //        {
-                //            { "organisation.name", "Automio Limited" },
-                //            { "organisation.location", "New Plymouth" },
-                //            { "organisation.description", "operates a carpet manufacturing factory in Stratford" },
-                //            { "contractor.type", "company" },
-                //            { "contractor.company.name", "Lava Lamps Limited" },
-                //            { "contractor.company.location", "New Plymouth" },
-                //            { "disclosure_reason", "To provide marketing services to the Organisation" },
-                //            { "disclosure_access", true },
-                //            { "disclosure_access.details.persons", "sub-contractors, board members" }
-                //        }
-                //    }).GetAwaiter().GetResult();
+                var service = serviceProvider.GetRequiredService<DocumentService>();
+                var result = service.CreateTextDocumentAsync(
+                    new DocumentCreate()
+                    {
+                        TemplateId = "non-disclosure-agreement",
+                        TemplateVersion = 1,
+                        InputValues = new Dictionary<string, dynamic>()
+                        {
+                            { "organisation.name", "Automio Limited" },
+                            { "organisation.location", "New Plymouth" },
+                            { "organisation.description", "operates a carpet manufacturing factory in Stratford" },
+                            { "contractor.type", "company" },
+                            { "contractor.company.name", "Lava Lamps Limited" },
+                            { "contractor.company.location", "New Plymouth" },
+                            { "disclosure_reason", "To provide marketing services to the Organisation" },
+                            { "disclosure_access", true },
+                            { "disclosure_access.details.persons", "sub-contractors, board members" }
+                        }
+                    }).GetAwaiter().GetResult();
 
-                //Console.WriteLine(result.Body);
+                Console.WriteLine(result.Body);
 
                 #endregion
             }

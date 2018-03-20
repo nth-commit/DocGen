@@ -1,4 +1,5 @@
-﻿using DocGen.Templating.Validation.Shared;
+﻿using DocGen.Templating.Internal;
+using DocGen.Templating.Validation.Shared;
 using MoreLinq;
 using System;
 using System.Collections.Generic;
