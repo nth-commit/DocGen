@@ -2,6 +2,7 @@
   "Name": "Non-Disclosure Agreement",
   "Description": "Welcome to the Confidentiality Agreement interview! This will produce a document which binds one party to keep confidential any information it receives from another party during the course of work.\\n\\nThis is for use when an Organisation has a Contractor coming on board to do some work, and they want to ensure that any confidential information the Contractor encounters will stay just that - confidential!",
   "MarkupVersion": 1,
+  "SigningType": 2, // Optional
   "Steps": [
     {
       "Id": "organisation",
@@ -56,11 +57,15 @@
       "Id": "contractor.person",
       "Name": "Contractor information",
       "Description": "Enter details about the contractor",
-      "ConditionType": 1, // EqualsPreviousValue
-      "ConditionTypeData": {
-        "PreviousInputValue": "person",
-        "PreviousInputId": "contractor.type"
-      },
+      "Conditions": [
+        {
+          "Type": 1, // EqualsPreviousValue
+          "TypeData": {
+            "PreviousInputValue": "person",
+            "PreviousInputId": "contractor.type"
+          }
+        }
+      ],
       "Inputs": [
         {
           "Key": "name",
@@ -89,11 +94,15 @@
       "Id": "contractor.company",
       "Name": "Company information",
       "Description": "Enter details about the contracting company",
-      "ConditionType": 1, // EqualsPreviousValue
-      "ConditionTypeData": {
-        "PreviousInputValue": "company",
-        "PreviousInputId": "contractor.type"
-      },
+      "Conditions": [
+        {
+          "Type": 1, // EqualsPreviousValue
+          "TypeData": {
+            "PreviousInputValue": "company",
+            "PreviousInputId": "contractor.type"
+          }
+        }
+      ],
       "Inputs": [
         {
           "Key": "name",
@@ -138,11 +147,15 @@
       "Id": "disclosure_access.details",
       "Name": "Access given to",
       "Description": "Not including employees, who else will have access to the confidential information?",
-      "ConditionType": 1, // EqualsPreviousValue
-      "ConditionTypeData": {
-        "PreviousInputValue": true,
-        "PreviousInputId": "disclosure_access"
-      },
+      "Conditions": [
+        {
+          "Type": 1, // EqualsPreviousValue
+          "TypeData": {
+            "PreviousInputValue": true,
+            "PreviousInputId": "disclosure_access"
+          }
+        }
+      ],
       "Inputs": [
         {
           "Key": "persons",
@@ -150,6 +163,103 @@
           "Type": 1 // Text
         }
       ]
+    },
+    {
+      "Id": "organisation.representative",
+      "Name": "Representative for {{organisation.name}}",
+      "Description": "Provide information about the person who is signing this document on behalf of {{organisation.name}}",
+      "Conditions": [
+        {
+          "Type": 2 // IsDocumentSigned
+        }
+      ],
+      "Inputs": [
+        {
+          "Key": "name",
+          "Name": "Representative name",
+          "Description": "What is the full legal name of the representative?",
+          "Hint": "Joseph Michael Bloggs",
+          "Type": 1 // Text
+        },
+        {
+          "Key": "email",
+          "Name": "Email",
+          "Description": "What is the email of the representative? The representative will be emailed a link of the contract to sign.",
+          "Hint": "jmbloggs@company.com",
+          "Type": 1 // Text
+        }
+      ]
+    },
+    {
+      "Id": "contractor.company.representative",
+      "Name": "Representative for {{contractory.company.name}}",
+      "Description": "Provide information about the person who is signing this document on behalf of {{contractor.company.name}}",
+      "Conditions": [
+        {
+          "Type": 1, // EqualsPreviousValue
+          "TypeData": {
+            "PreviousInputValue": "company",
+            "PreviousInputId": "contractor.type"
+          }
+        },
+        {
+          "Type": 2 // IsDocumentSigned
+        }
+      ],
+      "Inputs": [
+        {
+          "Key": "name",
+          "Name": "Representative name",
+          "Description": "What is the full legal name of the representative?",
+          "Hint": "Joseph Michael Bloggs",
+          "Type": 1 // Text
+        },
+        {
+          "Key": "email",
+          "Name": "Email",
+          "Description": "What is the email of the representative? The representative will be emailed a link of the contract to sign.",
+          "Hint": "jmbloggs@company.com",
+          "Type": 1 // Text
+        }
+      ]
+    },
+    {
+      "Id": "contractor.person.email",
+      "Name": "{{contractor.person.name}}'s email",
+      "Description": "What is the {{contractor.person.name}}'s email? They will be emailed a link of the contract to sign.",
+      "Conditions": [
+        {
+          "Type": 1, // EqualsPreviousValue
+          "TypeData": {
+            "PreviousInputValue": "person",
+            "PreviousInputId": "contractor.type"
+          }
+        },
+        {
+          "Type": 2 // IsDocumentSigned
+        }
+      ],
+      "Inputs": [
+        {
+          "Key": null, // From parent
+          "Hint": "jmbloggs@company.com",
+          "Type": 1 // Text
+        }
+      ]
+    }
+  ],
+  "ErrorSuppressions": [
+    {
+      "Code": 4, // UnusedReference
+      "Target": "organisation.representative.email"
+    },
+    {
+      "Code": 4, // UnusedReference
+      "Target": "contractor.company.representative.email"
+    },
+    {
+      "Code": 4, // UnusedReference
+      "Target": "contractor.person.email"
     }
   ]
 }

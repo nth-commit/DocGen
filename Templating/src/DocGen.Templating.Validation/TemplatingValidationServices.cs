@@ -1,4 +1,5 @@
-﻿using DocGen.Templating.Validation;
+﻿using DocGen.Templating.Internal;
+using DocGen.Templating.Validation;
 using DocGen.Templating.Validation.Shared;
 using DocGen.Templating.Validation.V1;
 using System;
@@ -15,7 +16,7 @@ namespace Microsoft.Extensions.DependencyInjection
             this IServiceCollection services)
         {
             services.AddTransient<ITemplateValidator, TemplateMarkupValidator>();
-            services.AddSingleton<ISchemaFileLocator>(new SchemaFileLocator(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)));
+            services.AddSingleton<ISchemaFileLocator>(new SchemaFileLocatorFromAssembly());
 
             // V1
             services.AddTransient<IVersionedTemplateValidator, TemplateValidatorV1>();

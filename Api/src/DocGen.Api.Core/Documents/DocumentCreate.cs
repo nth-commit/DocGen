@@ -1,4 +1,5 @@
-﻿using DocGen.Shared.Validation;
+﻿using DocGen.Shared.Core.Dynamic;
+using DocGen.Shared.Validation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -17,7 +18,11 @@ namespace DocGen.Api.Core.Documents
 
         [Required]
         public IDictionary<string, dynamic> InputValues { get; set; }
+    }
 
-        public IDictionary<string, string> TemplatingOptions { get; set; } = new Dictionary<string, string>();
+    public static class DocumentCreateExtensions
+    {
+        public static bool GetIsSigned(this DocumentCreate create) => DynamicUtility.UnwrapValue(() => 
+            bool.Parse(((object)create.InputValues["document_signed"]).ToString()));
     }
 }

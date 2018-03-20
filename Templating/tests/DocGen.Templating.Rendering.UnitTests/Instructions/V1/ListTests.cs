@@ -17,8 +17,8 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             var listItemPaths = new List<IEnumerable<int>>();
             var builderMock = new Mock<IDocumentBuilderV1>();
             builderMock
-                .Setup(x => x.BeginWriteListItemAsync(It.IsAny<int>(), It.IsAny<DocumentInstructionContextV1>()))
-                .Callback<int, DocumentInstructionContextV1>((text, context) => listItemPaths.Add(context.ListItemPath))
+                .Setup(x => x.BeginWriteListItemAsync(It.IsAny<IEnumerable<int>>(), It.IsAny<DocumentInstructionContextV1>()))
+                .Callback<IEnumerable<int>, DocumentInstructionContextV1>((indexPath, context) => listItemPaths.Add(indexPath))
                 .Returns(Task.CompletedTask);
 
             await new DocumentInstructorV1().InstructRenderingAsync(
@@ -51,8 +51,8 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             var listItemPaths = new List<IEnumerable<int>>();
             var builderMock = new Mock<IDocumentBuilderV1>();
             builderMock
-                .Setup(x => x.BeginWriteListItemAsync(It.IsAny<int>(), It.IsAny<DocumentInstructionContextV1>()))
-                .Callback<int, DocumentInstructionContextV1>((text, context) => listItemPaths.Add(context.ListItemPath))
+                .Setup(x => x.BeginWriteListItemAsync(It.IsAny<IEnumerable<int>>(), It.IsAny<DocumentInstructionContextV1>()))
+                .Callback<IEnumerable<int>, DocumentInstructionContextV1>((indexPath, context) => listItemPaths.Add(indexPath))
                 .Returns(Task.CompletedTask);
 
             await new DocumentInstructorV1().InstructRenderingAsync(
@@ -85,8 +85,8 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             var listItemPaths = new List<IEnumerable<int>>();
             var builderMock = new Mock<IDocumentBuilderV1>();
             builderMock
-                .Setup(x => x.BeginWriteListItemAsync(It.IsAny<int>(), It.IsAny<DocumentInstructionContextV1>()))
-                .Callback<int, DocumentInstructionContextV1>((text, context) => listItemPaths.Add(context.ListItemPath))
+                .Setup(x => x.BeginWriteListItemAsync(It.IsAny<IEnumerable<int>>(), It.IsAny<DocumentInstructionContextV1>()))
+                .Callback<IEnumerable<int>, DocumentInstructionContextV1>((indexPath, context) => listItemPaths.Add(indexPath))
                 .Returns(Task.CompletedTask);
 
             await new DocumentInstructorV1().InstructRenderingAsync(

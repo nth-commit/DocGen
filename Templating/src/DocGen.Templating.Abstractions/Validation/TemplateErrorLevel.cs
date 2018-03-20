@@ -4,8 +4,12 @@ using System.Text;
 
 namespace DocGen.Templating.Validation
 {
-    public interface ISchemaFileLocator
+    public enum TemplateErrorLevel
     {
-        string GetSchemaPath(int markupVersion);
+        Unknown = 0,
+
+        Warning = 1,
+
+        Error = 2
     }
 }

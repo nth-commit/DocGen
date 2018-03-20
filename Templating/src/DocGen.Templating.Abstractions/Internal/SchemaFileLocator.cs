@@ -4,7 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 
-namespace DocGen.Templating.Validation
+namespace DocGen.Templating.Internal
 {
     public class SchemaFileLocator : ISchemaFileLocator
     {
@@ -15,6 +15,8 @@ namespace DocGen.Templating.Validation
             _basePath = basePath;
         }
 
-        public string GetSchemaPath(int markupVersion) => Path.Combine(_basePath, $"V{markupVersion}", $"markup{markupVersion}.xsd");
+        public string GetSchemaDirectory(int markupVersion) => Path.Combine(_basePath, $"V{markupVersion}");
+
+        public string GetSchemaPath(int markupVersion) => Path.Combine(GetSchemaDirectory(markupVersion), $"markup{markupVersion}.xsd");
     }
 }

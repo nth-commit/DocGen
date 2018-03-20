@@ -8,6 +8,8 @@ namespace DocGen.Templating.Rendering
     {
         public int MarkupVersion { get; set; }
 
+        public bool IsSigned { get; set; }
+
         public IEnumerable<Instruction> Instructions { get; set; }
     }
 }

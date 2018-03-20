@@ -9,7 +9,7 @@ namespace DocGen.Templating.Rendering.Builders.V1
 {
     public interface IDocumentBuilderV1 : IDocumentBuilder
     {
-        Task BeginWriteDocumentAsync(DocumentInstructionContextV1 context);
+        Task BeginWriteDocumentAsync(DocumentRenderModel model, DocumentInstructionContextV1 context);
 
         Task EndWriteDocumentAsync(DocumentInstructionContextV1 context);
 
@@ -32,6 +32,10 @@ namespace DocGen.Templating.Rendering.Builders.V1
         Task BeginConditionalAsync(string expression, DocumentInstructionContextV1 context);
 
         Task EndCondititionalAsync(DocumentInstructionContextV1 context);
+
+        Task BeginWriteSigningAreaAsync(DocumentInstructionContextV1 context);
+
+        Task EndWriteSigningAreaAsync(DocumentInstructionContextV1 context);
 
         Task WriteTextAsync(string text, string reference, DocumentInstructionContextV1 context);
     }

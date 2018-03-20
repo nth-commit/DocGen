@@ -138,27 +138,27 @@ namespace DocGen.Tools.Runner
 
                 #region Create document
 
-                //var service = serviceProvider.GetRequiredService<DocumentService>();
-                //var result = service.CreateDocumentAsync(
-                //    new DocumentCreate()
-                //    {
-                //        TemplateId = "non-disclosure-agreement",
-                //        TemplateVersion = 1,
-                //        InputValues = new Dictionary<string, dynamic>()
-                //        {
-                //            { "organisation.name", "Automio Limited" },
-                //            { "organisation.location", "New Plymouth" },
-                //            { "organisation.description", "operates a carpet manufacturing factory in Stratford" },
-                //            { "contractor.type", "company" },
-                //            { "contractor.company.name", "Lava Lamps Limited" },
-                //            { "contractor.company.location", "New Plymouth" },
-                //            { "disclosure_reason", "To provide marketing services to the Organisation" },
-                //            { "disclosure_access", true },
-                //            { "disclosure_access.details.persons", "sub-contractors, board members" }
-                //        }
-                //    }).GetAwaiter().GetResult();
+                var service = serviceProvider.GetRequiredService<DocumentService>();
+                var result = service.CreateTextDocumentAsync(
+                    new DocumentCreate()
+                    {
+                        TemplateId = "non-disclosure-agreement",
+                        TemplateVersion = 1,
+                        InputValues = new Dictionary<string, dynamic>()
+                        {
+                            { "organisation.name", "Automio Limited" },
+                            { "organisation.location", "New Plymouth" },
+                            { "organisation.description", "operates a carpet manufacturing factory in Stratford" },
+                            { "contractor.type", "company" },
+                            { "contractor.company.name", "Lava Lamps Limited" },
+                            { "contractor.company.location", "New Plymouth" },
+                            { "disclosure_reason", "To provide marketing services to the Organisation" },
+                            { "disclosure_access", true },
+                            { "disclosure_access.details.persons", "sub-contractors, board members" }
+                        }
+                    }).GetAwaiter().GetResult();
 
-                //Console.WriteLine(result.Body);
+                Console.WriteLine(result.Body);
 
                 #endregion
             }
@@ -174,43 +174,44 @@ namespace DocGen.Tools.Runner
             }
 
             #region Create template markup
-            //try
-            //    {
-            //        var service1 = serviceProvider.GetRequiredService<ITemplateValidator>();
-            //        service1.Validate(
-            //            @"<document>
-            //                <page>
-            //                    <block if=""contractor.type = company"">
-            //                        This is some conditionally displayed stuff.
-            //                    </block>
-            //                    <inline>Inline content</inline>
-            //                    <data>contractor.company.name</data>
-            //                </page>
-            //            </document>",
-            //            1,
-            //            new List<ReferenceDefinition>()
-            //            {
-            //                ReferenceDefinition.StringFrom("contractor.type", new string[] { "company", "person", "god" }),
-            //                ReferenceDefinition.String("contractor.company.name"),
-            //                ReferenceDefinition.String("test")
-            //            });
-            //    }
-            //    catch (InvalidTemplateSyntaxException ex)
-            //    {
-            //        ex.Errors.ForEach(e =>
-            //        {
-            //            var error = e.Message;
-            //            if (e.LineNumber > -1)
-            //            {
-            //                error += $" {e.LineNumber}:{e.LinePosition}";
-            //            }
-            //            Console.WriteLine(error);
-            //        });
-            //        Console.ReadLine();
-            //    }
+            try
+            {
+                //var service1 = serviceProvider.GetRequiredService<ITemplateValidator>();
+                //service1.Validate(
+                //    @"<document>
+                //            <page>
+                //                <block if=""contractor.type = company"">
+                //                    This is some conditionally displayed stuff.
+                //                </block>
+                //                <signature signer='contractor.company.name' representing='contractor.company.name'></signature>
+                //                <inline>Inline content</inline>
+                //                <data>contractor.company.name</data>
+                //            </page>
+                //        </document>",
+                //    1,
+                //    new List<ReferenceDefinition>()
+                //    {
+                //            ReferenceDefinition.StringFrom("contractor.type", new string[] { "company", "person", "god" }),
+                //            ReferenceDefinition.String("contractor.company.name"),
+                //            ReferenceDefinition.String("test")
+                //    });
+            }
+            catch (InvalidTemplateSyntaxException ex)
+            {
+                ex.Errors.ForEach(e =>
+                {
+                    var error = e.Message;
+                    if (e.LineNumber > -1)
+                    {
+                        error += $" {e.LineNumber}:{e.LinePosition}";
+                    }
+                    Console.WriteLine(error);
+                });
+                Console.ReadLine();
+            }
             #endregion
 
-            RenderTemplateAsync(serviceProvider).GetAwaiter().GetResult();
+            //RenderTemplateAsync(serviceProvider).GetAwaiter().GetResult();
 
             Console.ReadLine();
         }

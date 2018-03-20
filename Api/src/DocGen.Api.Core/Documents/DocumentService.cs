@@ -62,7 +62,11 @@ namespace DocGen.Api.Core.Documents
                     {
                         Reference = kvp.Key,
                         Value = ((object)kvp.Value).ToString()
-                    })
+                    }),
+                    Sign = template.SigningType == TemplateSigningType.NotSigned ? false :
+                        template.SigningType == TemplateSigningType.Required ? true :
+                        template.SigningType == TemplateSigningType.Optional ? create.GetIsSigned() :
+                        throw new InvalidOperationException()
                 });
         }
 
@@ -75,27 +79,57 @@ namespace DocGen.Api.Core.Documents
         {
             var inputValueErrors = new ModelErrorDictionary();
 
+            if (template.SigningType == TemplateSigningType.Optional)
+            {
+                if (!create.InputValues.ContainsKey("document_signed"))
+                {
+                    inputValueErrors.Add(
+                        $"Expected \"document_signed\" input to be present when {nameof(TemplateSigningType)} is {nameof(TemplateSigningType.Optional)}",
+                        nameof(create.InputValues));
+                }
+            }
+            else
+            {
+                if (create.InputValues.ContainsKey("document_signed"))
+                {
+                    inputValueErrors.Add(
+                        $"Expected \"document_signed\" input to be absent when {nameof(TemplateSigningType)} is not {nameof(TemplateSigningType.Optional)}",
+                        nameof(create.InputValues));
+                }
+            }
+
             // Store the traversed values so we can easily analyse conditional inputs. It's fine to just store them as strings as we
             // have already validated their types and value comparison will work for stringified booleans and numbers.
             var validInputStringValues = new Dictionary<string, string>();
 
             template.Steps.ForEach(templateStep =>
             {
-                if (templateStep.ConditionType == TemplateComponentConditionType.EqualsPreviousInputValue)
+                var allConditionsMet = templateStep.Conditions.All(condition =>
                 {
-                    var expectedPreviousInputValue = DynamicUtility.Unwrap<string>(() => templateStep.ConditionTypeData.PreviousInputValue);
-                    var previousInputId = DynamicUtility.Unwrap<string>(() => templateStep.ConditionTypeData.PreviousInputId);
-
-                    if (string.IsNullOrEmpty(expectedPreviousInputValue) || string.IsNullOrEmpty(previousInputId))
+                    if (condition.Type == TemplateComponentConditionType.EqualsPreviousInputValue)
                     {
-                        throw new Exception("Internal error: invalid template");
-                    }
+                        var expectedPreviousInputValue = DynamicUtility.Unwrap<string>(() => condition.TypeData.PreviousInputValue);
+                        var previousInputId = DynamicUtility.Unwrap<string>(() => condition.TypeData.PreviousInputId);
 
-                    if (!validInputStringValues.ContainsKey(previousInputId) || !expectedPreviousInputValue.Equals(validInputStringValues[previousInputId]))
-                    {
-                        // Skip this step
-                        return;
+                        if (string.IsNullOrEmpty(expectedPreviousInputValue) || string.IsNullOrEmpty(previousInputId))
+                        {
+                            throw new Exception("Internal error: invalid template");
+                        }
+
+                        return validInputStringValues.ContainsKey(previousInputId) && expectedPreviousInputValue.Equals(validInputStringValues[previousInputId]);
                     }
+                    else if (condition.Type == TemplateComponentConditionType.IsDocumentSigned)
+                    {
+                        // Skip this step if the contract won't be signed
+                        return template.SigningType == TemplateSigningType.NotSigned ||
+                            template.SigningType == TemplateSigningType.Optional && create.GetIsSigned();
+                    }
+                    return false;
+                });
+
+                if (!allConditionsMet)
+                {
+                    return;
                 }
 
                 var templateStepId = templateStep.Id;

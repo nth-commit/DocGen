@@ -23,12 +23,18 @@ namespace DocGen.Api.Core.Templates
                         Id = "a",
                         Name = "A",
                         Description = "A",
-                        ConditionType = TemplateComponentConditionType.EqualsPreviousInputValue,
-                        ConditionTypeData = ExpandoObjectFactory.CreateDynamic(new Dictionary<string, object>()
+                        Conditions = new List<TemplateStepCondition>()
                         {
-                            { "PreviousInputId", "b" },
-                            { "PreviousInputValue", true }
-                        }),
+                            new TemplateStepCondition()
+                            {
+                                Type = TemplateComponentConditionType.EqualsPreviousInputValue,
+                                TypeData = ExpandoObjectFactory.CreateDynamic(new Dictionary<string, object>()
+                                {
+                                    { "PreviousInputId", "b" },
+                                    { "PreviousInputValue", true }
+                                })
+                            }
+                        },
                         Inputs = new List<TemplateStepInputCreate>()
                         {
                             new TemplateStepInputCreate()
@@ -51,7 +57,7 @@ namespace DocGen.Api.Core.Templates
                         }
                     }
                 },
-                "Steps[0].ConditionTypeData.PreviousInputId");
+                "Steps[0].Conditions[0].TypeData.PreviousInputId");
         }
 
 
@@ -68,6 +74,7 @@ namespace DocGen.Api.Core.Templates
                     Description = "x",
                     Markup = "x",
                     MarkupVersion = 1,
+                    SigningType = TemplateSigningType.NotSigned,
                     Steps = steps
                 });
                 Assert.True(false, "Template was valid");

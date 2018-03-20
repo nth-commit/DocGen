@@ -10,7 +10,7 @@ import {
 import { environment } from '../../../../environments/environment';
 
 import {
-  Template, TemplateStep, TemplateStepConditionType,
+  Template, TemplateSigningType, TemplateStep, TemplateStepInput, TemplateStepConditionType,
   InputValue, InputValueCollection, InputValueCollectionUtility
 } from '../../core';
 
@@ -85,6 +85,21 @@ export interface WizardState {
   empty: boolean;
 }
 
+export const TEMPLATE_STEP_IS_DOCUMENT_SIGNED: TemplateStep = {
+  id: 'document_signed',
+  name: 'Use electronic signature?',
+  description: 'Should this document be electronically signed?',
+  conditions: [],
+  inputs: [
+    <TemplateStepInput>{
+      key: null,
+      id: 'document_signed',
+      type: 3
+    }
+  ],
+  parentReference: null
+};
+
 export const reducerBase: ActionReducer<WizardState> = (state, action: WizardAction) => {
   switch (action.type) {
     case WizardActionTypes.REFRESH: {
@@ -93,6 +108,33 @@ export const reducerBase: ActionReducer<WizardState> = (state, action: WizardAct
     case WizardActionTypes.BEGIN: {
       const template = <Template>action.payload;
 
+      // Push in the step to allow decision on whether document is signed
+      let signDocumentStepIndex = -1;
+      if (template.signingType === TemplateSigningType.Optional) {
+        const firstDependentStepIndex = template.steps.findIndex(s =>
+          s.conditions.some(c => c.type === TemplateStepConditionType.IsDocumentSigned));
+
+        signDocumentStepIndex = firstDependentStepIndex || template.steps.length;
+
+        template.steps = template.steps.insert(signDocumentStepIndex, TEMPLATE_STEP_IS_DOCUMENT_SIGNED);
+        template.steps.forEach(s => {
+          const documentSignedConditionIndex = s.conditions.findIndex(c => c.type === TemplateStepConditionType.IsDocumentSigned);
+
+          // Replace the IsDocumentSigned conditions with EqualsPreviousInputValue
+          if (documentSignedConditionIndex > -1) {
+            s.conditions.splice(documentSignedConditionIndex, 1);
+            s.conditions.push({
+              type: TemplateStepConditionType.EqualsPreviousInputValue,
+              typeData: {
+                PreviousInputId: TEMPLATE_STEP_IS_DOCUMENT_SIGNED.id,
+                PreviousInputValue: true
+              }
+            });
+          }
+        });
+      }
+
+      // Mark all inputs as invalid initially
       const templateStepInputsValid = [];
       template.steps.forEach(s => {
         const result = [];
@@ -109,22 +151,22 @@ export const reducerBase: ActionReducer<WizardState> = (state, action: WizardAct
       });
     }
     case WizardActionTypes.UPDATE_VALUES: {
-      const values = Object.assign({}, state.values, action.payload);
+      const values: InputValueCollection = Object.assign({}, state.values, action.payload);
 
       const templateStepInputsValid: boolean[][] = [];
       state.template.steps.forEach((step, stepIndex) => {
         const result: boolean[] = [];
-        let skipValidation = false;
 
-        if (step.conditionType === TemplateStepConditionType.EqualsPreviousInputValue) {
-          const expectedPreviousInputValue = step.conditionTypeData.PreviousInputValue;
-          const previousInputId = step.conditionTypeData.PreviousInputId;
+        const skipValidation = step.conditions.some(c => {
+          if (c.type === TemplateStepConditionType.EqualsPreviousInputValue) {
+            // Skip if values do not match.
+            const expectedPreviousInputValue = c.typeData.PreviousInputValue;
+            const previousInputId = c.typeData.PreviousInputId;
 
-          if (state.values[previousInputId] !== expectedPreviousInputValue) {
-            // All inputs are valid based on the fact it is not required by condition
-            skipValidation = true;
+            return state.values[previousInputId] !== expectedPreviousInputValue;
           }
-        }
+          return false;
+        });
 
         step.inputs.forEach((input, inputIndex) => {
           result[inputIndex] = skipValidation || (values[input.id] !== undefined && values[input.id] !== null);
@@ -212,8 +254,23 @@ export const reducer: ActionReducer<WizardState> = (state, action: WizardAction)
     });
 
     state.nextStepIndex = state.template.steps
-      .findIndex((s, i) => i > state.currentStepIndex &&
-        (!s.conditionType || state.values[s.conditionTypeData.PreviousInputId] === s.conditionTypeData.PreviousInputValue));
+      .findIndex((s, i) => {
+        if (i <= state.currentStepIndex) {
+          return false;
+        }
+
+        const allConditionsMet = s.conditions.every(c => {
+          if (c.type === TemplateStepConditionType.EqualsPreviousInputValue) {
+            return state.values[c.typeData.PreviousInputId] === c.typeData.PreviousInputValue;
+          } else if (c.type === TemplateStepConditionType.IsDocumentSigned) {
+            return state.template.signingType === TemplateSigningType.Required;
+          }
+
+          return false;
+        });
+
+        return allConditionsMet;
+      });
 
     state.hasNextStep = state.nextStepIndex > -1;
 

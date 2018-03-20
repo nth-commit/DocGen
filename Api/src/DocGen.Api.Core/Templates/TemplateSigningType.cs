@@ -4,12 +4,14 @@ using System.Text;
 
 namespace DocGen.Api.Core.Templates
 {
-    public enum TemplateComponentConditionType
+    public enum TemplateSigningType
     {
         Unknown = 0,
 
-        EqualsPreviousInputValue,
+        NotSigned = 1,
 
-        IsDocumentSigned
+        Optional = 2,
+
+        Required = 3
     }
 }

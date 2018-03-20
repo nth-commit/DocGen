@@ -14,11 +14,11 @@ namespace DocGen.Templating.Validation.V1
             RunValidation(
                 nameof(TestInvalidSchema_NoDocumentNode),
                 Enumerable.Empty<ReferenceDefinition>(),
-                new TemplateSyntaxError[]
+                new TemplateError[]
                 {
-                    new TemplateSyntaxError()
+                    new TemplateError()
                     {
-                        Code = TemplateSyntaxErrorCode.InvalidSchema,
+                        Code = TemplateErrorCode.InvalidSchema,
                         LineNumber = 1,
                         LinePosition = 41
                     }
@@ -28,7 +28,7 @@ namespace DocGen.Templating.Validation.V1
         private static void RunValidation(
             string testName,
             IEnumerable<ReferenceDefinition> references,
-            IEnumerable<TemplateSyntaxError> expectedErrors)
+            IEnumerable<TemplateError> expectedErrors)
         {
             Utility.RunValidation<TemplateValidatorV1>(1, testName, references, expectedErrors);
         }

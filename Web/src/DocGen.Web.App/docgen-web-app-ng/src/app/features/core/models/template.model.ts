@@ -7,22 +7,35 @@ export interface Template {
     description: string;
     markup: string;
     markupVersion: number;
+    signingType: TemplateSigningType;
     steps: TemplateStep[];
+}
+
+export enum TemplateSigningType {
+    Unknown = 0,
+    NotSigned,
+    Optional,
+    Required
 }
 
 export interface TemplateStep {
     id: string;
     name: string;
     description: string;
-    conditionType?: TemplateStepConditionType;
-    conditionTypeData?: TemplateStepConditionTypeData_EqualsPreviousInputValue;
+    conditions: TemplateStepCondition[];
     inputs: TemplateStepInput[];
     parentReference: string;
 }
 
+export interface TemplateStepCondition {
+    type: TemplateStepConditionType,
+    typeData: TemplateStepConditionTypeData_EqualsPreviousInputValue;
+}
+
 export enum TemplateStepConditionType {
     Unknown = 0,
-    EqualsPreviousInputValue
+    EqualsPreviousInputValue,
+    IsDocumentSigned
 }
 
 export interface TemplateStepConditionTypeData_EqualsPreviousInputValue {

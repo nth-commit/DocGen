@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DocGen.Templating.Validation
 {
-    public class TemplateSyntaxError
+    public class TemplateError
     {
         public int LineNumber { get; set; }
 
@@ -14,8 +14,10 @@ namespace DocGen.Templating.Validation
 
         public string Message { get; set; }
 
-        public TemplateSyntaxErrorLevel Level { get; set; }
+        public TemplateErrorLevel Level { get; set; }
 
-        public TemplateSyntaxErrorCode Code { get; set; }
+        public TemplateErrorCode Code { get; set; }
+
+        public string Target { get; set; }
     }
 }

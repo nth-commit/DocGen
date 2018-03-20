@@ -36,7 +36,7 @@ namespace DocGen.Templating.Rendering.Builders.V1.Text
             }
         }
 
-        public Task BeginWriteDocumentAsync(DocumentInstructionContextV1 context)
+        public Task BeginWriteDocumentAsync(DocumentRenderModel model, DocumentInstructionContextV1 context)
         {
             if (_isRendering || _isComplete)
             {
@@ -141,6 +141,16 @@ namespace DocGen.Templating.Rendering.Builders.V1.Text
         }
 
         public Task EndCondititionalAsync(DocumentInstructionContextV1 context)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task BeginWriteSigningAreaAsync(DocumentInstructionContextV1 context)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task EndWriteSigningAreaAsync(DocumentInstructionContextV1 context)
         {
             return Task.CompletedTask;
         }
