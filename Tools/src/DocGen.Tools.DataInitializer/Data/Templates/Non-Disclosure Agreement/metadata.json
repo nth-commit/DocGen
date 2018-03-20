@@ -165,6 +165,32 @@
       ]
     },
     {
+      "Id": "organisation.representative",
+      "Name": "Representative for {{organisation.name}}",
+      "Description": "Provide information about the person who is signing this document on behalf of {{organisation.name}}",
+      "Conditions": [
+        {
+          "Type": 2 // IsDocumentSigned
+        }
+      ],
+      "Inputs": [
+        {
+          "Key": "name",
+          "Name": "Representative name",
+          "Description": "What is the full legal name of the representative?",
+          "Hint": "Joseph Michael Bloggs",
+          "Type": 1 // Text
+        },
+        {
+          "Key": "email",
+          "Name": "Email",
+          "Description": "What is the email of the representative? The representative will be emailed a link of the contract to sign.",
+          "Hint": "jmbloggs@company.com",
+          "Type": 1 // Text
+        }
+      ]
+    },
+    {
       "Id": "contractor.company.representative",
       "Name": "Representative for {{contractory.company.name}}",
       "Description": "Provide information about the person who is signing this document on behalf of {{contractor.company.name}}",
@@ -223,6 +249,10 @@
     }
   ],
   "ErrorSuppressions": [
+    {
+      "Code": 4, // UnusedReference
+      "Target": "organisation.representative.email"
+    },
     {
       "Code": 4, // UnusedReference
       "Target": "contractor.company.representative.email"

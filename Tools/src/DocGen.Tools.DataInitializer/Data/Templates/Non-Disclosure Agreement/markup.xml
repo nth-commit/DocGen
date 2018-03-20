@@ -87,21 +87,8 @@
       </list-item>
     </list>
     <block></block>
-    <block>Signed for and on behalf of <data>organisation.name</data></block>
+    <signature signer="organisation.representative.name" representing="organisation.name"></signature>
     <block></block>
-    <block></block>
-    <block>Name of representative:</block>
-    <block></block>
-    <block>Date:</block>
-    <block></block>
-    <block if="contractor.type = person">Signed by <data>contractor.person.name</data></block>
-    <block if="contractor.type = company">Signed for and on behalf of <data>contractor.company.name</data></block>
-    <block></block>
-    <block></block>
-    <block if="contractor.type = person"><data>contractor.person.name</data></block>
-    <block if="contractor.type = company">Name of representative:</block>
-    <block></block>
-    <block>Date:</block>
     <signature if="contractor.type = person" signer="contractor.person.name"></signature>
     <signature if="contractor.type = company" signer="contractor.company.representative.name" representing="contractor.company.name"></signature>
   </page>
