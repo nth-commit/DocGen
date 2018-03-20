@@ -1,7 +1,9 @@
-﻿using DocGen.Templating.Validation.Shared;
+﻿using DocGen.Templating.Internal;
+using DocGen.Templating.Validation.Shared;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Xunit;
 
@@ -26,7 +28,7 @@ namespace DocGen.Templating.Validation
 
             try
             {
-                validator.Validate(markup, references);
+                validator.Validate(markup, references, Enumerable.Empty<TemplateErrorSuppression>());
             }
             catch (InvalidTemplateSyntaxException ex)
             {
