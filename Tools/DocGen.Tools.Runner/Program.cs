@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using DocGen.Api.Core.Documents;
-using DocGen.Api.Core.Templates;
+using DocGen.Web.Api.Core.Documents;
+using DocGen.Web.Api.Core.Templates;
 using DocGen.Shared.Core.Dynamic;
 using DocGen.Shared.Framework;
 using DocGen.Shared.Validation;

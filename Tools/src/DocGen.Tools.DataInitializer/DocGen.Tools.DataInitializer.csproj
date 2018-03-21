@@ -155,9 +155,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Api\src\DocGen.Api.Core\DocGen.Api.Core.csproj">
+    <ProjectReference Include="..\..\..\Web\src\DocGen.Web.Api.Core\DocGen.Web.Api.Core.csproj">
       <Project>{f3fb3746-63dc-415e-ac99-cf9452a655d5}</Project>
-      <Name>DocGen.Api.Core</Name>
+      <Name>DocGen.Web.Api.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Shared\DocGen.Shared.Framework\DocGen.Shared.Framework.csproj">
       <Project>{81bb8d1e-357f-4935-bf8e-aa39fd745e71}</Project>

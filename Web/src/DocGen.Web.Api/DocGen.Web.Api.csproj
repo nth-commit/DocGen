@@ -1,0 +1,37 @@
+<Project>
+
+  <Import Sdk="Microsoft.NET.Sdk.Web" Project="Sdk.props" />
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <Import Sdk="Microsoft.NET.Sdk.Web" Project="Sdk.targets" />
+  <PropertyGroup>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="3.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
+    <PackageReference Include="NSwag.MSBuild" Version="11.15.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Shared\DocGen.Shared.Framework\DocGen.Shared.Framework.csproj" />
+    <ProjectReference Include="..\..\..\Shared\DocGen.Shared.WindowsAzure.Storage\DocGen.Shared.WindowsAzure.Storage.csproj" />
+    <ProjectReference Include="..\..\..\Templating\src\DocGen.Templating.Abstractions\DocGen.Templating.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\Templating\src\DocGen.Templating.Rendering\DocGen.Templating.Rendering.csproj" />
+    <ProjectReference Include="..\..\..\Templating\src\DocGen.Templating.Validation\DocGen.Templating.Validation.csproj" />
+    <ProjectReference Include="..\DocGen.Web.Api.Core\DocGen.Web.Api.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

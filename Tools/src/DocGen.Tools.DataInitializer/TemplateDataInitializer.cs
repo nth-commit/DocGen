@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DocGen.Api.Core.Templates;
+using DocGen.Web.Api.Core.Templates;
 using DocGen.Shared.WindowsAzure.Storage;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
