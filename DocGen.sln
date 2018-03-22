@@ -47,6 +47,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocGen.Templating.Rendering
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocGen.Templating.Rendering.Abstractions", "Templating\src\DocGen.Templating.Rendering.Abstractions\DocGen.Templating.Rendering.Abstractions.csproj", "{5BE294DF-85B3-4ACA-9CA7-08E5726CB48A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Config", "Config", "{D7B72C44-58E8-4867-A6D0-1D1FAE4B1122}"
+	ProjectSection(SolutionItems) = preProject
+		appsettings.Shared.Development.json = appsettings.Shared.Development.json
+		appsettings.Shared.json = appsettings.Shared.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

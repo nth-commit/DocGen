@@ -16,6 +16,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="3.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.0.0" />
     <PackageReference Include="NSwag.MSBuild" Version="11.15.4" />
   </ItemGroup>
 
@@ -32,6 +33,20 @@
     <Content Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="appsettings.Shared.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="appsettings.Shared.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
+
+  <PropertyGroup>
+    <UserSecretsId>DocGen</UserSecretsId>
+  </PropertyGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="powershell.exe -ExecutionPolicy Unrestricted -file &quot;$(MSBuildProjectDirectory)\..\..\..\Copy-App-Settings.ps1&quot; &quot;$(MSBuildProjectDirectory)\..\..\..&quot; &quot;$(MSBuildProjectDirectory)&quot;" />
+  </Target>
 
 </Project>

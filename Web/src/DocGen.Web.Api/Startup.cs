@@ -17,8 +17,8 @@ namespace DocGen.Web.Api
 
         public Startup(IHostingEnvironment hostingEnvironment)
         {
-            var builder = new ConfigurationBuilder();
-            builder.AddJsonFile("appsettings.json");
+            var builder = new ConfigurationBuilder()
+                .AddFrameworkConfigurationSources<Startup>(hostingEnvironment.EnvironmentName);
 
             _configuration = builder.Build();
         }
