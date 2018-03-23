@@ -142,6 +142,15 @@ export const reducerBase: ActionReducer<WizardState> = (state, action: WizardAct
         templateStepInputsValid.push(result);
       });
 
+      template.steps.push({
+        name: 'Completed!',
+        description: 'Click "Done" to preview your document',
+        inputs: [],
+        conditions: [],
+        parentReference: null,
+        id: 'complete'
+      });
+
       return Object.assign({}, state, <WizardState>{
         template,
         currentStepIndex: 0,
