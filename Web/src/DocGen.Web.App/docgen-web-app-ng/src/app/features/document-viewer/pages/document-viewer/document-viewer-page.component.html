@@ -6,7 +6,10 @@
       </div>
       <button mat-raised-button color="accent" (click)="onEditClick($event)">EDIT</button>
       <div class="fill-remaining-space"></div>
-      <button mat-raised-button color="primary" (click)="onSaveClick($event)">SAVE</button>
+      <div class="primary-controls" *ngIf="(documentType$ | async) === 'pdf'">
+        <button mat-raised-button color="primary" *ngIf="(document$ | async).document.isSigned" (click)="onSignClick($event)">SIGN</button>      
+        <button mat-raised-button color="primary" (click)="onSaveClick($event)">SAVE</button>
+      </div>
     </mat-toolbar>
   </div>
 </div>

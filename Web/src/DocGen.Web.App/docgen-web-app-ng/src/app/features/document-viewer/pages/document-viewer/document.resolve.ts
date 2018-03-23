@@ -21,7 +21,7 @@ export class DocumentResolve implements Resolve<DocumentResult> {
     const templateVersion = route.queryParamMap.get('version') || '1';
     const documentType: DocumentType = (<DocumentType>route.queryParamMap.get('type')) || 'pdf';
 
-    const key = `documents:${templateId}:${templateVersion}:values`;
+    const key = `drafts:${templateId}:${templateVersion}:values`;
     const inputValuesJson = localStorage.getItem(key);
 
     if (inputValuesJson) {
@@ -34,13 +34,19 @@ export class DocumentResolve implements Resolve<DocumentResult> {
         params.append(`v_${k}`, inputValues[k]);
       });
 
-      return this.getDocumentResultBody(documentType, params);
+      const correlationId = localStorage.getItem(`drafts:${templateId}:${templateVersion}:correlationId`);
+      return this.getDocumentResultBody(documentType, params, inputValues, correlationId);
     }
 
     throw new Error('Input values expected in local storage');
   }
 
-  private getDocumentResultBody(documentType: DocumentType, documentCreationParams: URLSearchParams): Promise<DocumentResult> {
+  private getDocumentResultBody(
+    documentType: DocumentType,
+    documentCreationParams: URLSearchParams,
+    inputValues: InputValueCollection,
+    correlationId: string): Promise<DocumentResult> {
+
     const documentUrl = `${getAppSettings().Urls.Api}/documents`;
 
     let contentType: string = null;
@@ -60,9 +66,9 @@ export class DocumentResolve implements Resolve<DocumentResult> {
     return document$
       .map(r => {
         if (documentType === 'text') {
-          return new TextDocumentResult(r.text());
+          return new TextDocumentResult(r.text(), inputValues, correlationId);
         } else {
-          return new SerializableDocumentResult(r.json());
+          return new SerializableDocumentResult(r.json(), inputValues, correlationId);
         }
       })
       .toPromise();

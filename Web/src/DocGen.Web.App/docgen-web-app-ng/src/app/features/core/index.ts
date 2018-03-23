@@ -43,3 +43,9 @@ export
 export { InputValueCollectionUtility, TemplateUtility } from './utility';
 
 export { TemplateService } from './services/templates/template.service';
+export {
+    LocalStorageDocumentService,
+    DocumentCreate,
+    DocumentResult,
+    IDocumentService
+} from './services/documents';

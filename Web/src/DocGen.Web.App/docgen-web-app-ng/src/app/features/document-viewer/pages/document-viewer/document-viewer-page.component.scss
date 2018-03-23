@@ -21,6 +21,14 @@
         .fill-remaining-space {
             flex: 1;
         }
+
+        .primary-controls {
+            display: flex;
+
+            button {
+                margin-right: 4px;
+            }
+        }
     }
 
     &:not(.visible) {

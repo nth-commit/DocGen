@@ -1,6 +1,7 @@
 export interface SerializableDocument {
     markupVersion: number;
     instructions: Instruction[];
+    isSigned: boolean;
 }
 
 export interface Instruction {

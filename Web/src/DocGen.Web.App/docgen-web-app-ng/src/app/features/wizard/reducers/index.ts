@@ -83,6 +83,7 @@ export interface WizardState {
   templateStepInputsValid: boolean[][];
   completed: boolean;
   empty: boolean;
+  correlationId: string;
 }
 
 export const TEMPLATE_STEP_IS_DOCUMENT_SIGNED: TemplateStep = {
@@ -156,7 +157,8 @@ export const reducerBase: ActionReducer<WizardState> = (state, action: WizardAct
         currentStepIndex: 0,
         values: InputValueCollectionUtility.fromTemplate(template),
         templateStepInputsValid,
-        stepIndexHistory: []
+        stepIndexHistory: [],
+        correlationId: new Date().getTime().toString()
       });
     }
     case WizardActionTypes.UPDATE_VALUES: {

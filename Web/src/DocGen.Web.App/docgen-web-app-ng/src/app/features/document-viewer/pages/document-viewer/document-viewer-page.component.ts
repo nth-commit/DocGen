@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
-import { Template } from '../../../core';
+import { Template, LocalStorageDocumentService, DocumentCreate } from '../../../core';
 import { TextDocumentResult, SerializableDocumentResult, DocumentType } from '../../models';
 
 @Component({
@@ -24,7 +24,8 @@ export class DocumentViewerPageComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private documentService: LocalStorageDocumentService
   ) { }
 
   ngOnInit() {
@@ -37,6 +38,20 @@ export class DocumentViewerPageComponent implements OnInit {
     this.template$.first().subscribe(t => {
       this.router.navigateByUrl(t.id);
     });
+  }
+
+  onSaveClick() {
+    Observable
+      .combineLatest([this.template$, this.document$])
+      .first()
+      .subscribe(([template, document]: [Template, SerializableDocumentResult]) => {
+        this.documentService.createOrUpdate(document.correlationId, {
+          inputValues: document.inputValues,
+          templateId: template.id,
+          templateName: template.name,
+          templateVersion: template.version
+        });
+      });
   }
 
   @HostListener('window:mousewheel', ['$event'])

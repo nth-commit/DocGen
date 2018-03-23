@@ -21,7 +21,7 @@ export class WizardPageResolve implements Resolve<Template> {
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<Template> {
         const templateId = route.paramMap.get('templateId');
 
-        const wizardStateJson = localStorage.getItem(`documents:${templateId}:wizard`);
+        const wizardStateJson = localStorage.getItem(`drafts:${templateId}:wizard`);
         if (wizardStateJson) {
             // TODO: Ensure template version is latest
             const wizardState: WizardState = JSON.parse(wizardStateJson);

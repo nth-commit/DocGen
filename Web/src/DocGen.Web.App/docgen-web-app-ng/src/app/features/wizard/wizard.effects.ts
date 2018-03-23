@@ -69,6 +69,9 @@ export class WizardEffects {
       const valuesKey = this.getKey(state, `${template.version}:values`);
       localStorage.setItem(valuesKey, JSON.stringify(state.wizard.values)); // Used for document generation module
 
+      const correlationIdKey = this.getKey(state, `${template.version}:correlationId`);
+      localStorage.setItem(correlationIdKey, state.wizard.correlationId);
+
       this.router.navigateByUrl(`/${template.id}/preview?version=${template.version}`);
     });
 
@@ -80,6 +83,6 @@ export class WizardEffects {
     });
 
     private getKey(state: State, suffix: string) {
-      return `documents:${state.wizard.template.id}:${suffix}`;
+      return `drafts:${state.wizard.template.id}:${suffix}`;
     }
 }
