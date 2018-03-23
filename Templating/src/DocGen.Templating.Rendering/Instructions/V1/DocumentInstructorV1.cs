@@ -253,18 +253,25 @@ namespace DocGen.Templating.Rendering.Instructions.V1
                 { "sign", _model.Sign.ToString().ToLowerInvariant() }
             };
 
-            var signerAttribute = signatureElement.Attributes().SingleOrDefault(a => a.Name == "signer");
-            signatureValuesByReference.Add("person", valuesByReference[signerAttribute.Value]);
+            var signerAttribute = signatureElement.Attributes().FirstOrDefault(a => a.Name == "signer");
 
             var representingAttribute = signatureElement.Attributes().FirstOrDefault(a => a.Name == "representing");
-            if (representingAttribute == null)
+            var isRepresenting = representingAttribute != null;
+
+            if (isRepresenting)
             {
-                signatureValuesByReference.Add("representing", false.ToString().ToLowerInvariant());
+                if (_model.Sign)
+                {
+                    signatureValuesByReference.Add("person", valuesByReference[signerAttribute.Value]);
+                }
+
+                signatureValuesByReference.Add("representing", true.ToString().ToLowerInvariant());
+                signatureValuesByReference.Add("company", valuesByReference[representingAttribute.Value]);
             }
             else
             {
-                signatureValuesByReference.Add("representing", true.ToString().ToLowerInvariant());
-                signatureValuesByReference.Add("company", valuesByReference[representingAttribute.Value]);
+                signatureValuesByReference.Add("person", valuesByReference[signerAttribute.Value]);
+                signatureValuesByReference.Add("representing", false.ToString().ToLowerInvariant());
             }
 
             await _builder.BeginWriteSigningAreaAsync(_context);

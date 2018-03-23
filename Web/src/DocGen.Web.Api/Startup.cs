@@ -18,7 +18,7 @@ namespace DocGen.Web.Api
         public Startup(IHostingEnvironment hostingEnvironment)
         {
             var builder = new ConfigurationBuilder()
-                .AddFrameworkConfigurationSources<Startup>(hostingEnvironment.EnvironmentName);
+                .AddFrameworkConfigurationSources(hostingEnvironment.EnvironmentName);
 
             _configuration = builder.Build();
         }
