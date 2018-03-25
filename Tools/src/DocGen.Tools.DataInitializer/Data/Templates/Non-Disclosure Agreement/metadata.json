@@ -192,7 +192,7 @@
     },
     {
       "Id": "contractor.company.representative",
-      "Name": "Representative for {{contractory.company.name}}",
+      "Name": "Representative for {{contractor.company.name}}",
       "Description": "Provide information about the person who is signing this document on behalf of {{contractor.company.name}}",
       "Conditions": [
         {
