@@ -1,6 +1,7 @@
 <div class="app-wizard-page">
   <div class="card-container">
     <mat-card style="margin-bottom: 50px; max-width: 500px;">
+        <mat-progress-bar mode="determinate" [value]="progress$ | async"></mat-progress-bar>
         <mat-card-title>{{ (templateStep$ | async).name }}</mat-card-title>
         <mat-card-subtitle>{{ (templateStep$ | async).description }}</mat-card-subtitle>
         <mat-card-content>

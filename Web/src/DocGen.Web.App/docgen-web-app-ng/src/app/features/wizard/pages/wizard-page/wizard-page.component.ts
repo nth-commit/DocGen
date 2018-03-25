@@ -22,6 +22,7 @@ export class WizardPageComponent implements OnInit {
   hasPreviousStep$ = this.store.select(s => s.wizard.hasPreviousStep);
   currentStepValid$ = this.store.select(s => s.wizard.currentStepValid);
   currentValues$ = this.store.select(s => s.wizard.currentValues);
+  progress$ = this.store.select(s => s.wizard.progress);
 
   constructor(
     private route: ActivatedRoute,

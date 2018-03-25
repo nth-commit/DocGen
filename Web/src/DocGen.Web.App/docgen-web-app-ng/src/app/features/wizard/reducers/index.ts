@@ -84,6 +84,7 @@ export interface WizardState {
   completed: boolean;
   empty: boolean;
   correlationId: string;
+  progress: number;
 }
 
 export const TEMPLATE_STEP_IS_DOCUMENT_SIGNED: TemplateStep = {
@@ -291,6 +292,8 @@ export const reducer: ActionReducer<WizardState> = (state, action: WizardAction)
       .every(i => state.values[i.id] !== undefined && state.values[i.id] !== null);
 
     state.empty = Object.keys(state.values).every(id => state.values[id] === undefined || state.values[id] === null);
+
+    state.progress = (state.currentStepIndex / (state.template.steps.length - 1)) * 100;
   }
 
   return state;
