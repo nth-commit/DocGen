@@ -258,7 +258,30 @@ export const reducer: ActionReducer<WizardState> = (state, action: WizardAction)
 
     state.hasPreviousStep = state.currentStepIndex > 0;
 
-    state.currentStep = state.template.steps[state.currentStepIndex];
+    state.currentStep = Object.assign({}, state.template.steps[state.currentStepIndex]);
+
+    const getTemplatedString = (value: string) => value
+      .replace(/{{(([a-z_]+[a-z_0-9]*)(.[a-z_]+[a-z_0-9]*)*)}}/, (x, y) => {
+        return <string>state.values[y];
+      });
+
+    state.currentStep.description = getTemplatedString(state.currentStep.description);
+    state.currentStep.name = getTemplatedString(state.currentStep.name);
+    for (let i = 0; i < state.currentStep.inputs.length; i++) {
+      const input = state.currentStep.inputs[i];
+
+      if (input.name) {
+        state.currentStep.inputs[i].name = getTemplatedString(input.name);
+      }
+
+      if (input.description) {
+        state.currentStep.inputs[i].description = getTemplatedString(input.description);
+      }
+
+      if (input.hint) {
+        state.currentStep.inputs[i].hint = getTemplatedString(input.hint);
+      }
+    }
 
     state.currentValues = {};
     state.currentStep.inputs.forEach(i => {
