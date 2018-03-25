@@ -1,11 +1,14 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { MatDialog } from '@angular/material';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
 import { Template, LocalStorageDocumentService, DocumentCreate } from '../../../core';
 import { TextDocumentResult, SerializableDocumentResult, DocumentType } from '../../models';
+
+import { SignDocumentModalComponent } from '../../components/sign-document-modal/sign-document-modal.component';
 
 @Component({
   selector: 'app-document-viewer-page',
@@ -25,6 +28,7 @@ export class DocumentViewerPageComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
+    private matDialog: MatDialog,
     private documentService: LocalStorageDocumentService
   ) { }
 
@@ -52,6 +56,10 @@ export class DocumentViewerPageComponent implements OnInit {
           templateVersion: template.version
         });
       });
+  }
+
+  onSignClick() {
+    this.matDialog.open(SignDocumentModalComponent);
   }
 
   @HostListener('window:mousewheel', ['$event'])

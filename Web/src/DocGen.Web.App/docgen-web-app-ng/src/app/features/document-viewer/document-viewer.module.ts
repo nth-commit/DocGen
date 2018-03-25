@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { MatToolbarModule, MatButtonModule } from '@angular/material';
+import { MatToolbarModule, MatButtonModule, MatDialogModule } from '@angular/material';
 
 import { DocumentViewerRoutingModule } from './document-viewer-routing.module';
 
@@ -10,11 +10,12 @@ import { DocumentRenderingService } from './services/document-rendering/document
 import { DocumentViewerPageComponent } from './pages/document-viewer/document-viewer-page.component';
 import { TextDocumentComponent } from './components/text-document/text-document.component';
 import { PdfDocumentComponent } from './components/pdf-document/pdf-document.component';
+import { SignDocumentModalComponent } from './components/sign-document-modal/sign-document-modal.component';
 
 @NgModule({
   imports: [
     CommonModule,
-    MatToolbarModule, MatButtonModule,
+    MatToolbarModule, MatButtonModule, MatDialogModule,
     DocumentViewerRoutingModule
   ],
   providers: [
@@ -23,7 +24,11 @@ import { PdfDocumentComponent } from './components/pdf-document/pdf-document.com
   declarations: [
     DocumentViewerPageComponent,
     TextDocumentComponent,
-    PdfDocumentComponent
+    PdfDocumentComponent,
+    SignDocumentModalComponent
+  ],
+  entryComponents: [
+    SignDocumentModalComponent
   ]
 })
 export class DocumentViewerModule { }
