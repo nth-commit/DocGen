@@ -72,8 +72,6 @@ namespace DocGen.Web.Api.Core.Templates
 
         private void ValidateTemplateSteps(TemplateCreate create, IEnumerable<TemplateStepCreate> steps)
         {
-            // TODO: Validate allowed characters in name
-
             steps
                 .Where(step => step.ParentReference?.Split(Constants.TemplateComponentReferenceSeparator).Count() > 1)
                 .ForEach((step) =>
@@ -112,13 +110,7 @@ namespace DocGen.Web.Api.Core.Templates
             var stepErrorPath = new object[] { nameof(TemplateCreate.Steps), stepIndex };
 
             var isParentStep = stepsById.Any(kvp => kvp.Key.StartsWith(stepId) && kvp.Value.Index != stepIndex);
-            if (isParentStep && step.Inputs.Count() > 1)
-            {
-                // TODO: Unnecessarily restrictive?
-                // Parent step is allowed to have one input, this is useful for branching to child steps.
-                //stepErrors.Add("A step that has sub-steps must not contain any inputs", stepErrorPath);
-            }
-            else if (!isParentStep && !step.Inputs.Any())
+            if (!isParentStep && !step.Inputs.Any())
             {
                 // Steps that do not have child steps must have inputs.
                 // FUTURE: Maybe we want to add "informational" steps, with no inputs.
@@ -138,60 +130,39 @@ namespace DocGen.Web.Api.Core.Templates
                     var previousInputValueErrorPath = stepConditionTypeDataErrorPath.Concat(nameof(TemplateStepConditionTypeData_EqualsPreviousInputValue.PreviousInputValue));
 
                     var previousInputId = DynamicUtility.Unwrap<string>(() => condition.TypeData.PreviousInputId);
-                    if (string.IsNullOrEmpty(previousInputId))
+                    var (previousInputSuccess, previousInputError, previousInput) = GetPreviousInputReference(stepId, previousInputId, stepsById);
+                    if (previousInputSuccess)
                     {
-                        stepErrors.Add("Must have a greater than than or equal to 1", previousInputIdErrorPath);
-                    }
-                    else
-                    {
-                        if (TryGetStepFromInputReference(previousInputId, stepsById, out IndexedElement<TemplateStepCreate> indexedPreviousStep))
+                        if (previousInput.Type == TemplateStepInputType.Checkbox)
                         {
-                            if (indexedPreviousStep.Index >= stepIndex)
+                            try
                             {
-                                stepErrors.Add("Must reference a previous step", previousInputIdErrorPath);
+                                DynamicUtility.UnwrapValue<bool>(() => condition.TypeData.PreviousInputValue);
                             }
-                            else
+                            catch (RuntimeBinderException)
                             {
-                                var previousInput = GetTemplateStepInput(previousInputId, indexedPreviousStep.Element);
-                                if (previousInput == null)
-                                {
-                                    stepErrors.Add("Could not find input from given path", previousInputIdErrorPath);
-                                }
-                                else
-                                {
-                                    if (previousInput.Type == TemplateStepInputType.Checkbox)
-                                    {
-                                        try
-                                        {
-                                            DynamicUtility.UnwrapValue<bool>(() => condition.TypeData.PreviousInputValue);
-                                        }
-                                        catch (RuntimeBinderException)
-                                        {
-                                            stepErrors.Add("Expected boolean", previousInputValueErrorPath);
-                                        }
-                                    }
-                                    else if (previousInput.Type == TemplateStepInputType.Radio)
-                                    {
-                                        try
-                                        {
-                                            DynamicUtility.Unwrap<string>(() => condition.TypeData.PreviousInputValue);
-                                        }
-                                        catch (RuntimeBinderException)
-                                        {
-                                            throw;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        stepErrors.Add("Type of previous input is not supported for conditions", previousInputValueErrorPath);
-                                    }
-                                }
+                                stepErrors.Add("Expected boolean", previousInputValueErrorPath);
+                            }
+                        }
+                        else if (previousInput.Type == TemplateStepInputType.Radio)
+                        {
+                            try
+                            {
+                                DynamicUtility.Unwrap<string>(() => condition.TypeData.PreviousInputValue);
+                            }
+                            catch (RuntimeBinderException)
+                            {
+                                throw;
                             }
                         }
                         else
                         {
-                            stepErrors.Add("Could not find a step from given path", previousInputIdErrorPath);
+                            stepErrors.Add("Type of previous input is not supported for conditions", previousInputValueErrorPath);
                         }
+                    }
+                    else
+                    {
+                        stepErrors.Add(previousInputError, previousInputIdErrorPath);
                     }
                 }
                 else if (condition.Type == TemplateComponentConditionType.IsDocumentSigned)
@@ -204,6 +175,44 @@ namespace DocGen.Web.Api.Core.Templates
             });
 
             ValidateTemplateStepInputs(step, stepErrors, stepErrorPath);
+        }
+
+        private (bool success, string error, TemplateStepInputCreate input) GetPreviousInputReference(string stepId, string previousInputId, Dictionary<string, IndexedElement<TemplateStepCreate>> stepsById)
+        {
+            var indexedStep = stepsById[stepId];
+            var step = indexedStep.Element;
+            var stepIndex = indexedStep.Index;
+
+            if (string.IsNullOrEmpty(previousInputId))
+            {
+                return (false, "Invalid reference", null);
+            }
+            else
+            {
+                if (TryGetStepFromInputReference(previousInputId, stepsById, out IndexedElement<TemplateStepCreate> indexedPreviousStep))
+                {
+                    if (indexedPreviousStep.Index >= stepIndex)
+                    {
+                        return (false, "Must reference a previous step", null);
+                    }
+                    else
+                    {
+                        var previousInput = GetTemplateStepInput(previousInputId, indexedPreviousStep.Element);
+                        if (previousInput == null)
+                        {
+                            return (false, "Could not find input from given path", null);
+                        }
+                        else
+                        {
+                            return (true, string.Empty, previousInput);
+                        }
+                    }
+                }
+                else
+                {
+                    return (false, "Could not find a step from given path", null);
+                }
+            }
         }
 
         private void ValidateTemplateStepInputs(TemplateStepCreate step, ModelErrorDictionary stepErrors, IEnumerable<object> stepErrorPath)
