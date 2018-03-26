@@ -19,7 +19,6 @@ namespace DocGen.Web.Api.Controllers
             _templateService = templateService;
         }
 
-        [Authorize]
         [HttpGet("")]
         [ProducesResponseType(typeof(Template[]), 200)]
         public async Task<IActionResult> List() => Ok(await _templateService.ListTemplatesAsync());

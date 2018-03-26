@@ -1,0 +1,31 @@
+.app-dashboard {
+
+    .dashboard-state {
+        min-height: 100vh;
+
+        &.dashboard-state-empty {
+            display: flex;
+            flex-direction: column;
+            align-content: center;
+            justify-content: center;
+
+            .content {
+                margin-bottom: 200px;
+
+                h1 {
+                    text-align: center;
+                }
+
+                .hint {
+                    text-align: center;
+                }
+
+                .create-button-container {
+                    display: flex;
+                    justify-content: center;
+                    margin-top: 30px;
+                }
+            }
+        }
+    }
+}

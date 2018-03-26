@@ -12,6 +12,17 @@ export class TemplateService {
     private http: Http
   ) { }
 
+  listTemplates(): Promise<Template[]> {
+    const templatesUrl = this.getTemplateResourceUrl();
+    return this.http.get(templatesUrl)
+      .map(r => {
+        const templates: Template[] = r.json();
+        templates.forEach(t => this.processTemplate(t));
+        return templates;
+      })
+      .toPromise();
+  }
+
   getLatestTemplate(id: string): Promise<Template> {
     return this.getTemplate(id, null);
   }
@@ -28,25 +39,37 @@ export class TemplateService {
       }
     }
 
-    const template$ = this.http.get(`${getAppSettings().Urls.Api}/templates/${id}`).map(r => {
+    const template$ = this.http.get(this.getTemplateResourceUrl(id)).map(r => {
       const result: Template = r.json();
-
-      result.steps.forEach(s => {
-          s.inputs.forEach(i => {
-              let inputId = s.id;
-              if (i.key) {
-                inputId += `.${i.key}`;
-              }
-              i.id = inputId;
-          });
-      });
-
+      this.processTemplate(result);
       return result;
     });
 
     const templatePromise = template$.toPromise();
     templatePromise.then(t => localStorage.setItem(this.getTemplateKey(t.id, t.version), JSON.stringify(t)));
     return templatePromise;
+  }
+
+  private processTemplate(template: Template) {
+    template.steps.forEach(s => {
+      s.inputs.forEach(i => {
+          let inputId = s.id;
+          if (i.key) {
+            inputId += `.${i.key}`;
+          }
+          i.id = inputId;
+      });
+    });
+  }
+
+  private getTemplateResourceUrl(id?: string) {
+    let result = `${getAppSettings().Urls.Api}/templates`;
+
+    if (id) {
+      result += `/${id}`;
+    }
+
+    return result;
   }
 
   private getTemplateKey(id: string, version: number) {

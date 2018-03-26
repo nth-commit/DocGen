@@ -1,0 +1,11 @@
+<div class="app-dashboard">
+  <div class="dashboard-state dashboard-state-empty" *ngIf="true">
+    <div class="content">
+      <h1>Welcome to DocGen</h1>
+      <div class="hint">Click "Create" to start generating documents!</div>
+      <div class="create-button-container">
+        <button mat-raised-button color="primary" (click)="createDocument($event)">CREATE</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -10,6 +10,7 @@ import { environment } from '../environments/environment';
 import { EffectsModule } from '@ngrx/effects';
 import { AppEffects } from './app.effects';
 
+import { DashboardModule } from './features/dashboard';
 import { WizardModule } from './features/wizard';
 import { DocumentViewerModule } from './features/document-viewer';
 
@@ -33,6 +34,7 @@ import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.com
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     EffectsModule.forRoot([AppEffects]),
 
+    DashboardModule,
     WizardModule,
     DocumentViewerModule
   ],

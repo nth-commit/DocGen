@@ -2,6 +2,7 @@
 using DocGen.Shared.Framework;
 using DocGen.Shared.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
+using MoreLinq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,10 @@ namespace DocGen.Web.Api.Core.Templates
             var continuationToken = new TableContinuationToken();
             var templateTableEntities = await table.ExecuteQuerySegmentedAsync(new TableQuery<TemplateTableEntity>(), continuationToken);
 
-            return templateTableEntities.Results.Select(t => _mapper.Map<Template>(t));
+            return templateTableEntities.Results
+                .Select(t => _mapper.Map<Template>(t))
+                .GroupBy(t => t.Id)
+                .Select(g => g.MaxBy(t => t.Version));
         }
 
         public async Task<Template> GetTemplateAsync(string id)
