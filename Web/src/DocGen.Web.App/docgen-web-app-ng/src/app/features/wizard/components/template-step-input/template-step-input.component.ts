@@ -21,7 +21,7 @@ export class TemplateStepInputComponent implements OnInit, OnChanges {
   ) { }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (this.form && changes.value.currentValue) {
+    if (this.form && changes.value && changes.value.currentValue !== changes.value.previousValue) {
       const controls = this.form.controls;
       const controlKey = Object.keys(controls)[0];
       controls[controlKey].setValue(changes.value.currentValue);

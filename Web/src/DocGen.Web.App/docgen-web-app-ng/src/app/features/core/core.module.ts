@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { TemplateService } from './services/templates/template.service';
 import { LocalStorageDocumentService } from './services/documents/local-storage-document.service';
+import { RouteChangeService } from './services/route-change/route-change.service';
 
 @NgModule({
   imports: [
@@ -10,7 +11,8 @@ import { LocalStorageDocumentService } from './services/documents/local-storage-
   ],
   providers: [
     TemplateService,
-    LocalStorageDocumentService
+    LocalStorageDocumentService,
+    RouteChangeService
   ],
   declarations: [],
   exports: [

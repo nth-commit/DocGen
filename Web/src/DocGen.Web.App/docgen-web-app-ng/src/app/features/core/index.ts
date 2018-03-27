@@ -49,3 +49,4 @@ export {
     DocumentResult,
     IDocumentService
 } from './services/documents';
+export { RouteChangeService } from './services/route-change/route-change.service';

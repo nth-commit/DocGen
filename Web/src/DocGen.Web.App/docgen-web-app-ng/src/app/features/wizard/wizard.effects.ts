@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Router, RouterEvent, NavigationEnd } from '@angular/router';
+import { Router, RouterEvent, NavigationEnd, RoutesRecognized } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 import { Store, Action } from '@ngrx/store';
 import { Actions, Effect } from '@ngrx/effects';
@@ -12,6 +12,7 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/withLatestFrom';
 
 import { State, WizardActionTypes, Complete, ClearValues } from './reducers';
+import { RouteChangeService } from '../core';
 
 @Injectable()
 export class WizardEffects {
@@ -20,7 +21,8 @@ export class WizardEffects {
     private actions$: Actions,
     private store: Store<State>,
     private router: Router,
-    private snackBar: MatSnackBar) { }
+    private snackBar: MatSnackBar,
+    private routeChangeService: RouteChangeService) { }
 
   @Effect({ dispatch: false }) changes$ = this.actions$
     .ofType(WizardActionTypes.BEGIN, WizardActionTypes.UPDATE_VALUES, WizardActionTypes.NEXT_STEP, WizardActionTypes.NEXT_STEP)
@@ -33,12 +35,11 @@ export class WizardEffects {
     .ofType(WizardActionTypes.REFRESH)
     .do(action => {
       this.router.events
-        .debounceTime(1000) // Wait 1 second, so we can check if it is the first route and is still the first route.
+        .debounceTime(1000)
         .first()
         .withLatestFrom(this.store)
         .subscribe(([event, state]) => {
-          if ((<RouterEvent>event).id === 1 && !state.wizard.empty) {
-
+          if (!state.wizard.empty && (!this.routeChangeService.previousUrl || this.routeChangeService.previousUrl === '/') ) {
             const snackBarRef = this.snackBar.open(
               'We loaded the document you were working on before!',
               'Reset',

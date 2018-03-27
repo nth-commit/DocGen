@@ -5,6 +5,8 @@ import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 import './extensions';
 
+import 'rxjs/add/operator/filter';
+
 const bootstrap = () => platformBrowserDynamic().bootstrapModule(AppModule).catch(err => console.log(err));
 
 if (environment.production) {

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, AfterViewInit, ViewChild, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
-import { MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocompleteTrigger, MatDialogRef } from '@angular/material';
 
 import { Template } from '../../../core';
 
@@ -22,9 +22,11 @@ export class TemplateSelectDialogComponent implements OnInit, AfterViewInit {
   options: Observable<string[]>;
 
   private templatesByName: Map<string, Template>;
+  private isCancelled = false;
 
   constructor(
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private dialogRef: MatDialogRef<TemplateSelectDialogComponent>
   ) { }
 
   ngOnInit() {
@@ -47,5 +49,20 @@ export class TemplateSelectDialogComponent implements OnInit, AfterViewInit {
       this.templateNameControl.setValue('');
       this.templateNameAutocompleteTrigger.openPanel();
     }, 500);
+  }
+
+  onGoClick() {
+    if (!this.isCancelled) {
+      const templateName = this.templateNameControl.value;
+      if (templateName) {
+        this.templateSelected.emit(this.templatesByName.get(templateName));
+        this.dialogRef.close();
+      }
+    }
+  }
+
+  onCancelClick() {
+    this.isCancelled = true;
+    this.dialogRef.close();
   }
 }

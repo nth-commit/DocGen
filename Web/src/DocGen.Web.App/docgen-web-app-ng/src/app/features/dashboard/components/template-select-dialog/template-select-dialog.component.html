@@ -1,5 +1,5 @@
 <h2>Create a new document</h2>
-<form [formGroup]="form">
+<form [formGroup]="form" (submit)="onGoClick()">
   <mat-form-field>
       <input type="text" matInput formControlName="templateName" [matAutocomplete]="auto" placeholder="Select a template..." />
       <mat-autocomplete id="templateNameAutocompleteTrigger" #auto="matAutocomplete">
@@ -9,7 +9,7 @@
       </mat-autocomplete>
   </mat-form-field>
   <div class="control-container">
-    <button mat-raised-button>CANCEL</button>
-    <button mat-raised-button color="primary" type="submit">GO!</button>
+    <button mat-raised-button (click)="onCancelClick()">CANCEL</button>
+    <button mat-raised-button color="primary" type="submit" >GO!</button>
   </div>
 </form>
