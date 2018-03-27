@@ -4,7 +4,7 @@
       <div class="template-name-container">
         <div class="template-name">{{ (template$ | async).name }}</div>
       </div>
-      <button mat-raised-button color="accent" (click)="onEditClick($event)">EDIT</button>
+      <button mat-raised-button color="accent" (click)="onEditClick()">EDIT</button>
       <div class="fill-remaining-space"></div>
       <div class="primary-controls" *ngIf="(documentType$ | async) === 'pdf'">
         <button mat-raised-button color="primary" *ngIf="(document$ | async).document.isSigned" (click)="onSignClick($event)">SIGN</button>      

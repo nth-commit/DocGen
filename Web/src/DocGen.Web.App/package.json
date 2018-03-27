@@ -7,7 +7,7 @@
   "scripts": {
     "install": "cd ./docgen-web-app-ng && yarn install",
     "start": "cd ./docgen-web-app-ng && yarn run start",
-    "build": "cd ./docgen-web-app-ng &&  ng build --prod --aot --output-path \"./wwwroot\""
+    "build": "cd ./docgen-web-app-ng &&  ng build --prod --aot --output-path \"../wwwroot\""
   }
 , "-vs-binding":{"ProjectOpened":["start"]}
 }

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
@@ -21,10 +22,22 @@ namespace DocGen.Web.App
     public class Startup
     {
         private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IConfiguration _configuration;
 
         public Startup(IHostingEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
+
+            var builder = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .AddJsonFile($"appsettings.{_hostingEnvironment.EnvironmentName}.json", optional: true);
+
+            if (!hostingEnvironment.IsDevelopment())
+            {
+                builder.AddEnvironmentVariables();
+            }
+
+            _configuration = builder.Build();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -66,7 +79,8 @@ namespace DocGen.Web.App
                     if (context.Request.Path == "/config")
                     {
                         context.Response.ContentType = "application/json";
-                        await context.Response.WriteAsync(GetEnvironmentSettingsJson(context));
+                        var envSettings = GetEnvironmentSettingsJson(context);
+                        await context.Response.WriteAsync(envSettings);
                     }
                     else
                     {
@@ -105,8 +119,9 @@ namespace DocGen.Web.App
         {
             var environmentSettings = new
             {
-                Urls = new {
-                    Api = "http://localhost:57751"
+                Urls = new
+                {
+                    Api = _configuration["Urls:Api"]
                 }
             };
             return JsonConvert.SerializeObject(environmentSettings);

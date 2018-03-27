@@ -15,9 +15,9 @@
             [hasNextStep]="hasNextStep$ | async"
             [hasPreviousStep]="hasPreviousStep$ | async"
             [currentStepValid]="currentStepValid$ | async"
-            (nextStepClick)="onNextStepClick($event)"
-            (previousStepClick)="onPreviousStepClick($event)"
-            (completeClick)="onCompleteClick($event)">
+            (nextStepClick)="onNextStepClick()"
+            (previousStepClick)="onPreviousStepClick()"
+            (completeClick)="onCompleteClick()">
           </app-wizard-template-step-navigation>
         </mat-card-actions>
     </mat-card>

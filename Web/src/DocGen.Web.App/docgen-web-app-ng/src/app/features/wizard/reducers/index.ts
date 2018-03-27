@@ -102,7 +102,7 @@ export const TEMPLATE_STEP_IS_DOCUMENT_SIGNED: TemplateStep = {
   parentReference: null
 };
 
-export const reducerBase: ActionReducer<WizardState> = (state, action: WizardAction) => {
+export function reducerBase(state, action: WizardAction) {
   switch (action.type) {
     case WizardActionTypes.REFRESH: {
       return action.payload;
@@ -249,7 +249,7 @@ export const reducerBase: ActionReducer<WizardState> = (state, action: WizardAct
   }
 };
 
-export const reducer: ActionReducer<WizardState> = (state, action: WizardAction) => {
+export function reducer(state: WizardState, action: WizardAction) {
   state = reducerBase(state, action);
 
   if (state.template) {
