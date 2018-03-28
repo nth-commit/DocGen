@@ -21,6 +21,12 @@ namespace System.Linq
             return source.Concat(elements.AsEnumerable());
         }
 
+        public static IEnumerable<T> TakeAllExceptLast<T>(
+            this IEnumerable<T> source)
+        {
+            return source.Take(source.Count() - 1);
+        }
+
         //public static void ForEach<T>(
         //    this IEnumerable<T> source,
         //    Action<T, int> action)

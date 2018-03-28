@@ -17,6 +17,7 @@ using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using DocGen.Web.Api.Core.Signing;
 
 namespace DocGen.Tools.Runner
 {
@@ -138,27 +139,27 @@ namespace DocGen.Tools.Runner
 
                 #region Create document
 
-                var service = serviceProvider.GetRequiredService<DocumentService>();
-                var result = service.CreateTextDocumentAsync(
-                    new DocumentCreate()
-                    {
-                        TemplateId = "non-disclosure-agreement",
-                        TemplateVersion = 1,
-                        InputValues = new Dictionary<string, dynamic>()
-                        {
-                            { "organisation.name", "Automio Limited" },
-                            { "organisation.location", "New Plymouth" },
-                            { "organisation.description", "operates a carpet manufacturing factory in Stratford" },
-                            { "contractor.type", "company" },
-                            { "contractor.company.name", "Lava Lamps Limited" },
-                            { "contractor.company.location", "New Plymouth" },
-                            { "disclosure_reason", "To provide marketing services to the Organisation" },
-                            { "disclosure_access", true },
-                            { "disclosure_access.details.persons", "sub-contractors, board members" }
-                        }
-                    }).GetAwaiter().GetResult();
+                //var service = serviceProvider.GetRequiredService<DocumentService>();
+                //var result = service.CreateTextDocumentAsync(
+                //    new DocumentCreate()
+                //    {
+                //        TemplateId = "non-disclosure-agreement",
+                //        TemplateVersion = 1,
+                //        InputValues = new Dictionary<string, dynamic>()
+                //        {
+                //            { "organisation.name", "Automio Limited" },
+                //            { "organisation.location", "New Plymouth" },
+                //            { "organisation.description", "operates a carpet manufacturing factory in Stratford" },
+                //            { "contractor.type", "company" },
+                //            { "contractor.company.name", "Lava Lamps Limited" },
+                //            { "contractor.company.location", "New Plymouth" },
+                //            { "disclosure_reason", "To provide marketing services to the Organisation" },
+                //            { "disclosure_access", true },
+                //            { "disclosure_access.details.persons", "sub-contractors, board members" }
+                //        }
+                //    }).GetAwaiter().GetResult();
 
-                Console.WriteLine(result.Body);
+                //Console.WriteLine(result.Body);
 
                 #endregion
             }
@@ -212,6 +213,7 @@ namespace DocGen.Tools.Runner
             #endregion
 
             //RenderTemplateAsync(serviceProvider).GetAwaiter().GetResult();
+            CreateSigningRequestAsync(serviceProvider).GetAwaiter().GetResult();
 
             Console.ReadLine();
         }
@@ -293,6 +295,37 @@ namespace DocGen.Tools.Runner
                 });
 
             Console.WriteLine(JsonConvert.SerializeObject(result.Instructions, Formatting.Indented));
+        }
+
+        private static async Task CreateSigningRequestAsync(IServiceProvider serviceProvider)
+        {
+            var signingService = serviceProvider.GetRequiredService<SigningService>();
+            var documentEncoder = serviceProvider.GetRequiredService<IDocumentEncoder>();
+
+            var document = new DocumentCreate()
+            {
+                TemplateId = "non-disclosure-agreement",
+                TemplateVersion = 1,
+                InputValues = new Dictionary<string, dynamic>()
+                {
+                    { "organisation.name", "Automio Limited" },
+                    { "organisation.location", "New Plymouth" },
+                    { "organisation.description", "operates a carpet manufacturing factory in Stratford" },
+                    { "contractor.type", "company" },
+                    { "contractor.company.name", "Lava Lamps Limited" },
+                    { "contractor.company.location", "New Plymouth" },
+                    { "disclosure_reason", "To provide marketing services to the Organisation" },
+                    { "disclosure_access", true },
+                    { "disclosure_access.details.persons", "sub-contractors, board members" },
+                    { "document_signed", true },
+                    { "organisation.representative.name", "Liz Gilchrist" },
+                    { "organisation.representative.email", "lizgilchrist17@gmail.com" },
+                    { "contractor.company.representative.name", "Michael Fry" },
+                    { "contractor.company.representative.email", "michaelfry2002@gmail.com" }
+                }
+            };
+
+            await signingService.CreateSigningRequestAsync(documentEncoder.Encode(document));
         }
     }
 }

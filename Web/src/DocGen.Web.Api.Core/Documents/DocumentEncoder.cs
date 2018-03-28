@@ -15,20 +15,21 @@ namespace DocGen.Web.Api.Core.Documents
             _modelEncoderFactory = modelEncoderFactory;
         }
 
-        public string Encode(DocumentCreate document)
+        public string Encode(DocumentCreate document, Guid? nonce = null)
         {
             return GetModelEncoder().Encode(new NoncedDocumentCreate()
             {
                 TemplateId = document.TemplateId,
                 TemplateVersion = document.TemplateVersion,
                 InputValues = document.InputValues,
-                Nonce = Guid.NewGuid()
+                Nonce = nonce ?? Guid.NewGuid()
             });
         }
 
-        public DocumentCreate Decode(string encodedDocument)
+        public DocumentCreate Decode(string encodedDocument, out Guid nonce)
         {
             var noncedDocument = GetModelEncoder().Decode(encodedDocument);
+            nonce = noncedDocument.Nonce;
             return new DocumentCreate()
             {
                 TemplateId = noncedDocument.TemplateId,

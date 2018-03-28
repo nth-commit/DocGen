@@ -186,7 +186,8 @@
           "Name": "Email",
           "Description": "What is the email of the representative? The representative will be emailed a link of the contract to sign.",
           "Hint": "jmbloggs@company.com",
-          "Type": 1 // Text
+          "Type": 1, // Text
+          "ExportAs": "signatory_1"
         }
       ]
     },
@@ -219,7 +220,8 @@
           "Name": "Email",
           "Description": "What is the email of the representative? The representative will be emailed a link of the contract to sign.",
           "Hint": "jmbloggs@company.com",
-          "Type": 1 // Text
+          "Type": 1, // Text
+          "ExportAs": "signatory_2"
         }
       ]
     },
@@ -243,7 +245,8 @@
         {
           "Key": null, // From parent
           "Hint": "jmbloggs@company.com",
-          "Type": 1 // Text
+          "Type": 1, // Text
+          "ExportAs": "signatory_2"
         }
       ]
     }

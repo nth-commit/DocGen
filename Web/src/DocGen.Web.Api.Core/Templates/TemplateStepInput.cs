@@ -17,5 +17,7 @@ namespace DocGen.Web.Api.Core.Templates
         public TemplateStepInputType Type { get; set; }
 
         public dynamic TypeData { get; set; }
+
+        public string ExportAs { get; set; }
     }
 }

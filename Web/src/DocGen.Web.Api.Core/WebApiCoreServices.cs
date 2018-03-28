@@ -1,4 +1,5 @@
 ﻿using DocGen.Web.Api.Core.Documents;
+using DocGen.Web.Api.Core.Signing;
 using DocGen.Web.Api.Core.Templates;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,11 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddTransient<DocumentService>();
             services.AddTransient<IDocumentEncoder, DocumentEncoder>();
+            services.AddTransient<IDocumentExportsFactory, DocumentExportsFactory>();
+
+            services.AddTransient<SigningService>();
+            services.AddTransient<ISigningRequestRepository, BlobStorageSigningRepository>();
+            services.AddTransient<ISignatureImageRepository, BlobStorageSigningRepository>();
 
             return services;
         }
