@@ -17,7 +17,7 @@ namespace DocGen.Web.Api.Core.Documents
         public int TemplateVersion { get; set; }
 
         [Required]
-        public IDictionary<string, dynamic> InputValues { get; set; }
+        public Dictionary<string, dynamic> InputValues { get; set; }
     }
 
     public static class DocumentCreateExtensions

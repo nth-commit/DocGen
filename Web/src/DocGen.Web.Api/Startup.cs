@@ -29,8 +29,6 @@ namespace DocGen.Web.Api
         {
             services.AddConfigurationProvider(_configuration);
 
-            services.AddWindowsAzureStorageServices();
-
             services.AddApiCoreServices();
 
             services.AddAutoMapper(conf =>
@@ -38,11 +36,11 @@ namespace DocGen.Web.Api
                 conf.AddApiCoreMappers();
             });
 
+            services.AddWindowsAzureStorageServices();
             services.AddTemplatingValidationServices();
             services.AddTemplatingRenderingServices();
 
             services.AddMvc();
-
             services.AddCors();
         }
 

@@ -11,10 +11,13 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddApiCoreServices(
             this IServiceCollection services)
         {
+            services.AddSharedModelEncodingServices();
+
             services.AddTransient<TemplateService>();
             services.AddTransient<ITemplateRepository, TableStorageTemplateRepository>();
 
             services.AddTransient<DocumentService>();
+            services.AddTransient<IDocumentEncoder, DocumentEncoder>();
 
             return services;
         }
