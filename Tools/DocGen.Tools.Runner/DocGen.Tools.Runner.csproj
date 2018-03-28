@@ -26,6 +26,16 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="appsettings.Shared.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="appsettings.Shared.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="powershell.exe -ExecutionPolicy Unrestricted -file &quot;$(MSBuildProjectDirectory)\..\..\Copy-App-Settings.ps1&quot; &quot;$(MSBuildProjectDirectory)\..\..&quot; &quot;$(MSBuildProjectDirectory)&quot;" />
+  </Target>
 
 </Project>

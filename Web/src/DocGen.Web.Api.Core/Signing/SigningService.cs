@@ -11,52 +11,48 @@ namespace DocGen.Web.Api.Core.Signing
 {
     public class SigningService
     {
-        private readonly IDocumentEncoder _documentEncoder;
         private readonly ITemplateRepository _templateRepository;
         private readonly IDocumentExportsFactory _documentExportsFactory;
         private readonly ISigningRequestRepository _signingRequestRepository;
         private readonly ISignatureImageRepository _signatureImageRepository;
+        private readonly ISigningNotifier _signingNotifier;
 
         public SigningService(
-            IDocumentEncoder documentEncoder,
             IDocumentExportsFactory documentExportsFactory,
             ITemplateRepository templateRepository,
             ISigningRequestRepository signingRequestRepository,
-            ISignatureImageRepository signatureImageRepository)
+            ISignatureImageRepository signatureImageRepository,
+            ISigningNotifier signingNotifier)
         {
-            _documentEncoder = documentEncoder;
             _documentExportsFactory = documentExportsFactory;
             _templateRepository = templateRepository;
             _signingRequestRepository = signingRequestRepository;
             _signatureImageRepository = signatureImageRepository;
+            _signingNotifier = signingNotifier;
         }
 
-        public async Task CreateSigningRequestAsync(string documentEncoded)
+        public async Task<SigningRequestResult> CreateSigningRequestAsync(DocumentCreate document)
         {
-            Guid nonce;
-            var document = _documentEncoder.Decode(documentEncoded, out nonce);
+            // TODO: Validate document
             var template = await _templateRepository.GetTemplateAsync(document.TemplateId);
 
             var signingRequest = new SigningRequest()
             {
-                Nonce = nonce,
+                Id = Guid.NewGuid().ToString(),
                 TemplateId = template.Id,
                 TemplateVersion = template.Version,
                 InputValues = document.InputValues,
                 Signatories = _documentExportsFactory.Create(template, document.InputValues).ListSignatories()
             };
-            await ValidateSigningRequestUnique(signingRequest);
 
             await _signingRequestRepository.CreateSigningRequestAsync(signingRequest);
-        }
 
-        private async Task ValidateSigningRequestUnique(SigningRequest signingRequest)
-        {
-            if (await _signingRequestRepository.HasSigningRequestAsync(signingRequest))
+            var result = await _signingNotifier.NotifyAsync(signingRequest);
+            return new SigningRequestResult()
             {
-                throw new ClientValidationException("A signing request already exists for this document");
-            }
+                Type = _signingNotifier.NotificationTypeId,
+                TypeData = result
+            };
         }
-
     }
 }

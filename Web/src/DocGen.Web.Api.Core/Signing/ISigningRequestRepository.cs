@@ -7,8 +7,8 @@ namespace DocGen.Web.Api.Core.Signing
 {
     public interface ISigningRequestRepository
     {
-        Task CreateSigningRequestAsync(SigningRequest signingRequest);
+        Task<SigningRequest> GetSigningRequestAsync(string id);
 
-        Task<bool> HasSigningRequestAsync(SigningRequest signingRequest);
+        Task<SigningRequest> CreateSigningRequestAsync(SigningRequest signingRequest);
     }
 }

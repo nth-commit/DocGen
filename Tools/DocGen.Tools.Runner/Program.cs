@@ -25,12 +25,13 @@ namespace DocGen.Tools.Runner
     {
         static void Main(string[] args)
         {
-            var builder = new ConfigurationBuilder();
-            builder.AddJsonFile("appsettings.json");
+            var builder = new ConfigurationBuilder()
+                .AddFrameworkConfigurationSources("Development");
+
             var configuration = builder.Build();
 
             var services = new ServiceCollection();
-            services.AddConfigurationProvider(configuration);
+            services.AddFrameworkServices(configuration);
             services.AddWindowsAzureStorageServices();
             services.AddApiCoreServices();
             services.AddAutoMapper(conf =>
@@ -300,7 +301,6 @@ namespace DocGen.Tools.Runner
         private static async Task CreateSigningRequestAsync(IServiceProvider serviceProvider)
         {
             var signingService = serviceProvider.GetRequiredService<SigningService>();
-            var documentEncoder = serviceProvider.GetRequiredService<IDocumentEncoder>();
 
             var document = new DocumentCreate()
             {
@@ -325,7 +325,7 @@ namespace DocGen.Tools.Runner
                 }
             };
 
-            await signingService.CreateSigningRequestAsync(documentEncoder.Encode(document));
+            await signingService.CreateSigningRequestAsync(document);
         }
     }
 }

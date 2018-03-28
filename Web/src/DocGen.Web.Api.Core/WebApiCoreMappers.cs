@@ -1,4 +1,5 @@
 ﻿using DocGen.Web.Api.Core.Documents;
+using DocGen.Web.Api.Core.Signing;
 using DocGen.Web.Api.Core.Templates;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace AutoMapper
         {
             conf.AddProfile<DocumentMappingProfile>();
             conf.AddProfile<TemplateMappingProfile>();
+            conf.AddProfile<SigningMappingProfile>();
         }
     }
 }

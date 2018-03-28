@@ -4,8 +4,10 @@ using System.Text;
 
 namespace DocGen.Web.Api.Core.Signing
 {
-    public class SigningRequest : SigningRequestCreate
+    public class SigningRequestResult
     {
-        public string Id { get; set; }
+        public string Type { get; set; }
+
+        public object TypeData { get; set; }
     }
 }

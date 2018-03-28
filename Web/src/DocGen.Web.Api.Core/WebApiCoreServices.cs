@@ -22,8 +22,9 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IDocumentExportsFactory, DocumentExportsFactory>();
 
             services.AddTransient<SigningService>();
-            services.AddTransient<ISigningRequestRepository, BlobStorageSigningRepository>();
-            services.AddTransient<ISignatureImageRepository, BlobStorageSigningRepository>();
+            services.AddTransient<ISigningRequestRepository, TableStorageSigningRequestRepository>();
+            services.AddTransient<ISignatureImageRepository, BlobStorageSignatureImageRepository>();
+            services.AddTransient<ISigningNotifier, StubbedSigningNotifier>();
 
             return services;
         }

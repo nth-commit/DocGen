@@ -22,7 +22,7 @@ namespace DocGen.Tools.DataInitializer
 
             services.AddLogging();
 
-            services.AddConfigurationProvider(configuration);
+            services.AddFrameworkServices(configuration);
             services.AddWindowsAzureStorageServices();
             services.AddApiCoreServices();
             services.AddAutoMapper(conf =>
