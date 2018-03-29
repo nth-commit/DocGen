@@ -29,7 +29,7 @@ namespace DocGen.Web.App
             _hostingEnvironment = hostingEnvironment;
 
             var builder = new ConfigurationBuilder()
-                .AddFrameworkConfigurationSources(_hostingEnvironment.ApplicationName);
+                .AddFrameworkConfigurationSources(_hostingEnvironment.EnvironmentName);
 
             _configuration = builder.Build();
         }
