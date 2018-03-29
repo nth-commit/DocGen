@@ -33,6 +33,9 @@ namespace DocGen.Web.Api.Core.Documents
         public Task<TextDocument> CreateTextDocumentAsync(DocumentCreate create)
             => CreateDocumentAsync<TextDocument>(create);
 
+        public Task<HtmlDocument> CreateHtmlDocumentAsync(DocumentCreate create)
+            => CreateDocumentAsync<HtmlDocument>(create);
+
 
         #region Helpers
 

@@ -11,6 +11,7 @@ import { DocumentViewerPageComponent } from './pages/document-viewer/document-vi
 import { TextDocumentComponent } from './components/text-document/text-document.component';
 import { PdfDocumentComponent } from './components/pdf-document/pdf-document.component';
 import { SignDocumentModalComponent } from './components/sign-document-modal/sign-document-modal.component';
+import { HtmlDocumentComponent } from './components/html-document/html-document.component';
 
 @NgModule({
   imports: [
@@ -25,7 +26,8 @@ import { SignDocumentModalComponent } from './components/sign-document-modal/sig
     DocumentViewerPageComponent,
     TextDocumentComponent,
     PdfDocumentComponent,
-    SignDocumentModalComponent
+    SignDocumentModalComponent,
+    HtmlDocumentComponent
   ],
   entryComponents: [
     SignDocumentModalComponent

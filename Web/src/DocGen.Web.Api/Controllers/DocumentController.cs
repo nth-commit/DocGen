@@ -50,10 +50,15 @@ namespace DocGen.Web.Api.Controllers
                 var document = await _documentService.CreateTextDocumentAsync(create);
                 return Content(document.Body);
             }
-            else if (Request.ContentType == "application/vnd+documentkey")
+            else if (Request.ContentType == "application/vnd+document+key")
             {
                 var document = _documentEncoder.Encode(create);
                 return Content(document);
+            }
+            else if (Request.ContentType == "application/vnd+document+html")
+            {
+                var document = await _documentService.CreateHtmlDocumentAsync(create);
+                return Ok(document);
             }
             else
             {

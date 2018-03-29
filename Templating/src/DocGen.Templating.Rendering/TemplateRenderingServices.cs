@@ -1,6 +1,7 @@
 ﻿using DocGen.Templating.Rendering;
 using DocGen.Templating.Rendering.Builders;
 using DocGen.Templating.Rendering.Builders.V1;
+using DocGen.Templating.Rendering.Builders.V1.Html;
 using DocGen.Templating.Rendering.Builders.V1.Serializable;
 using DocGen.Templating.Rendering.Builders.V1.Text;
 using DocGen.Templating.Rendering.Instructions;
@@ -23,6 +24,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IDocumentInstructor, DocumentInstructorV1>();
             services.AddTransient<IDocumentBuilder<TextDocument>, TextDocumentBuilderV1>();
             services.AddTransient<IDocumentBuilder<SerializableDocument>, SerializableDocumentBuilderV1>();
+            services.AddTransient<IDocumentBuilder<HtmlDocument>, HtmlDocumentBuilderV1>();
 
             return services;
         }

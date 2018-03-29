@@ -214,8 +214,8 @@ namespace DocGen.Tools.Runner
             }
             #endregion
 
-            //RenderTemplateAsync(serviceProvider).GetAwaiter().GetResult();
-            CreateSigningRequestAsync(serviceProvider).GetAwaiter().GetResult();
+            RenderTemplateAsync(serviceProvider).GetAwaiter().GetResult();
+            //CreateSigningRequestAsync(serviceProvider).GetAwaiter().GetResult();
 
             Console.ReadLine();
         }
@@ -223,7 +223,7 @@ namespace DocGen.Tools.Runner
         private static async Task RenderTemplateAsync(IServiceProvider serviceProvider)
         {
             var templateRenderer = serviceProvider.GetRequiredService<IDocumentRenderer>();
-            var result = await templateRenderer.RenderAsync<SerializableDocument>(
+            var result = await templateRenderer.RenderAsync<HtmlDocument>(
                 @"<document>
                     <page>
                         List 1
@@ -296,7 +296,13 @@ namespace DocGen.Tools.Runner
                     }
                 });
 
-            Console.WriteLine(JsonConvert.SerializeObject(result.Instructions, Formatting.Indented));
+            //Console.WriteLine(JsonConvert.SerializeObject(result.Instructions, Formatting.Indented));
+            result.Pages.ForEach(p =>
+            {
+                Console.WriteLine(p);
+                Console.WriteLine();
+                Console.WriteLine();
+            });
         }
 
         private static async Task CreateSigningRequestAsync(IServiceProvider serviceProvider)

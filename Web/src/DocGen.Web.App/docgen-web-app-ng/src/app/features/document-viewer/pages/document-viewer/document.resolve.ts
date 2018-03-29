@@ -6,8 +6,8 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
 import { getAppSettings } from '../../../../app.settings';
-import { InputValueCollection, SerializableDocument } from '../../../core';
-import { DocumentResult, SerializableDocumentResult, TextDocumentResult, DocumentType } from '../../models';
+import { InputValueCollection, SerializableDocument, HtmlDocument } from '../../../core';
+import { DocumentResult, SerializableDocumentResult, TextDocumentResult, DocumentType, HtmlDocumentResult } from '../../models';
 
 @Injectable()
 export class DocumentResolve implements Resolve<DocumentResult> {
@@ -54,6 +54,8 @@ export class DocumentResolve implements Resolve<DocumentResult> {
       contentType = 'text/plain';
     } else if (documentType === 'pdf') {
       contentType = 'application/json';
+    } else if (documentType === 'html') {
+      contentType = 'application/vnd+document+html';
     } else {
       throw new Error('Unrecognised document type');
     }
@@ -67,8 +69,10 @@ export class DocumentResolve implements Resolve<DocumentResult> {
       .map(r => {
         if (documentType === 'text') {
           return new TextDocumentResult(r.text(), inputValues, correlationId);
-        } else {
+        } else if (documentType === 'pdf') {
           return new SerializableDocumentResult(r.json(), inputValues, correlationId);
+        } else if (documentType === 'html') {
+          return new HtmlDocumentResult(r.json(), inputValues, correlationId);
         }
       })
       .toPromise();

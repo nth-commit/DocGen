@@ -1,6 +1,6 @@
-import { SerializableDocument, InputValueCollection } from '../../core';
+import { SerializableDocument, InputValueCollection, HtmlDocument } from '../../core';
 
-export type DocumentType = 'text' | 'pdf';
+export type DocumentType = 'text' | 'pdf' | 'html';
 
 export interface DocumentResult<TDocument = any> {
     type: DocumentType;
@@ -21,6 +21,14 @@ export class SerializableDocumentResult implements DocumentResult<SerializableDo
     readonly type = 'pdf';
     constructor(
         public document: SerializableDocument,
+        public inputValues: InputValueCollection,
+        public correlationId: string) { }
+}
+
+export class HtmlDocumentResult implements DocumentResult<HtmlDocument> {
+    readonly type = 'html';
+    constructor(
+        public document: HtmlDocument,
         public inputValues: InputValueCollection,
         public correlationId: string) { }
 }

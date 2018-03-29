@@ -1,0 +1,48 @@
+div {
+    .document {
+        .page-container {
+            width: 21cm;
+            min-height: 29.7cm;
+            padding-left: 2cm;
+            padding-top: 2cm;
+            padding-right: 2cm;
+            padding-bottom: 2cm;
+
+            white-space: pre-line;
+
+            background: #fff;
+            box-shadow: 0 4px 5px rgba(75, 75, 75, 0.2);
+            outline: 0;
+
+            &:not(:first-child) {
+                margin-top: 50px;
+            }
+
+            .page {
+                $font-size: 16px;
+                $line-height: $font-size + 2px;
+
+                white-space: initial;
+                font-family: 'Arial';
+                font-size: $font-size;
+                line-height: $line-height;
+    
+                ol {
+                    margin-top: $line-height;
+                    margin-bottom: $line-height;
+
+                    li {
+                        margin-top: $line-height;
+                        margin-bottom: $line-height;
+                    }
+
+                }
+
+                .block {
+                    margin-top: $line-height;
+                    margin-bottom: $line-height;
+                }
+            }
+        }
+    }
+}

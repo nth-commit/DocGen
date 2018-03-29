@@ -7,18 +7,19 @@
       <button mat-raised-button color="accent" (click)="onEditClick()">EDIT</button>
       <div class="fill-remaining-space"></div>
       <div class="primary-controls" *ngIf="(documentType$ | async) === 'pdf'">
-        <button mat-raised-button color="primary" *ngIf="(document$ | async).document.isSigned" (click)="onSignClick($event)">SIGN</button>      
+        <button mat-raised-button color="primary" *ngIf="(document$ | async).document.isSigned" (click)="onSignClick($event)">SIGN</button>
         <button mat-raised-button color="primary" (click)="onSaveClick($event)">SAVE</button>
       </div>
     </mat-toolbar>
   </div>
 </div>
 <div class="text-document-container" *ngIf="(documentType$ | async) === 'text'">
-  <app-document-viewer-text-document
-    [textDocument]="document$ | async">
+  <app-document-viewer-text-document [textDocument]="document$ | async">
   </app-document-viewer-text-document>
 </div>
-<app-document-viewer-pdf-document
-  *ngIf="(documentType$ | async) === 'pdf'"
-  [serializableDocument]="(document$ | async).document">
+<app-document-viewer-pdf-document *ngIf="(documentType$ | async) === 'pdf'" [serializableDocument]="(document$ | async).document">
 </app-document-viewer-pdf-document>
+<div class="text-document-container" *ngIf="(documentType$ | async) === 'html'">
+  <app-document-viewer-html-document [htmlDocument]="(document$ | async).document">
+  </app-document-viewer-html-document>
+</div>

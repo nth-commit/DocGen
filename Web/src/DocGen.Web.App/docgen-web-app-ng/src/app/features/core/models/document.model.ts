@@ -96,3 +96,7 @@ export function isWriteBreak(instruction: Instruction): instruction is WriteBrea
 export function isWriteText(instruction: Instruction): instruction is WriteTextInstruction {
     return instruction.type === InstructionType.WriteText;
 }
+
+export interface HtmlDocument {
+    pages: string[];
+}

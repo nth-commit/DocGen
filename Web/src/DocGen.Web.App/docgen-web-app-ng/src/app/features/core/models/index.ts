@@ -36,5 +36,7 @@ export {
     isEndWritePage,
     isWriteBreak,
     isWriteParagraphBreak,
-    isWriteText
+    isWriteText,
+
+    HtmlDocument
 } from './document.model';

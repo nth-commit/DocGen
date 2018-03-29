@@ -37,7 +37,9 @@ export
     isEndWritePage,
     isWriteBreak,
     isWriteParagraphBreak,
-    isWriteText
+    isWriteText,
+
+    HtmlDocument
 } from './models';
 
 export { InputValueCollectionUtility, TemplateUtility } from './utility';

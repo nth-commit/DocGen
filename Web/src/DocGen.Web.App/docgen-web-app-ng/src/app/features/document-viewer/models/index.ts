@@ -1,1 +1,1 @@
-export { DocumentResult, SerializableDocumentResult, TextDocumentResult, DocumentType } from './document-result.model';
+export { DocumentResult, SerializableDocumentResult, TextDocumentResult, HtmlDocumentResult, DocumentType } from './document-result.model';
