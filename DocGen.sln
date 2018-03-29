@@ -53,7 +53,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Config", "Config", "{D7B72C
 		appsettings.Shared.json = appsettings.Shared.json
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocGen.Shared.ModelEncoding", "Shared\DocGen.Shared.ModelEncoding\DocGen.Shared.ModelEncoding.csproj", "{3FA273B3-04B0-48E6-BF80-776C27EB6441}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocGen.Shared.ModelEncoding", "Shared\DocGen.Shared.ModelEncoding\DocGen.Shared.ModelEncoding.csproj", "{3FA273B3-04B0-48E6-BF80-776C27EB6441}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocGen.Web.Signing", "Web\src\DocGen.Web.Signing\DocGen.Web.Signing.csproj", "{E30196E0-7816-4567-8911-FA7C0573F89F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocGen.Web.Shared", "Web\src\DocGen.Web.Shared\DocGen.Web.Shared.csproj", "{9B14B0BA-1F3F-4709-9407-B4AC4CA2CBD9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -197,6 +201,22 @@ Global
 		{3FA273B3-04B0-48E6-BF80-776C27EB6441}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3FA273B3-04B0-48E6-BF80-776C27EB6441}.Release|x64.ActiveCfg = Release|Any CPU
 		{3FA273B3-04B0-48E6-BF80-776C27EB6441}.Release|x64.Build.0 = Release|Any CPU
+		{E30196E0-7816-4567-8911-FA7C0573F89F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E30196E0-7816-4567-8911-FA7C0573F89F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E30196E0-7816-4567-8911-FA7C0573F89F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E30196E0-7816-4567-8911-FA7C0573F89F}.Debug|x64.Build.0 = Debug|Any CPU
+		{E30196E0-7816-4567-8911-FA7C0573F89F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E30196E0-7816-4567-8911-FA7C0573F89F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E30196E0-7816-4567-8911-FA7C0573F89F}.Release|x64.ActiveCfg = Release|Any CPU
+		{E30196E0-7816-4567-8911-FA7C0573F89F}.Release|x64.Build.0 = Release|Any CPU
+		{9B14B0BA-1F3F-4709-9407-B4AC4CA2CBD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B14B0BA-1F3F-4709-9407-B4AC4CA2CBD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B14B0BA-1F3F-4709-9407-B4AC4CA2CBD9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9B14B0BA-1F3F-4709-9407-B4AC4CA2CBD9}.Debug|x64.Build.0 = Debug|Any CPU
+		{9B14B0BA-1F3F-4709-9407-B4AC4CA2CBD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B14B0BA-1F3F-4709-9407-B4AC4CA2CBD9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B14B0BA-1F3F-4709-9407-B4AC4CA2CBD9}.Release|x64.ActiveCfg = Release|Any CPU
+		{9B14B0BA-1F3F-4709-9407-B4AC4CA2CBD9}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -221,6 +241,8 @@ Global
 		{93337407-9023-43FB-A74D-D0E2291399EE} = {A7A58126-9BB8-4878-A4FD-B1E17D8800B1}
 		{5BE294DF-85B3-4ACA-9CA7-08E5726CB48A} = {2031AB30-E696-4CFD-9321-F89F0CBFEFE8}
 		{3FA273B3-04B0-48E6-BF80-776C27EB6441} = {B7D7A350-0A96-471C-A4ED-6DA1C7F744E3}
+		{E30196E0-7816-4567-8911-FA7C0573F89F} = {7D63AFA8-6DA0-4851-ABBF-2CD4DA323A91}
+		{9B14B0BA-1F3F-4709-9407-B4AC4CA2CBD9} = {7D63AFA8-6DA0-4851-ABBF-2CD4DA323A91}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CE53D989-E3EE-4DD3-A3BA-A43C3A3A9C8F}

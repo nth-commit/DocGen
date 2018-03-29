@@ -29,7 +29,7 @@ namespace DocGen.Web.Api
         {
             services.AddFrameworkServices(_configuration);
 
-            services.AddApiCoreServices();
+            services.AddApiCoreServices(_configuration);
 
             services.AddAutoMapper(conf =>
             {

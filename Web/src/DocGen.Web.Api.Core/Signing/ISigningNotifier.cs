@@ -9,6 +9,6 @@ namespace DocGen.Web.Api.Core.Signing
     {
         string NotificationTypeId { get; }
 
-        Task<object> NotifyAsync(SigningRequest signingRequest);
+        Task NotifyAsync(Dictionary<string, string> signingUrlsByEmail);
     }
 }

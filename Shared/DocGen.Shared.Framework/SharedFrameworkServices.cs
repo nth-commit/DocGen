@@ -25,5 +25,6 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public string Api { get; set; }
         public string Signing { get; set; }
+        public string App { get; set; }
     }
 }

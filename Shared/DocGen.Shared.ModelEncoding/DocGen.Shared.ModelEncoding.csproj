@@ -7,9 +7,16 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.Abstractions" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.AzureStorage" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.Extensions" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="WindowsAzure.Storage" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DocGen.Shared.Framework\DocGen.Shared.Framework.csproj" />
+    <ProjectReference Include="..\DocGen.Shared.WindowsAzure.Storage\DocGen.Shared.WindowsAzure.Storage.csproj" />
   </ItemGroup>
 
 </Project>

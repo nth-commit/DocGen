@@ -18,6 +18,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DocGen.Web.Api.Core.Signing;
+using DocGen.Web.Shared.Signing;
 
 namespace DocGen.Tools.Runner
 {
@@ -33,7 +34,7 @@ namespace DocGen.Tools.Runner
             var services = new ServiceCollection();
             services.AddFrameworkServices(configuration);
             services.AddWindowsAzureStorageServices();
-            services.AddApiCoreServices();
+            services.AddApiCoreServices(configuration);
             services.AddAutoMapper(conf =>
             {
                 conf.AddApiCoreMappers();
@@ -325,7 +326,13 @@ namespace DocGen.Tools.Runner
                 }
             };
 
-            await signingService.CreateSigningRequestAsync(document);
+            var result = await signingService.CreateSigningRequestAsync(document);
+            var signingUrlByEmail = result.TypeData as Dictionary<string, string>;
+            signingUrlByEmail.ForEach(kvp =>
+            {
+                Console.WriteLine(kvp.Value);
+                Console.WriteLine();
+            });
         }
     }
 }

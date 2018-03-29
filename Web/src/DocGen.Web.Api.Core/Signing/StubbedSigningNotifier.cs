@@ -24,24 +24,9 @@ namespace DocGen.Web.Api.Core.Signing
 
         public string NotificationTypeId => "stubbed";
 
-        public Task<object> NotifyAsync(SigningRequest signingRequest)
+        public Task NotifyAsync(Dictionary<string, string> signingUrlsByEmail)
         {
-            if (string.IsNullOrEmpty(signingRequest.Id))
-            {
-                throw new ArgumentNullException($"{nameof(signingRequest)}.{nameof(SigningRequest.Id)}");
-            }
-
-            var dataProtector = _dataProtectionProvider.CreateProtector("SigningRequestKey");
-
-            var signingRequestKeyByEmail = signingRequest.Signatories.ToDictionary(
-                email => email,
-                email => dataProtector.Protect($"{signingRequest.Id}:{email}"));
-
-            var signingUrlByEmail = signingRequestKeyByEmail.ToDictionary(
-                kvp => kvp.Key,
-                kvp => $"{_hostOptions.Signing}/{kvp.Value}?v=1");
-
-            return Task.FromResult((object)signingUrlByEmail);
+            return Task.CompletedTask;
         }
     }
 }

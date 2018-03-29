@@ -29,13 +29,7 @@ namespace DocGen.Web.App
             _hostingEnvironment = hostingEnvironment;
 
             var builder = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .AddJsonFile($"appsettings.{_hostingEnvironment.EnvironmentName}.json", optional: true);
-
-            if (!hostingEnvironment.IsDevelopment())
-            {
-                builder.AddEnvironmentVariables();
-            }
+                .AddFrameworkConfigurationSources(_hostingEnvironment.ApplicationName);
 
             _configuration = builder.Build();
         }
@@ -121,7 +115,7 @@ namespace DocGen.Web.App
             {
                 Urls = new
                 {
-                    Api = _configuration["Urls:Api"]
+                    Api = _configuration["Hosts:Api"]
                 }
             };
             return JsonConvert.SerializeObject(environmentSettings);

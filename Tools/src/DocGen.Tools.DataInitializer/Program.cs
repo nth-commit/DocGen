@@ -24,7 +24,7 @@ namespace DocGen.Tools.DataInitializer
 
             services.AddFrameworkServices(configuration);
             services.AddWindowsAzureStorageServices();
-            services.AddApiCoreServices();
+            services.AddApiCoreServices(configuration);
             services.AddAutoMapper(conf =>
             {
                 conf.AddApiCoreMappers();

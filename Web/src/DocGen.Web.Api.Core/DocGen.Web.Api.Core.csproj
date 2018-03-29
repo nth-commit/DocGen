@@ -20,6 +20,7 @@
     <ProjectReference Include="..\..\..\Shared\DocGen.Shared.Validation\DocGen.Shared.Validation.csproj" />
     <ProjectReference Include="..\..\..\Shared\DocGen.Shared.WindowsAzure.Storage\DocGen.Shared.WindowsAzure.Storage.csproj" />
     <ProjectReference Include="..\..\..\Templating\src\DocGen.Templating.Abstractions\DocGen.Templating.Abstractions.csproj" />
+    <ProjectReference Include="..\DocGen.Web.Shared\DocGen.Web.Shared.csproj" />
   </ItemGroup>
 
 </Project>

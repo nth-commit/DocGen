@@ -20,7 +20,7 @@ namespace DocGen.Web.Api.Core
                 conf.AddApiCoreMappers();
             });
 
-            services.AddApiCoreServices();
+            //services.AddApiCoreServices();
             services.AddTransient<ITemplateRepository, InMemoryTemplateRepository>();
             services.AddTransient<ITemplateValidator, AlwaysValidTemplateMarkupValidator>();
 
