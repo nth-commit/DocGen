@@ -99,7 +99,7 @@ namespace DocGen.Templating.Rendering.Builders.V1.Text
             return Task.CompletedTask;
         }
 
-        public Task BeginWriteListAsync(DocumentInstructionContextV1 context)
+        public Task BeginWriteListAsync(int startIndex, DocumentInstructionContextV1 context)
         {
             if (!context.IsFirstChild || context.Parent == "list-item")
             {

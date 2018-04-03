@@ -57,14 +57,15 @@ namespace DocGen.Templating.Rendering.Builders.V1.Html
             _pageXmlTextWriter.Formatting = Formatting.Indented;
             _pageXmlTextWriter.Indentation = 4;
 
-            BeginWriteElement("div", "page");
+            _pageXmlTextWriter.WriteStartElement("div");
+            WriteClass("page");
 
             return Task.CompletedTask;
         }
 
         public Task EndWritePageAsync(DocumentInstructionContextV1 context)
         {
-            EndWriteElement();
+            _pageXmlTextWriter.WriteFullEndElement();;
 
             _pages.Add(_pageStringWriter.ToString());
 
@@ -79,38 +80,42 @@ namespace DocGen.Templating.Rendering.Builders.V1.Html
 
         public Task BeginWriteBlockAsync(DocumentInstructionContextV1 context)
         {
-            BeginWriteElement("div", "block");
+            _pageXmlTextWriter.WriteStartElement("div");
+            WriteClass("block");
             _pageXmlTextWriter.WriteRaw("&nbsp");
+
             return Task.CompletedTask;
         }
 
         public Task EndWriteBlockAsync(DocumentInstructionContextV1 context)
         {
-            EndWriteElement();
+            _pageXmlTextWriter.WriteFullEndElement();;
             return Task.CompletedTask;
         }
 
-        public Task BeginWriteListAsync(DocumentInstructionContextV1 context)
+        public Task BeginWriteListAsync(int startIndex, DocumentInstructionContextV1 context)
         {
-            BeginWriteElement("ol");
+            _pageXmlTextWriter.WriteStartElement("ol");
+            _pageXmlTextWriter.WriteAttributeString("start", (startIndex + 1).ToString());
+
             return Task.CompletedTask;
         }
 
         public Task EndWriteListAsync(DocumentInstructionContextV1 context)
         {
-            EndWriteElement();
+            _pageXmlTextWriter.WriteFullEndElement();;
             return Task.CompletedTask;
         }
 
         public Task BeginWriteListItemAsync(IEnumerable<int> indexPath, DocumentInstructionContextV1 context)
         {
-            BeginWriteElement("li");
+            _pageXmlTextWriter.WriteStartElement("li");
             return Task.CompletedTask;
         }
 
         public Task EndWriteListItemAsync(DocumentInstructionContextV1 context)
         {
-            EndWriteElement();
+            _pageXmlTextWriter.WriteFullEndElement();;
             return Task.CompletedTask;
         }
 
@@ -152,18 +157,18 @@ namespace DocGen.Templating.Rendering.Builders.V1.Html
             }
         }
 
-        private void BeginWriteElement(string element, string cssClass = null)
-        {
-            _pageXmlTextWriter.WriteStartElement(element);
-            if (!string.IsNullOrEmpty(cssClass))
-            {
-                _pageXmlTextWriter.WriteAttributeString("class", cssClass);
-            }
-        }
+        //private void BeginWriteElement(string element, string cssClass = null)
+        //{
+        //    _pageXmlTextWriter.WriteStartElement(element);
+        //    if (!string.IsNullOrEmpty(cssClass))
+        //    {
+        //        WriteClass(cssClass);
+        //    }
+        //}
 
-        private void EndWriteElement()
+        private void WriteClass(string cssClass)
         {
-            _pageXmlTextWriter.WriteFullEndElement();
+            _pageXmlTextWriter.WriteAttributeString("class", cssClass);
         }
     }
 }

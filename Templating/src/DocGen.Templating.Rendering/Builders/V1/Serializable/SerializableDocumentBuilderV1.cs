@@ -98,7 +98,7 @@ namespace DocGen.Templating.Rendering.Builders.V1.Serializable
             return Task.CompletedTask;
         }
 
-        public Task BeginWriteListAsync(DocumentInstructionContextV1 context)
+        public Task BeginWriteListAsync(int startIndex, DocumentInstructionContextV1 context)
         {
             FlushText();
 

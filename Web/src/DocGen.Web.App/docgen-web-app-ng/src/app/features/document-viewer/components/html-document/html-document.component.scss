@@ -30,12 +30,26 @@ div {
                 ol {
                     margin-top: $line-height;
                     margin-bottom: $line-height;
+                    margin-left: 0;
+                    padding-left: 23px;
 
                     li {
                         margin-top: $line-height;
                         margin-bottom: $line-height;
                     }
+                }
 
+                ol ol {
+                    padding-left: 40px;
+                    list-style-type: lower-alpha;
+                }
+
+                ol ol ol {
+                    list-style-type: lower-roman;
+                }
+
+                ol ol ol ol {
+                    list-style-type: decimal;
                 }
 
                 .block {

@@ -21,7 +21,7 @@ namespace DocGen.Templating.Rendering.Builders.V1
 
         Task EndWriteBlockAsync(DocumentInstructionContextV1 context);
 
-        Task BeginWriteListAsync(DocumentInstructionContextV1 context);
+        Task BeginWriteListAsync(int startIndex, DocumentInstructionContextV1 context);
 
         Task EndWriteListAsync(DocumentInstructionContextV1 context);
 

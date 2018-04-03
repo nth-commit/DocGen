@@ -97,8 +97,6 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             AssertElementName(list, "list");
 
             _context = _context.BeforeBegin(list.Name.LocalName);
-            await _builder.BeginWriteListAsync(_context);
-            _context = _context.AfterBegin();
 
             var listNestingLevel = _context.ListNestingLevel;
             if (!_listItemIndexContinueOffsetByNestingLevel.TryGetValue(listNestingLevel, out int listItemIndexContinueOffset))
@@ -111,6 +109,9 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             {
                 _listItemIndexContinueOffsetByNestingLevel[listNestingLevel] = listItemIndexContinueOffset = 0;
             }
+
+            await _builder.BeginWriteListAsync(listItemIndexContinueOffset, _context);
+            _context = _context.AfterBegin();
 
             var listItems = list.Elements().ToList();
             var conditionallyExcludedListItems = 0;
