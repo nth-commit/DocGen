@@ -33,9 +33,9 @@ namespace DocGen.Templating.Rendering.Builders.V1
 
         Task EndCondititionalAsync(DocumentInstructionContextV1 context);
 
-        Task BeginWriteSigningAreaAsync(DocumentInstructionContextV1 context);
+        Task BeginWriteSignatureAreaAsync(string signatoryId, DocumentInstructionContextV1 context);
 
-        Task EndWriteSigningAreaAsync(DocumentInstructionContextV1 context);
+        Task EndWriteSignatureAreaAsync(DocumentInstructionContextV1 context);
 
         Task WriteTextAsync(string text, string reference, DocumentInstructionContextV1 context);
     }

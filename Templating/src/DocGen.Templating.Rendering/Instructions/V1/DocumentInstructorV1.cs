@@ -179,7 +179,11 @@ namespace DocGen.Templating.Rendering.Instructions.V1
                         }
                         else if (element.Name.LocalName == "signature")
                         {
-                            await InstructWriteSignatureAsync(element, valuesByReference);
+                            await InstructWriteSignaturePartialAsync(element, valuesByReference);
+                        }
+                        else if (element.Name.LocalName == "signature-area")
+                        {
+                            await InstructWriteSignatureArea(element, valuesByReference);
                         }
                     });
                 }
@@ -248,14 +252,26 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             _context = _context.AfterBegin().BeforeEnd().AfterEnd();
         }
 
-        private async Task InstructWriteSignatureAsync(XElement signatureElement, Dictionary<string, string> valuesByReference)
+        private async Task InstructWriteSignatureArea(XElement signatureArea, Dictionary<string, string> valuesByReference)
+        {
+            var signatoryId = valuesByReference
+                .Where(kvp => kvp.Key == "signatory.id")
+                .Select(kvp => kvp.Value)
+                .FirstOrDefault();
+
+            await _builder.BeginWriteSignatureAreaAsync(signatoryId, _context);
+            await TraverseContainerElementAsync(signatureArea, valuesByReference);
+            await _builder.EndWriteSignatureAreaAsync(_context);
+        }
+
+        private async Task InstructWriteSignaturePartialAsync(XElement signaturePartialElement, Dictionary<string, string> valuesByReference)
         {
             var signatureValuesByReference = new Dictionary<string, string>()
             {
                 { "sign", _model.Sign.ToString().ToLowerInvariant() }
             };
 
-            var signatoryIdReferenceAttribute = signatureElement.Attributes().FirstOrDefault(a => a.Name == "signatory-id");
+            var signatoryIdReferenceAttribute = signaturePartialElement.Attributes().FirstOrDefault(a => a.Name == "signatory-id");
 
             DocumentSignatory signatory = null;
             if (signatoryIdReferenceAttribute != null)
@@ -265,7 +281,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
                 signatory = _model.Exports.GetSignatory(signatoryId);
             }
 
-            var representingAttribute = signatureElement.Attributes().FirstOrDefault(a => a.Name == "representing");
+            var representingAttribute = signaturePartialElement.Attributes().FirstOrDefault(a => a.Name == "representing");
             var isRepresenting = representingAttribute != null;
 
             if (isRepresenting)
@@ -296,9 +312,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
                 signatureValuesByReference.Add("representing", false.ToString().ToLowerInvariant());
             }
 
-            await _builder.BeginWriteSigningAreaAsync(_context);
             await WritePartialAsync("signature", signatureValuesByReference);
-            await _builder.EndWriteSigningAreaAsync(_context);
         }
 
         private async Task WritePartialAsync(string partialName, Dictionary<string, string> valuesByReference)

@@ -130,13 +130,22 @@ namespace DocGen.Templating.Rendering.Builders.V1.Html
             return Task.CompletedTask;
         }
 
-        public Task BeginWriteSigningAreaAsync(DocumentInstructionContextV1 context)
+        public Task BeginWriteSignatureAreaAsync(string signatoryId, DocumentInstructionContextV1 context)
         {
+            _pageXmlTextWriter.WriteStartElement("div");
+            WriteClass("signature");
+
+            if (!string.IsNullOrEmpty(signatoryId))
+            {
+                _pageXmlTextWriter.WriteAttributeString("data-signatory-id", signatoryId);
+            }
+
             return Task.CompletedTask;
         }
 
-        public Task EndWriteSigningAreaAsync(DocumentInstructionContextV1 context)
+        public Task EndWriteSignatureAreaAsync(DocumentInstructionContextV1 context)
         {
+            _pageXmlTextWriter.WriteEndElement();
             return Task.CompletedTask;
         }
 

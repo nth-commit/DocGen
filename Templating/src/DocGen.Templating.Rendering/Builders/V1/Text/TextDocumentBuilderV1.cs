@@ -145,12 +145,12 @@ namespace DocGen.Templating.Rendering.Builders.V1.Text
             return Task.CompletedTask;
         }
 
-        public Task BeginWriteSigningAreaAsync(DocumentInstructionContextV1 context)
+        public Task BeginWriteSignatureAreaAsync(string signatoryId, DocumentInstructionContextV1 context)
         {
             return Task.CompletedTask;
         }
 
-        public Task EndWriteSigningAreaAsync(DocumentInstructionContextV1 context)
+        public Task EndWriteSignatureAreaAsync(DocumentInstructionContextV1 context)
         {
             return Task.CompletedTask;
         }
