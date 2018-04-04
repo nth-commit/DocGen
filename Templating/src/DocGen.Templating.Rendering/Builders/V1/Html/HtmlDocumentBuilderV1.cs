@@ -91,12 +91,13 @@ namespace DocGen.Templating.Rendering.Builders.V1.Html
         public Task BeginWriteBlockAsync(DocumentInstructionContextV1 context)
         {
             _pageXmlTextWriter.WriteStartElement("div");
-            WriteClass("block");
 
+            var cssClassValue = "block";
             if (!context.HasContent)
             {
-                _pageXmlTextWriter.WriteRaw("&nbsp");
+                cssClassValue += " empty";
             }
+            WriteClass(cssClassValue);
 
             return Task.CompletedTask;
         }
@@ -180,9 +181,9 @@ namespace DocGen.Templating.Rendering.Builders.V1.Html
             }
         }
 
-        private void WriteClass(string cssClass)
+        private void WriteClass(string cssClassValue)
         {
-            _pageXmlTextWriter.WriteAttributeString("class", cssClass);
+            _pageXmlTextWriter.WriteAttributeString("class", cssClassValue);
         }
     }
 }

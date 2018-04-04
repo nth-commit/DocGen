@@ -19,7 +19,15 @@
 }
 
 .block {
-    margin: 0.5em 0px;
+    margin: 0.5em 0;
+}
+
+.block.empty {
+    height: 1em;
+}
+
+li {
+    margin: 0.5em 0;
 }
 
 .signature {
