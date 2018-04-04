@@ -21,13 +21,15 @@ namespace DocGen.Templating.Rendering.Instructions.V1
 
         public bool IsFirstChild => Previous == null;
 
+        public bool HasContent { get; set; }
+
         public bool IsPreviousSiblingBlockLike => !IsFirstChild && BlockLikeElements.Contains(Previous);
 
         public IEnumerable<int> ListItemIndexPath { get; private set; } = Enumerable.Empty<int>();
 
-        public DocumentInstructionContextV1 BeforeBeginListItem(int index)
+        public DocumentInstructionContextV1 BeforeBeginListItem(int index, bool hasChildren)
         {
-            var other = BeforeBegin("list-item");
+            var other = BeforeBegin("list-item", hasChildren);
             other.ListItemIndexPath = ListItemIndexPath.Concat(index);
             return other;
         }
@@ -39,18 +41,20 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             return other;
         }
 
-        public DocumentInstructionContextV1 BeforeBegin(string element) => new DocumentInstructionContextV1()
+        public DocumentInstructionContextV1 BeforeBegin(string element, bool hasContent) => new DocumentInstructionContextV1()
         {
             Path = Path.Concat(element),
             ListItemIndexPath = ListItemIndexPath,
-            Previous = Previous
+            Previous = Previous,
+            HasContent = hasContent
         };
 
         public DocumentInstructionContextV1 AfterBegin() => new DocumentInstructionContextV1()
         {
             Path = Path,
             ListItemIndexPath = ListItemIndexPath,
-            Previous = null
+            Previous = null,
+            HasContent = HasContent
         };
 
         public DocumentInstructionContextV1 BeforeEnd() => this;
@@ -59,7 +63,8 @@ namespace DocGen.Templating.Rendering.Instructions.V1
         {
             Path = Path.Take(Path.Count() - 1),
             ListItemIndexPath = ListItemIndexPath,
-            Previous = Path.Last()
+            Previous = Path.Last(),
+            HasContent = HasContent
         };
     }
 }

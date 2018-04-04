@@ -7,5 +7,7 @@ namespace DocGen.Templating.Rendering
     public class HtmlDocument
     {
         public IEnumerable<string> Pages { get; set; }
+
+        public string Css { get; set; }
     }
 }

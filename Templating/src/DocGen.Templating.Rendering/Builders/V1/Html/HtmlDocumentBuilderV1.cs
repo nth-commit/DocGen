@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -29,9 +31,17 @@ namespace DocGen.Templating.Rendering.Builders.V1.Html
                     throw new InvalidOperationException("Rendering not finished");
                 }
 
+                var cssPath = Path.Combine(
+                    Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),
+                    "Builders",
+                    "V1",
+                    "Html",
+                    "styles.css");
+
                 return new HtmlDocument()
                 {
-                    Pages = _pages
+                    Pages = _pages,
+                    Css = File.ReadAllText(cssPath)
                 };
             }
         }
@@ -82,7 +92,11 @@ namespace DocGen.Templating.Rendering.Builders.V1.Html
         {
             _pageXmlTextWriter.WriteStartElement("div");
             WriteClass("block");
-            _pageXmlTextWriter.WriteRaw("&nbsp");
+
+            if (!context.HasContent)
+            {
+                _pageXmlTextWriter.WriteRaw("&nbsp");
+            }
 
             return Task.CompletedTask;
         }
@@ -165,15 +179,6 @@ namespace DocGen.Templating.Rendering.Builders.V1.Html
                 _pageXmlTextWriter = null;
             }
         }
-
-        //private void BeginWriteElement(string element, string cssClass = null)
-        //{
-        //    _pageXmlTextWriter.WriteStartElement(element);
-        //    if (!string.IsNullOrEmpty(cssClass))
-        //    {
-        //        WriteClass(cssClass);
-        //    }
-        //}
 
         private void WriteClass(string cssClass)
         {

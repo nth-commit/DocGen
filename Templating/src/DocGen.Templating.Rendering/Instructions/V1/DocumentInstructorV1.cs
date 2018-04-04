@@ -46,7 +46,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
 
             var valuesByReference = _model.Items.ToDictionary(i => i.Reference, i => i.Value);
 
-            _context = _context.BeforeBegin(document.Root.Name.LocalName);
+            _context = _context.BeforeBegin(document.Root.Name.LocalName, hasContent: document.Root.HasContent());
             await builder.BeginWriteDocumentAsync(model, _context);
             _context = _context.AfterBegin();
 
@@ -67,7 +67,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
         {
             AssertElementName(page, "page");
 
-            _context = _context.BeforeBegin(page.Name.LocalName);
+            _context = _context.BeforeBegin(page.Name.LocalName, hasContent: page.HasContent());
             await _builder.BeginWritePageAsync(_context);
             _context = _context.AfterBegin();
 
@@ -82,7 +82,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
         {
             AssertElementName(block, "block");
 
-            _context = _context.BeforeBegin(block.Name.LocalName);
+            _context = _context.BeforeBegin(block.Name.LocalName, hasContent: block.HasContent());
             await _builder.BeginWriteBlockAsync(_context);
             _context = _context.AfterBegin();
 
@@ -97,7 +97,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
         {
             AssertElementName(list, "list");
 
-            _context = _context.BeforeBegin(list.Name.LocalName);
+            _context = _context.BeforeBegin(list.Name.LocalName, hasContent: list.HasContent());
 
             var listNestingLevel = _context.ListNestingLevel;
             if (!_listItemIndexContinueOffsetByNestingLevel.TryGetValue(listNestingLevel, out int listItemIndexContinueOffset))
@@ -127,7 +127,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
                     async () =>
                     {
                         int continuedListIndex = listItemIndexContinueOffset + i - conditionallyExcludedListItems;
-                        _context = _context.BeforeBeginListItem(continuedListIndex);
+                        _context = _context.BeforeBeginListItem(continuedListIndex, hasChildren: listItem.HasContent());
                         await _builder.BeginWriteListItemAsync(new ListIndexPath(_context.ListItemIndexPath), _context);
                         _context = _context.AfterBegin();
 
@@ -247,7 +247,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
                 text =  text.TrimEnd() + " ";
             }
 
-            _context = _context.BeforeBegin("text");
+            _context = _context.BeforeBegin("text", hasContent: false);
             await _builder.WriteTextAsync(text, _includeMetadata ? reference : null, _context);
             _context = _context.AfterBegin().BeforeEnd().AfterEnd();
         }

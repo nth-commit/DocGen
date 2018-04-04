@@ -1,0 +1,29 @@
+﻿body {
+    font-size: 16px;
+    display: flex;
+    justify-content: center;
+    background-color: darkgray;
+}
+
+.page {
+    margin-top: 50px;
+    width: 21cm;
+    min-height: 29.7cm;
+    padding-left: 2cm;
+    padding-top: 2cm;
+    padding-right: 2cm;
+    padding-bottom: 2cm;
+    background: #fff;
+    box-shadow: 0 4px 5px rgba(75, 75, 75, 0.2);
+    outline: 0;
+}
+
+.block {
+    margin: 0.5em 0px;
+}
+
+.signature {
+    background-color: yellow;
+    width: 300px;
+    padding: 1em 0px;
+}

@@ -69,8 +69,18 @@ namespace DocGen.Web.Api.Controllers
             else
             {
                 var document = await _documentService.CreateHtmlDocumentAsync(create);
+
+                var html = @"
+                    <html>
+                        <head>
+                            <style type=""text/css"">" + document.Css + @"</style>
+                        </head>
+                        <body>" + string.Join(string.Empty, document.Pages) + @"</body>
+                    </html>";
+
                 Response.ContentType = "text/html; charset=utf-8";
-                return Content(string.Join(string.Empty, document.Pages));
+
+                return Content(html);
             }
         }
 
