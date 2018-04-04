@@ -107,7 +107,7 @@ namespace DocGen.Templating.Rendering.Builders.V1.Html
             return Task.CompletedTask;
         }
 
-        public Task BeginWriteListItemAsync(IEnumerable<int> indexPath, DocumentInstructionContextV1 context)
+        public Task BeginWriteListItemAsync(ListIndexPath path, DocumentInstructionContextV1 context)
         {
             _pageXmlTextWriter.WriteStartElement("li");
             return Task.CompletedTask;

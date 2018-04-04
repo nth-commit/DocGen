@@ -1,5 +1,6 @@
 ﻿using DocGen.Shared.Framework;
 using DocGen.Shared.Validation;
+using DocGen.Templating.Rendering;
 using DocGen.Web.Api.Core.Documents;
 using DocGen.Web.Api.Core.Templates;
 using DocGen.Web.Shared.Signing;
@@ -52,7 +53,10 @@ namespace DocGen.Web.Api.Core.Signing
                 TemplateId = template.Id,
                 TemplateVersion = template.Version,
                 InputValues = document.InputValues,
-                Signatories = _documentExportsFactory.Create(template, document.InputValues).ListSignatories()
+                Signatories = _documentExportsFactory
+                    .Create(template, document.InputValues)
+                    .ListSignatories()
+                    .Select(s => s.Id)
             };
 
             await _signingRequestRepository.CreateSigningRequestAsync(signingRequest);

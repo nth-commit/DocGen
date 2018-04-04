@@ -18,6 +18,9 @@
     <None Update="V1\markup1.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="V1\Partials\signature.partial.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

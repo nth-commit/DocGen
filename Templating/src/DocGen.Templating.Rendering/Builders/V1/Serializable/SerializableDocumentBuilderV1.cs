@@ -119,7 +119,7 @@ namespace DocGen.Templating.Rendering.Builders.V1.Serializable
             return Task.CompletedTask;
         }
 
-        public Task BeginWriteListItemAsync(IEnumerable<int> indexPath, DocumentInstructionContextV1 context)
+        public Task BeginWriteListItemAsync(ListIndexPath path, DocumentInstructionContextV1 context)
         {
             DebugAssertTextFlushed(); // List cannot contain text elements
 
@@ -128,7 +128,7 @@ namespace DocGen.Templating.Rendering.Builders.V1.Serializable
                 WriteParagraphBreak();
             }
 
-            _instructions.Add(new BeginWriteListItemInstruction(indexPath));
+            _instructions.Add(new BeginWriteListItemInstruction(path));
 
             return Task.CompletedTask;
         }

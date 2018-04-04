@@ -1,4 +1,5 @@
 ﻿using DocGen.Shared.Core.Dynamic;
+using DocGen.Templating.Rendering.Builders;
 using DocGen.Templating.Rendering.Builders.V1;
 using System;
 using System.Collections.Generic;
@@ -127,7 +128,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
                     {
                         int continuedListIndex = listItemIndexContinueOffset + i - conditionallyExcludedListItems;
                         _context = _context.BeforeBeginListItem(continuedListIndex);
-                        await _builder.BeginWriteListItemAsync(_context.ListItemIndexPath, _context);
+                        await _builder.BeginWriteListItemAsync(new ListIndexPath(_context.ListItemIndexPath), _context);
                         _context = _context.AfterBegin();
 
                         await TraverseContainerElementAsync(listItem, valuesByReference);
@@ -254,7 +255,15 @@ namespace DocGen.Templating.Rendering.Instructions.V1
                 { "sign", _model.Sign.ToString().ToLowerInvariant() }
             };
 
-            var signerAttribute = signatureElement.Attributes().FirstOrDefault(a => a.Name == "signer");
+            var signatoryIdReferenceAttribute = signatureElement.Attributes().FirstOrDefault(a => a.Name == "signatory-id");
+
+            DocumentSignatory signatory = null;
+            if (signatoryIdReferenceAttribute != null)
+            {
+                var signatoryIdReference = signatoryIdReferenceAttribute.Value;
+                var signatoryId = valuesByReference[signatoryIdReference];
+                signatory = _model.Exports.GetSignatory(signatoryId);
+            }
 
             var representingAttribute = signatureElement.Attributes().FirstOrDefault(a => a.Name == "representing");
             var isRepresenting = representingAttribute != null;
@@ -263,15 +272,27 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             {
                 if (_model.Sign)
                 {
-                    signatureValuesByReference.Add("person", valuesByReference[signerAttribute.Value]);
+                    if (signatory == null)
+                    {
+                        throw new Exception($"Template error: Could not find signatory with ID reference {signatoryIdReferenceAttribute.Value}");
+                    }
+
+                    signatureValuesByReference.Add("signatory.id", signatory.Id);
+                    signatureValuesByReference.Add("signatory.name", signatory.Name);
                 }
 
                 signatureValuesByReference.Add("representing", true.ToString().ToLowerInvariant());
-                signatureValuesByReference.Add("company", valuesByReference[representingAttribute.Value]);
+                signatureValuesByReference.Add("company.name", valuesByReference[representingAttribute.Value]);
             }
             else
             {
-                signatureValuesByReference.Add("person", valuesByReference[signerAttribute.Value]);
+                if (signatory == null)
+                {
+                    throw new Exception($"Template error: Could not find signatory with ID {signatoryIdReferenceAttribute.Value}");
+                }
+
+                signatureValuesByReference.Add("signatory.id", signatory.Id);
+                signatureValuesByReference.Add("signatory.name", signatory.Name);
                 signatureValuesByReference.Add("representing", false.ToString().ToLowerInvariant());
             }
 
@@ -283,7 +304,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
         private async Task WritePartialAsync(string partialName, Dictionary<string, string> valuesByReference)
         {
             var assemblyDir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-            var partialPath = Path.Combine(assemblyDir, "Instructions", $"V{MarkupVersion}", "Partials", $"{partialName}.partial.xml");
+            var partialPath = Path.Combine(assemblyDir, $"V{MarkupVersion}", "Partials", $"{partialName}.partial.xml");
 
             XDocument document = null;
             using (var sr = new StringReader(File.ReadAllText(partialPath)))

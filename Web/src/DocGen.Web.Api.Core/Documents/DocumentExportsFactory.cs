@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using DocGen.Templating.Rendering;
 using DocGen.Web.Api.Core.Templates;
 using MoreLinq;
 

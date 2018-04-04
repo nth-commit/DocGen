@@ -25,6 +25,7 @@ namespace DocGen.Web.Api.Controllers
         }
 
         [HttpPost("")]
+        [HttpGet("")]
         [ProducesResponseType(typeof(SerializableDocument), 200)]
         public async Task<IActionResult> Create(
             [FromQuery] string templateId,
@@ -60,10 +61,16 @@ namespace DocGen.Web.Api.Controllers
                 var document = await _documentService.CreateHtmlDocumentAsync(create);
                 return Ok(document);
             }
-            else
+            else if (Request.ContentType == "application/vnd+document")
             {
                 var document = await _documentService.CreateSerializableDocumentAsync(create);
                 return Ok(document);
+            }
+            else
+            {
+                var document = await _documentService.CreateHtmlDocumentAsync(create);
+                Response.ContentType = "text/html; charset=utf-8";
+                return Content(string.Join(string.Empty, document.Pages));
             }
         }
 

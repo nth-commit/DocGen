@@ -18,13 +18,16 @@ namespace DocGen.Web.Api.Core.Documents
     {
         private readonly ITemplateRepository _templateRepository;
         private readonly IDocumentRenderer _documentRenderer;
+        private readonly IDocumentExportsFactory _documentExportsFactory;
 
         public DocumentService(
             ITemplateRepository templateRepository,
-            IDocumentRenderer documentRenderer)
+            IDocumentRenderer documentRenderer,
+            IDocumentExportsFactory documentExportsFactory)
         {
             _templateRepository = templateRepository;
             _documentRenderer = documentRenderer;
+            _documentExportsFactory = documentExportsFactory;
         }
 
         public Task<SerializableDocument> CreateSerializableDocumentAsync(DocumentCreate create)
@@ -69,7 +72,8 @@ namespace DocGen.Web.Api.Core.Documents
                     Sign = template.SigningType == TemplateSigningType.NotSigned ? false :
                         template.SigningType == TemplateSigningType.Required ? true :
                         template.SigningType == TemplateSigningType.Optional ? create.GetIsSigned() :
-                        throw new InvalidOperationException()
+                        throw new InvalidOperationException(),
+                    Exports = _documentExportsFactory.Create(template, create.InputValues)
                 });
         }
 

@@ -72,7 +72,8 @@
           "Name": "Contractor name",
           "Description": "What is the full legal name of the contractor?",
           "Hint": "Joseph Michael Bloggs",
-          "Type": 1 // Text
+          "Type": 1, // Text
+          "ExportAs": "signatory_2.name"
         },
         {
           "Key": "location",
@@ -179,7 +180,8 @@
           "Name": "Representative name",
           "Description": "What is the full legal name of the representative?",
           "Hint": "Joseph Michael Bloggs",
-          "Type": 1 // Text
+          "Type": 1, // Text,
+          "ExportAs": "signatory_1.name"
         },
         {
           "Key": "email",
@@ -187,7 +189,7 @@
           "Description": "What is the email of the representative? The representative will be emailed a link of the contract to sign.",
           "Hint": "jmbloggs@company.com",
           "Type": 1, // Text
-          "ExportAs": "signatory_1"
+          "ExportAs": "signatory_1.id"
         }
       ]
     },
@@ -213,7 +215,8 @@
           "Name": "Representative name",
           "Description": "What is the full legal name of the representative?",
           "Hint": "Joseph Michael Bloggs",
-          "Type": 1 // Text
+          "Type": 1, // Text
+          "ExportAs": "signatory_2.name"
         },
         {
           "Key": "email",
@@ -221,7 +224,7 @@
           "Description": "What is the email of the representative? The representative will be emailed a link of the contract to sign.",
           "Hint": "jmbloggs@company.com",
           "Type": 1, // Text
-          "ExportAs": "signatory_2"
+          "ExportAs": "signatory_2.id"
         }
       ]
     },
@@ -246,7 +249,7 @@
           "Key": null, // From parent
           "Hint": "jmbloggs@company.com",
           "Type": 1, // Text
-          "ExportAs": "signatory_2"
+          "ExportAs": "signatory_2.id"
         }
       ]
     }
@@ -254,15 +257,11 @@
   "ErrorSuppressions": [
     {
       "Code": 4, // UnusedReference
-      "Target": "organisation.representative.email"
+      "Target": "organisation.representative.name"
     },
     {
       "Code": 4, // UnusedReference
-      "Target": "contractor.company.representative.email"
-    },
-    {
-      "Code": 4, // UnusedReference
-      "Target": "contractor.person.email"
+      "Target": "contractor.company.representative.name"
     }
   ]
 }

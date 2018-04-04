@@ -1,4 +1,5 @@
-﻿using DocGen.Templating.Rendering.Builders.V1;
+﻿using DocGen.Templating.Rendering.Builders;
+using DocGen.Templating.Rendering.Builders.V1;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             var listItemPaths = new List<IEnumerable<int>>();
             var builderMock = new Mock<IDocumentBuilderV1>();
             builderMock
-                .Setup(x => x.BeginWriteListItemAsync(It.IsAny<IEnumerable<int>>(), It.IsAny<DocumentInstructionContextV1>()))
+                .Setup(x => x.BeginWriteListItemAsync(It.IsAny<ListIndexPath>(), It.IsAny<DocumentInstructionContextV1>()))
                 .Callback<IEnumerable<int>, DocumentInstructionContextV1>((indexPath, context) => listItemPaths.Add(indexPath))
                 .Returns(Task.CompletedTask);
 
@@ -51,7 +52,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             var listItemPaths = new List<IEnumerable<int>>();
             var builderMock = new Mock<IDocumentBuilderV1>();
             builderMock
-                .Setup(x => x.BeginWriteListItemAsync(It.IsAny<IEnumerable<int>>(), It.IsAny<DocumentInstructionContextV1>()))
+                .Setup(x => x.BeginWriteListItemAsync(It.IsAny<ListIndexPath>(), It.IsAny<DocumentInstructionContextV1>()))
                 .Callback<IEnumerable<int>, DocumentInstructionContextV1>((indexPath, context) => listItemPaths.Add(indexPath))
                 .Returns(Task.CompletedTask);
 
@@ -85,7 +86,7 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             var listItemPaths = new List<IEnumerable<int>>();
             var builderMock = new Mock<IDocumentBuilderV1>();
             builderMock
-                .Setup(x => x.BeginWriteListItemAsync(It.IsAny<IEnumerable<int>>(), It.IsAny<DocumentInstructionContextV1>()))
+                .Setup(x => x.BeginWriteListItemAsync(It.IsAny<ListIndexPath>(), It.IsAny<DocumentInstructionContextV1>()))
                 .Callback<IEnumerable<int>, DocumentInstructionContextV1>((indexPath, context) => listItemPaths.Add(indexPath))
                 .Returns(Task.CompletedTask);
 

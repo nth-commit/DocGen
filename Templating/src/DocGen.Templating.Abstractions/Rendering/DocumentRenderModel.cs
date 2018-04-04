@@ -10,9 +10,6 @@ namespace DocGen.Templating.Rendering
 
         public bool Sign { get; set; }
 
-        /// <summary>
-        /// A map of input value ID's, to well-known document properties.
-        /// </summary>
-        public Dictionary<string, IEnumerable<string>> Exports => throw new NotImplementedException();
+        public DocumentExports Exports { get; set; }
     }
 }

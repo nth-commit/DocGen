@@ -87,9 +87,9 @@
       </list-item>
     </list>
     <block></block>
-    <signature signer="organisation.representative.name" representing="organisation.name"></signature>
+    <signature signatory-id="organisation.representative.email" representing="organisation.name"></signature>
     <block></block>
-    <signature if="contractor.type = person" signer="contractor.person.name"></signature>
-    <signature if="contractor.type = company" signer="contractor.company.representative.name" representing="contractor.company.name"></signature>
+    <signature if="contractor.type = person" signatory-id="contractor.person.email"></signature>
+    <signature if="contractor.type = company" signatory-id="contractor.company.representative.email" representing="contractor.company.name"></signature>
   </page>
 </document>

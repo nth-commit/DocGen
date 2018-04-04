@@ -31,7 +31,7 @@ div {
                     margin-top: $line-height;
                     margin-bottom: $line-height;
                     margin-left: 0;
-                    padding-left: 23px;
+                    padding-left: 23px; // No idea why this aligns
 
                     li {
                         margin-top: $line-height;
@@ -40,7 +40,7 @@ div {
                 }
 
                 ol ol {
-                    padding-left: 40px;
+                    padding-left: 40px; // Defaults
                     list-style-type: lower-alpha;
                 }
 

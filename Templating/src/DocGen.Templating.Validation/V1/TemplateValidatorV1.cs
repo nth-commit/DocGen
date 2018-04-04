@@ -101,8 +101,8 @@ namespace DocGen.Templating.Validation.V1
             {
                 var result = new List<string>();
 
-                var signerAttribute = element.Attributes().Single(a => a.Name == "signer");
-                result.Add(signerAttribute.Value);
+                var signatoryIdAttribute = element.Attributes().Single(a => a.Name == "signatory-id");
+                result.Add(signatoryIdAttribute.Value);
 
                 var representingAttribute = element.Attributes().FirstOrDefault(a => a.Name == "representing");
                 if (representingAttribute != null)

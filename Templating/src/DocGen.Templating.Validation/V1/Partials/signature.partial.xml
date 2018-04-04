@@ -2,21 +2,21 @@
 <document xmlns="http://tempuri.org/markup1.xsd">
   <partial>
     <block if="representing = true">
-      Signed for and on behalf of <data>company_name</data>
+      Signed for and on behalf of <data>company.name</data>
     </block>
     <block if="representing = false">
-      Signed by <data>person_name</data>
+      Signed by <data>signatory.name</data>
     </block>
-    <signature-area signer="person_id">
+    <signature-area signatory-id="signatory.id">
       <block></block>
     </signature-area>
     <block if="sign = true">
-      <block if="representing = true">Name of representative: <data>person_name</data></block>
-      <data if="representing = false">person_name</data>
+      <block if="representing = true">Name of representative: <data>signatory.name</data></block>
+      <data if="representing = false">signatory.name</data>
     </block>
     <block if="sign = false">
       <block if="representing = true">Name of representative:</block>
-      <data if="representing = false">person_name</data>
+      <data if="representing = false">signatory.name</data>
     </block>
     <block></block>
     <block>Date:</block>
