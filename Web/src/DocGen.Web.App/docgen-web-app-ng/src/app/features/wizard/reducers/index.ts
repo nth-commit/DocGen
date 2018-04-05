@@ -95,8 +95,7 @@ export interface WizardState {
 
 export enum WizardMode {
   Full,
-  PreSigning,
-  Signing
+  PreSigning
 }
 
 export const TEMPLATE_STEP_IS_DOCUMENT_SIGNED: TemplateStep = {
@@ -172,10 +171,6 @@ export function getPreSigningWizardTemplate(payload: BeginPayload): Template {
   });
 
   return template;
-}
-
-export function getSigningWizardTemplate(payload: BeginPayload): Template {
-  return null;
 }
 
 export function reducerBase(state, action: WizardAction) {
@@ -292,7 +287,7 @@ export function reducerBase(state, action: WizardAction) {
       return {};
     }
   }
-};
+}
 
 export function reducer(state: WizardState, action: WizardAction) {
   state = reducerBase(state, action);
@@ -362,7 +357,7 @@ export function reducer(state: WizardState, action: WizardAction) {
   }
 
   return state;
-};
+}
 
 
 export const metaReducers: MetaReducer<WizardState>[] = !environment.production ? [] : [];

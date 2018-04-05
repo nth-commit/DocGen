@@ -1,7 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { MatToolbarModule, MatButtonModule, MatDialogModule } from '@angular/material';
+
+import { environment } from '../../../environments/environment';
+
+import { documentViewerReducer, documentViewerMetaReducers, DocumentViewerEffects } from './reducers';
 
 import { DocumentViewerRoutingModule } from './document-viewer-routing.module';
 
@@ -16,6 +22,9 @@ import { HtmlDocumentComponent } from './components/html-document/html-document.
 @NgModule({
   imports: [
     CommonModule,
+    StoreModule.forFeature('documentViewer', documentViewerReducer, { metaReducers: documentViewerMetaReducers }),
+    !environment.production ? StoreDevtoolsModule.instrument() : [],
+    EffectsModule.forFeature([DocumentViewerEffects]),
     MatToolbarModule, MatButtonModule, MatDialogModule,
     DocumentViewerRoutingModule
   ],
