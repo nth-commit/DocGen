@@ -69,10 +69,7 @@ namespace DocGen.Web.Api.Core.Documents
                         Reference = kvp.Key,
                         Value = ((object)kvp.Value).ToString()
                     }),
-                    Sign = template.SigningType == TemplateSigningType.NotSigned ? false :
-                        template.SigningType == TemplateSigningType.Required ? true :
-                        template.SigningType == TemplateSigningType.Optional ? create.GetIsSigned() :
-                        throw new InvalidOperationException(),
+                    Sign = template.IsSignable ? create.GetIsSigned() : false,
                     Exports = _documentExportsFactory.Create(template, create.InputValues)
                 });
         }
@@ -85,25 +82,6 @@ namespace DocGen.Web.Api.Core.Documents
         private void ValidateDocumentAgainstTemplate(DocumentCreate create, Template template)
         {
             var inputValueErrors = new ModelErrorDictionary();
-
-            if (template.SigningType == TemplateSigningType.Optional)
-            {
-                if (!create.InputValues.ContainsKey("document_signed"))
-                {
-                    inputValueErrors.Add(
-                        $"Expected \"document_signed\" input to be present when {nameof(TemplateSigningType)} is {nameof(TemplateSigningType.Optional)}",
-                        nameof(create.InputValues));
-                }
-            }
-            else
-            {
-                if (create.InputValues.ContainsKey("document_signed"))
-                {
-                    inputValueErrors.Add(
-                        $"Expected \"document_signed\" input to be absent when {nameof(TemplateSigningType)} is not {nameof(TemplateSigningType.Optional)}",
-                        nameof(create.InputValues));
-                }
-            }
 
             // Store the traversed values so we can easily analyse conditional inputs. It's fine to just store them as strings as we
             // have already validated their types and value comparison will work for stringified booleans and numbers.
@@ -128,8 +106,7 @@ namespace DocGen.Web.Api.Core.Documents
                     else if (condition.Type == TemplateComponentConditionType.IsDocumentSigned)
                     {
                         // Skip this step if the contract won't be signed
-                        return template.SigningType == TemplateSigningType.NotSigned ||
-                            template.SigningType == TemplateSigningType.Optional && create.GetIsSigned();
+                        return create.GetIsSigned();
                     }
                     return false;
                 });

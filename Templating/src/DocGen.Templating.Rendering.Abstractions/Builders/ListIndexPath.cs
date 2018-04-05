@@ -40,7 +40,7 @@ namespace DocGen.Templating.Rendering.Builders
             }
             else if (pathCount == 4)
             {
-                result = Roman.To(_path.Skip(3).First());
+                result = GetRomanLabel(_path.Skip(3).First());
             }
             else if (pathCount == 5)
             {
@@ -50,9 +50,11 @@ namespace DocGen.Templating.Rendering.Builders
             return result + ".";
         }
 
-        private string GetDotSeparatedLabel(IEnumerable<int> path) => string.Join(".", path);
+        private string GetDotSeparatedLabel(IEnumerable<int> path) => string.Join(".", path.Select(i => i + 1));
 
         private string GetAlphaLabel(int index) => Encoding.ASCII.GetString(new byte[] { (byte)(97 + (index % 26)) });
+
+        private string GetRomanLabel(int index) => Roman.To(index + 1).ToLower();
 
         public IEnumerator<int> GetEnumerator() => _path.GetEnumerator();
 

@@ -22,8 +22,7 @@ namespace DocGen.Web.Api.Core.Templates
         [Range(1, int.MaxValue)]
         public int MarkupVersion { get; set; }
 
-        [NotValue(TemplateSigningType.Unknown)]
-        public TemplateSigningType SigningType { get; set; }
+        public bool IsSignable { get; set; }
 
         [EnumerableNotEmpty]
         [ValidateEnumerableElements]

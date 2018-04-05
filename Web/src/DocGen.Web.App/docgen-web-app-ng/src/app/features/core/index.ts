@@ -3,7 +3,6 @@ export { CoreModule } from './core.module';
 export
 {
     Template,
-    TemplateSigningType,
     TemplateStep,
     TemplateStepConditionType,
     TemplateStepConditionTypeData_EqualsPreviousInputValue,

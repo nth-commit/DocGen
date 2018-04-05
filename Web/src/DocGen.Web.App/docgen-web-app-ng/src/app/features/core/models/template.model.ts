@@ -7,15 +7,8 @@ export interface Template {
     description: string;
     markup: string;
     markupVersion: number;
-    signingType: TemplateSigningType;
+    isSignable: boolean;
     steps: TemplateStep[];
-}
-
-export enum TemplateSigningType {
-    Unknown = 0,
-    NotSigned,
-    Optional,
-    Required
 }
 
 export interface TemplateStep {
@@ -28,7 +21,7 @@ export interface TemplateStep {
 }
 
 export interface TemplateStepCondition {
-    type: TemplateStepConditionType,
+    type: TemplateStepConditionType;
     typeData: TemplateStepConditionTypeData_EqualsPreviousInputValue;
 }
 

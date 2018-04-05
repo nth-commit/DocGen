@@ -10,7 +10,7 @@ import {
 import { environment } from '../../../../environments/environment';
 
 import {
-  Template, TemplateSigningType, TemplateStep, TemplateStepInput, TemplateStepConditionType,
+  Template, TemplateStep, TemplateStepInput, TemplateStepConditionType,
   InputValue, InputValueCollection, InputValueCollectionUtility
 } from '../../core';
 
@@ -29,9 +29,15 @@ export class Refresh implements Action {
   constructor (public payload: WizardState) { }
 }
 
+export interface BeginPayload {
+  template: Template;
+  mode: WizardMode;
+  values?: InputValueCollection;
+}
+
 export class Begin implements Action {
   readonly type: string = WizardActionTypes.BEGIN;
-  constructor (public payload: Template) { }
+  constructor (public payload: BeginPayload) { }
 }
 
 export class UpdateValues implements Action {
@@ -87,6 +93,12 @@ export interface WizardState {
   progress: number;
 }
 
+export enum WizardMode {
+  Full,
+  PreSigning,
+  Signing
+}
+
 export const TEMPLATE_STEP_IS_DOCUMENT_SIGNED: TemplateStep = {
   id: 'document_signed',
   name: 'Use electronic signature?',
@@ -102,39 +114,81 @@ export const TEMPLATE_STEP_IS_DOCUMENT_SIGNED: TemplateStep = {
   parentReference: null
 };
 
+export function getFullWizardTemplate(payload: BeginPayload): Template {
+  const { template } = payload;
+
+  // Push in the step to allow decision on whether document is signed
+  if (template.isSignable) {
+    const firstDependentStepIndex = template.steps.findIndex(s =>
+      s.conditions.some(c => c.type === TemplateStepConditionType.IsDocumentSigned));
+
+    const signDocumentStepIndex = firstDependentStepIndex || template.steps.length;
+    template.steps = template.steps.insert(signDocumentStepIndex, TEMPLATE_STEP_IS_DOCUMENT_SIGNED);
+
+    // Replace the IsDocumentSigned conditions with EqualsPreviousInputValue
+    template.steps.forEach(s => {
+      const documentSignedConditionIndex = s.conditions.findIndex(c => c.type === TemplateStepConditionType.IsDocumentSigned);
+
+      if (documentSignedConditionIndex > -1) {
+        s.conditions.splice(documentSignedConditionIndex, 1);
+        s.conditions.push({
+          type: TemplateStepConditionType.EqualsPreviousInputValue,
+          typeData: {
+            PreviousInputId: TEMPLATE_STEP_IS_DOCUMENT_SIGNED.id,
+            PreviousInputValue: true
+          }
+        });
+      }
+    });
+  }
+
+  template.steps.push({
+    name: 'Completed!',
+    description: 'Click "Done" to preview your document',
+    inputs: [],
+    conditions: [],
+    parentReference: null,
+    id: 'complete'
+  });
+
+  return template;
+}
+
+export function getPreSigningWizardTemplate(payload: BeginPayload): Template {
+  const { template } = payload;
+
+  const firstDependentStepIndex = template.steps.findIndex(s =>
+    s.conditions.some(c => c.type === TemplateStepConditionType.IsDocumentSigned));
+
+  template.steps = template.steps.slice(0, firstDependentStepIndex);
+
+  template.steps.push({
+    name: 'Completed!',
+    description: 'Click "Done" to preview your document',
+    inputs: [],
+    conditions: [],
+    parentReference: null,
+    id: 'complete'
+  });
+
+  return template;
+}
+
+export function getSigningWizardTemplate(payload: BeginPayload): Template {
+  return null;
+}
+
 export function reducerBase(state, action: WizardAction) {
   switch (action.type) {
     case WizardActionTypes.REFRESH: {
       return action.payload;
     }
     case WizardActionTypes.BEGIN: {
-      const template = <Template>action.payload;
+      const beginPayload = <BeginPayload>action.payload;
 
-      // Push in the step to allow decision on whether document is signed
-      let signDocumentStepIndex = -1;
-      if (template.signingType === TemplateSigningType.Optional) {
-        const firstDependentStepIndex = template.steps.findIndex(s =>
-          s.conditions.some(c => c.type === TemplateStepConditionType.IsDocumentSigned));
-
-        signDocumentStepIndex = firstDependentStepIndex || template.steps.length;
-
-        template.steps = template.steps.insert(signDocumentStepIndex, TEMPLATE_STEP_IS_DOCUMENT_SIGNED);
-        template.steps.forEach(s => {
-          const documentSignedConditionIndex = s.conditions.findIndex(c => c.type === TemplateStepConditionType.IsDocumentSigned);
-
-          // Replace the IsDocumentSigned conditions with EqualsPreviousInputValue
-          if (documentSignedConditionIndex > -1) {
-            s.conditions.splice(documentSignedConditionIndex, 1);
-            s.conditions.push({
-              type: TemplateStepConditionType.EqualsPreviousInputValue,
-              typeData: {
-                PreviousInputId: TEMPLATE_STEP_IS_DOCUMENT_SIGNED.id,
-                PreviousInputValue: true
-              }
-            });
-          }
-        });
-      }
+      const template: Template = beginPayload.mode === WizardMode.Full ? getFullWizardTemplate(beginPayload) :
+        beginPayload.mode === WizardMode.PreSigning ? getPreSigningWizardTemplate(beginPayload) :
+        null;
 
       // Mark all inputs as invalid initially
       const templateStepInputsValid = [];
@@ -142,15 +196,6 @@ export function reducerBase(state, action: WizardAction) {
         const result = [];
         s.inputs.forEach(i => result.push(false));
         templateStepInputsValid.push(result);
-      });
-
-      template.steps.push({
-        name: 'Completed!',
-        description: 'Click "Done" to preview your document',
-        inputs: [],
-        conditions: [],
-        parentReference: null,
-        id: 'complete'
       });
 
       return Object.assign({}, state, <WizardState>{
@@ -297,10 +342,7 @@ export function reducer(state: WizardState, action: WizardAction) {
         const allConditionsMet = s.conditions.every(c => {
           if (c.type === TemplateStepConditionType.EqualsPreviousInputValue) {
             return state.values[c.typeData.PreviousInputId] === c.typeData.PreviousInputValue;
-          } else if (c.type === TemplateStepConditionType.IsDocumentSigned) {
-            return state.template.signingType === TemplateSigningType.Required;
           }
-
           return false;
         });
 

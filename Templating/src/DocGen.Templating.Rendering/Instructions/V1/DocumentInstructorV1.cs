@@ -277,38 +277,30 @@ namespace DocGen.Templating.Rendering.Instructions.V1
             if (signatoryIdReferenceAttribute != null)
             {
                 var signatoryIdReference = signatoryIdReferenceAttribute.Value;
-                var signatoryId = valuesByReference[signatoryIdReference];
-                signatory = _model.Exports.GetSignatory(signatoryId);
+                if (valuesByReference.TryGetValue(signatoryIdReference, out var signatoryId))
+                {
+                    signatory = _model.Exports.GetSignatory(signatoryId);
+                }
+            }
+
+            if (_model.Sign && signatory == null)
+            {
+                throw new Exception($"Template error: Could not find signatory with ID reference {signatoryIdReferenceAttribute.Value}");
             }
 
             var representingAttribute = signaturePartialElement.Attributes().FirstOrDefault(a => a.Name == "representing");
             var isRepresenting = representingAttribute != null;
 
+            signatureValuesByReference.Add("signatory.id", signatory?.Id ?? string.Empty);
+            signatureValuesByReference.Add("signatory.name", signatory?.Name ?? string.Empty);
+
             if (isRepresenting)
             {
-                if (_model.Sign)
-                {
-                    if (signatory == null)
-                    {
-                        throw new Exception($"Template error: Could not find signatory with ID reference {signatoryIdReferenceAttribute.Value}");
-                    }
-
-                    signatureValuesByReference.Add("signatory.id", signatory.Id);
-                    signatureValuesByReference.Add("signatory.name", signatory.Name);
-                }
-
                 signatureValuesByReference.Add("representing", true.ToString().ToLowerInvariant());
                 signatureValuesByReference.Add("company.name", valuesByReference[representingAttribute.Value]);
             }
             else
             {
-                if (signatory == null)
-                {
-                    throw new Exception($"Template error: Could not find signatory with ID {signatoryIdReferenceAttribute.Value}");
-                }
-
-                signatureValuesByReference.Add("signatory.id", signatory.Id);
-                signatureValuesByReference.Add("signatory.name", signatory.Name);
                 signatureValuesByReference.Add("representing", false.ToString().ToLowerInvariant());
             }
 

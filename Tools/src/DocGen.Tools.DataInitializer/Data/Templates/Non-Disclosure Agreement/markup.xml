@@ -19,7 +19,7 @@
     <block>OPERATIVE CLAUSES</block>
     <list start="continue">
       <list-item>
-        DEFINITIONS AND INTERPRETATION
+        <block>DEFINITIONS AND INTERPRETATION</block>
         <list>
           <list-item>
             In this agreement:
@@ -32,7 +32,7 @@
                   <list-item>Intellectual or other property; or</list-item>
                   <list-item>Actual or prospective customers, suppliers or competitors.</list-item>
                 </list>
-                The information must be one of the following:
+                <block>information must be one of the following:</block>
                 <list start="continue">
                   <list-item>Confidential in fact;</list-item>
                   <list-item>Reasonably regarded by <data if="contractor.type = person">contractor.person.name</data><data if="contractor.type = company">contractor.company.name</data> as confidential; or</list-item>
@@ -42,7 +42,7 @@
             </list>
           </list-item>
           <list-item>
-            Interpretation:
+            <block>Interpretation:</block>
             <list>
               <list-item>Headings where used are included for convenience only and shall have no effect upon the interpretation of this agreement; and</list-item>
               <list-item>The singular shall incorporate the plural and vice versa, references to one gender shall include all genders, and references to persons shall include bodies corporate.</list-item>
@@ -51,10 +51,10 @@
         </list>
       </list-item>
       <list-item>
-        CONTRACTOR’S OBLIGATIONS
+        <block>CONTRACTOR’S OBLIGATIONS</block>
         <list>
           <list-item>
-            The Contractor will keep the Confidential Information confidential at all times in the future, including after the termination of this agreement, except where:
+            <block>The Contractor will keep the Confidential Information confidential at all times in the future, including after the termination of this agreement, except where:</block>
             <list>
               <list-item>the information was already known to the Contractor before being disclosed by the Organisation under this or any other confidentiality agreement between the parties; or</list-item>
               <list-item>the information comes into the public domain other than by way of breach of this agreement; or</list-item>
@@ -71,19 +71,19 @@
       </list-item>
       <list-item>
         <block>INDEMNITY</block>
-        The Contractor indemnifies the Organisation against any loss, cost, expense, demand or liability arising out of any unauthorised disclosure of the Confidential Information or any other breach of this agreement by the Contractor.
+        <block>The Contractor indemnifies the Organisation against any loss, cost, expense, demand or liability arising out of any unauthorised disclosure of the Confidential Information or any other breach of this agreement by the Contractor.</block>
       </list-item>
       <list-item>
         <block>AMENDMENTS AND/OR VARIATIONS</block>
-        This agreement may be amended or varied by written agreement between the parties.
+        <block>This agreement may be amended or varied by written agreement between the parties.</block>
       </list-item>
       <list-item>
         <block>COUNTERPARTS</block>
-        This agreement may be executed in one or more counterpart copies which, when read together, will constitute one and the same instrument.  Any facsimile copy or scanned email copy of this agreement (including any facsimile copy or scanned email copy of any document evidencing the execution of this agreement by either party) may be relied upon by the other party as though it were an original copy.
+        <block>This agreement may be executed in one or more counterpart copies which, when read together, will constitute one and the same instrument.  Any facsimile copy or scanned email copy of this agreement (including any facsimile copy or scanned email copy of any document evidencing the execution of this agreement by either party) may be relied upon by the other party as though it were an original copy.</block>
       </list-item>
       <list-item>
         <block>GOVERNING LAW</block>
-        This Agreement will be subject to and interpreted in accordance with the laws of New Zealand and will be subject to the exclusive jurisdiction of the Courts of New Zealand.
+        <block>This Agreement will be subject to and interpreted in accordance with the laws of New Zealand and will be subject to the exclusive jurisdiction of the Courts of New Zealand.</block>
       </list-item>
     </list>
     <block></block>

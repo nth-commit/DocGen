@@ -1,6 +1,5 @@
 export {
     Template,
-    TemplateSigningType,
     TemplateStep,
     TemplateStepConditionType,
     TemplateStepConditionTypeData_EqualsPreviousInputValue,

@@ -8,7 +8,7 @@ import 'rxjs/add/operator/map';
 
 import { getAppSettings } from '../../../../app.settings';
 import { TemplateService, Template } from '../../../core';
-import { State, WizardState, Refresh, Begin } from '../../reducers';
+import { State, WizardState, Refresh, Begin, BeginPayload, WizardMode } from '../../reducers';
 
 @Injectable()
 export class WizardPageResolve implements Resolve<Template> {
@@ -23,13 +23,16 @@ export class WizardPageResolve implements Resolve<Template> {
 
         const wizardStateJson = localStorage.getItem(`drafts:${templateId}:wizard`);
         if (wizardStateJson) {
-            // TODO: Ensure template version is latest
+            // TODO: Ensure template version is latests
             const wizardState: WizardState = JSON.parse(wizardStateJson);
             this.store.dispatch(new Refresh(wizardState));
             return new Promise(resolve => resolve(wizardState.template));
         } else {
             const templatePromise = this.templateService.getLatestTemplate(templateId);
-            templatePromise.then(t => this.store.dispatch(new Begin(t)));
+            templatePromise.then(t => this.store.dispatch(new Begin({
+                template: t,
+                mode: WizardMode.PreSigning
+            })));
             return templatePromise;
         }
     }

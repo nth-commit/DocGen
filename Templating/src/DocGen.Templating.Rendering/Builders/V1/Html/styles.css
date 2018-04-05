@@ -19,19 +19,38 @@
 }
 
 .block {
-    margin: 0.5em 0;
+    margin-top: 0.5em;
 }
 
 .block.empty {
     height: 1em;
 }
 
+ol {
+    margin-top: 0.5em;
+    list-style-type: none;
+}
+
 li {
-    margin: 0.5em 0;
+    margin-top: 0.5em;
+    display: flex;
+}
+
+li .label {
+    width: 30px;
+}
+
+li .content {
+    flex: 1;
+}
+
+li .content .block:first-child {
+    margin-top: 0;
 }
 
 .signature {
     background-color: yellow;
     width: 300px;
     padding: 1em 0px;
+    margin-top: 0.5em;
 }

@@ -21,7 +21,7 @@ namespace DocGen.Web.Api.Core.Templates
 
         public int MarkupVersion { get; set; }
 
-        public TemplateSigningType SigningType { get; set; }
+        public bool IsSignable { get; set; }
 
         public IEnumerable<TemplateStep> Steps { get; set; }
     }

@@ -7,7 +7,7 @@ import 'rxjs/add/operator/first';
 
 import { Template, InputValueCollection } from '../../../core';
 
-import { State, Begin, UpdateValues, NextStep, PreviousStep, Complete } from '../../reducers';
+import { State, UpdateValues, NextStep, PreviousStep, Complete } from '../../reducers';
 
 @Component({
   selector: 'app-wizard-page',

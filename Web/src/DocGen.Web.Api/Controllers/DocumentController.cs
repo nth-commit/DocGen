@@ -61,7 +61,7 @@ namespace DocGen.Web.Api.Controllers
                 var document = await _documentService.CreateHtmlDocumentAsync(create);
                 return Ok(document);
             }
-            else if (Request.ContentType == "application/vnd+document")
+            else if (Request.ContentType == "application/vnd+document+json")
             {
                 var document = await _documentService.CreateSerializableDocumentAsync(create);
                 return Ok(document);

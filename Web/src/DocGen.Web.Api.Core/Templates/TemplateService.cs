@@ -167,7 +167,7 @@ namespace DocGen.Web.Api.Core.Templates
                 }
                 else if (condition.Type == TemplateComponentConditionType.IsDocumentSigned)
                 {
-                    if (create.SigningType == TemplateSigningType.NotSigned)
+                    if (!create.IsSignable)
                     {
                         stepErrors.Add("Step condition cannot be on document signing if the template does not allow signing", stepConditionTypeErrorPath);
                     }

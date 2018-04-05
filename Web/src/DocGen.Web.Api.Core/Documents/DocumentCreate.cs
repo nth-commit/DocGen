@@ -22,7 +22,9 @@ namespace DocGen.Web.Api.Core.Documents
 
     public static class DocumentCreateExtensions
     {
-        public static bool GetIsSigned(this DocumentCreate create) => DynamicUtility.UnwrapValue(() => 
-            bool.Parse(((object)create.InputValues["document_signed"]).ToString()));
+        public static bool GetIsSigned(this DocumentCreate create) => DynamicUtility.UnwrapValue(() =>
+        {
+            return create.InputValues.TryGetValue("document_signed", out dynamic value) && bool.Parse(((object)value).ToString());
+        });
     }
 }

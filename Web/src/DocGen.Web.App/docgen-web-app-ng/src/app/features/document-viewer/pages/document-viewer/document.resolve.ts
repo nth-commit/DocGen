@@ -53,7 +53,7 @@ export class DocumentResolve implements Resolve<DocumentResult> {
     if (documentType === 'text') {
       contentType = 'text/plain';
     } else if (documentType === 'pdf') {
-      contentType = 'application/json';
+      contentType = 'application/vnd+document+json';
     } else if (documentType === 'html') {
       contentType = 'application/vnd+document+html';
     } else {

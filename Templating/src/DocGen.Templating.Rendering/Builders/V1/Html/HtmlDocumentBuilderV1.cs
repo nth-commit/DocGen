@@ -125,12 +125,22 @@ namespace DocGen.Templating.Rendering.Builders.V1.Html
         public Task BeginWriteListItemAsync(ListIndexPath path, DocumentInstructionContextV1 context)
         {
             _pageXmlTextWriter.WriteStartElement("li");
+
+            _pageXmlTextWriter.WriteStartElement("div");
+            WriteClass("label");
+            _pageXmlTextWriter.WriteString(path.Format());
+            _pageXmlTextWriter.WriteFullEndElement();
+
+            _pageXmlTextWriter.WriteStartElement("div");
+            WriteClass("content");
+
             return Task.CompletedTask;
         }
 
         public Task EndWriteListItemAsync(DocumentInstructionContextV1 context)
         {
-            _pageXmlTextWriter.WriteFullEndElement();;
+            _pageXmlTextWriter.WriteFullEndElement(); // div
+            _pageXmlTextWriter.WriteFullEndElement(); // li
             return Task.CompletedTask;
         }
 
