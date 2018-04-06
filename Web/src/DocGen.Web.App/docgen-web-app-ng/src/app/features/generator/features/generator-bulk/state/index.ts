@@ -1,5 +1,8 @@
 export { GeneratorBulkStateModule, GeneratorBulkState } from './generator-bulk-state.module';
 export {
-    DocumentActions, Begin, BeginDraft,
-    Document
+  DocumentActionsTypes, DocumentActions, Begin, BeginDraft,
+  Document
 } from './document';
+export {
+  REDUCER_ID
+} from './constants';

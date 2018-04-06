@@ -1,11 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import { Store } from '@ngrx/store';
+import { Actions } from '@ngrx/effects';
 
 import { Observable } from 'rxjs/Observable';
 
-import { State } from '../../../_shared';
+import { State, CoreState } from '../../../_shared';
+import { WizardActionsTypes } from '../_shared';
 
-import { GeneratorBulkState, BeginDraft } from './state';
+import { REDUCER_ID, GeneratorBulkState, BeginDraft } from './state';
+import { WizardDialogComponent } from './components/wizard-dialog/wizard-dialog.component';
 
 @Component({
   selector: 'app-generator-bulk',
@@ -19,7 +23,9 @@ export class GeneratorBulkComponent implements OnInit {
   draftDocuments$ = this.store.select(s => s.generatorBulk.documents.draftDocuments);
 
   constructor(
-    private store: Store<State>
+    private store: Store<State>,
+    private actions$: Actions,
+    private matDialog: MatDialog
   ) { }
 
   ngOnInit() {
@@ -31,6 +37,14 @@ export class GeneratorBulkComponent implements OnInit {
         }
       });
 
+    this.store
+      .select(s => s.core.event)
+      .filter(e =>
+        e.actionType === WizardActionsTypes.BEGIN &&
+        e.reducerId === REDUCER_ID)
+      .debounceTime(200)
+      .subscribe(e => {
+        this.matDialog.open(WizardDialogComponent);
+      });
   }
-
 }

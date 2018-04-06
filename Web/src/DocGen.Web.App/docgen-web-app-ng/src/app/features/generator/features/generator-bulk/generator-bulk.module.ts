@@ -1,23 +1,31 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-import { MatTableModule } from '@angular/material';
+import { MatTableModule, MatDialogModule } from '@angular/material';
 
 import { GeneratorBulkRoutingModule } from './generator-bulk-routing.module';
 import { GeneratorBulkStateModule } from './state';
 
 import { GeneratorBulkComponent } from './generator-bulk.component';
 import { DocumentsTableComponent } from './components/documents-table/documents-table.component';
+import { WizardDialogComponent } from './components/wizard-dialog/wizard-dialog.component';
 
 @NgModule({
   imports: [
     CommonModule,
 
     MatTableModule,
+    MatDialogModule,
 
-    GeneratorBulkRoutingModule,
-    GeneratorBulkStateModule
+    GeneratorBulkStateModule,
+    GeneratorBulkRoutingModule
   ],
-  declarations: [GeneratorBulkComponent, DocumentsTableComponent]
+  declarations: [
+    GeneratorBulkComponent,
+    DocumentsTableComponent,
+    WizardDialogComponent
+  ],
+  entryComponents: [
+    WizardDialogComponent
+  ]
 })
 export class GeneratorBulkModule { }
