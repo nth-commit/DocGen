@@ -13,6 +13,7 @@ import { AppEffects } from './app.effects';
 import { DashboardModule } from './features/dashboard';
 import { WizardModule } from './features/wizard';
 import { DocumentViewerModule } from './features/document-viewer';
+import { GeneratorModule } from './features/generator';
 
 import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
 
@@ -36,7 +37,8 @@ import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.com
 
     DashboardModule,
     WizardModule,
-    DocumentViewerModule
+    DocumentViewerModule,
+    GeneratorModule
   ],
   providers: [],
   bootstrap: [AppComponent]

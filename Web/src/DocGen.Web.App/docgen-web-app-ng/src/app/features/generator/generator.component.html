@@ -1,0 +1,19 @@
+<div class="page">
+  <div class="card-container">
+    <mat-card
+      (click)="selectMode('single')"
+      [ngClass]="{ 'selected': selectedMode === 'single', 'not-selected': selectedMode === 'bulk' }">
+        <mat-card-content>
+          <h1>Create a single document</h1>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card 
+      (click)="selectMode('bulk')"
+      [ngClass]="{ 'selected': selectedMode === 'bulk', 'not-selected': selectedMode === 'single' }">
+        <mat-card-content>
+          <h1>Create multiple documents</h1>
+        </mat-card-content>
+    </mat-card>
+  </div>
+</div>

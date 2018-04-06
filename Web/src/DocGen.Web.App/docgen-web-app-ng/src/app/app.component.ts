@@ -11,6 +11,6 @@ export class AppComponent {
   constructor(
     private router: Router
   ) {
-    this.router.events.subscribe(console.log);
+    // this.router.events.subscribe(console.log);
   }
 }

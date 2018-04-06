@@ -1,0 +1,53 @@
+div {
+    display: flex;
+    min-height: 100vh;
+    background-color: slategray;
+    justify-content: space-around;
+    align-items: center;
+
+    .card-container {
+        position: relative;
+        width: 100%;
+
+        mat-card {
+            $size: 500px;
+            $translateX: ($size / 2) + 100px;
+
+            position: absolute;
+            width: $size;
+            height: $size;
+            cursor: pointer;
+
+            transition: transform 0.25s ease, opacity 0.125s ease 0.25s;
+
+            &:nth-child(1) {
+                transform: translateX(-$translateX);
+            }
+
+            &:nth-child(2) {
+                transform: translateX($translateX);
+            }
+
+            &.selected {
+                transform: translateX(0);
+                transition: transform 0.5s ease 0.25s;
+            }
+
+            &.not-selected {
+                opacity: 0;
+                transition: opacity 0.25s ease;
+            }
+
+            mat-card-content {
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                h1 {
+                    margin-bottom: 100px;
+                }
+            }
+        }
+    }
+}

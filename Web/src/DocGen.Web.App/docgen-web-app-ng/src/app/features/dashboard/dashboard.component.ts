@@ -29,21 +29,7 @@ export class DashboardComponent implements OnInit {
   }
 
   createDocument() {
-    if (!this.currentDialogRef) {
-
-      this.templates$.first().subscribe(templates => {
-        this.currentDialogRef = this.matDialog.open(TemplateSelectDialogComponent, {
-          width: '600px'
-        });
-
-        this.currentDialogRef.componentInstance.templates = templates;
-        this.currentDialogRef.componentInstance.templateSelected.first().subscribe(template => {
-          this.router.navigateByUrl(`/${template.id}`);
-        });
-
-        this.currentDialogRef.afterClosed().first().subscribe(() => this.currentDialogRef = null);
-      });
-    }
+    this.router.navigateByUrl('create');
   }
 
 }
