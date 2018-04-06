@@ -2,8 +2,8 @@ import { DocumentCreate, InputValueCollection, InputValue, Template } from '../.
 
 export interface Document extends DocumentCreate {}
 
-export interface GeneratorBulkDocumentsState {
+export interface GeneratorBulkDocumentState {
     template?: Template;
-    savedDocuments: Document[];
-    draftDocument?: Document;
+    completedDocuments: Document[];
+    draftDocuments: Document[];
 }

@@ -1,1 +1,4 @@
-export { GeneratorWizardState, generatorWizardReducer } from './wizard';
+export {
+  GeneratorWizardState, createGeneratorWizardReducer,
+  WizardActionsTypes, WizardAction, WizardBeginAction
+} from './wizard';

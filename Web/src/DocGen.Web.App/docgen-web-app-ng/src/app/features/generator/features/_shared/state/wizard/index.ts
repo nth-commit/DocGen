@@ -1,2 +1,3 @@
 export { GeneratorWizardState } from './generator-wizard.state';
-export { generatorWizardReducer } from './generator-wizard.reducer';
+export { createGeneratorWizardReducer } from './generator-wizard.reducer';
+export { WizardActionsTypes, WizardAction, WizardBeginAction } from './generator-wizard.actions';

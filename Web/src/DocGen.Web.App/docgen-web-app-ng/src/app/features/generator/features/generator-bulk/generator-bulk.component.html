@@ -1,6 +1,7 @@
-<app-generator-bulk-contracts-table [documents]="">
-  
-</app-generator-bulk-contracts-table>
+<app-generator-bulk-documents-table
+  [completedDocuments]="completedDocuments$ | async"
+  [draftDocuments]="draftDocuments$ | async">
+</app-generator-bulk-documents-table>
 
 <pre>
     {{ (template$ | async) | json }}

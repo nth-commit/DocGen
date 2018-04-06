@@ -7,18 +7,21 @@ import { EffectsModule } from '@ngrx/effects';
 
 import { environment } from '../../../../../../environments/environment';
 
-import { generatorWizardReducer, GeneratorWizardState } from '../../_shared';
-import { generatorBulkDocumentsReducer, GeneratorBulkDocumentsState } from './documents';
+import { createGeneratorWizardReducer, GeneratorWizardState } from '../../_shared';
+import { generatorBulkDocumentReducer, GeneratorBulkDocumentState } from './document';
+
+import { GeneratorBulkEffects } from './generator-bulk.effects';
+import { REDUCER_ID } from './constants';
 
 export interface GeneratorBulkState {
   wizard: GeneratorWizardState;
-  documents: GeneratorBulkDocumentsState;
+  documents: GeneratorBulkDocumentState;
 }
 
 export const generatorBulkReducer = combineReducers<GeneratorBulkState, Action>(
   {
-    wizard: generatorWizardReducer,
-    documents: generatorBulkDocumentsReducer
+    wizard: createGeneratorWizardReducer(REDUCER_ID),
+    documents: generatorBulkDocumentReducer
   }
 );
 
@@ -26,7 +29,9 @@ export const generatorBulkReducer = combineReducers<GeneratorBulkState, Action>(
   imports: [
     CommonModule,
 
-    StoreModule.forFeature('generatorBulk', generatorBulkReducer)
+    StoreModule.forFeature(REDUCER_ID, generatorBulkReducer),
+    EffectsModule.forFeature([GeneratorBulkEffects]),
+    !environment.production ? StoreDevtoolsModule.instrument() : [],
   ]
 })
 export class GeneratorBulkStateModule { }

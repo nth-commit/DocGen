@@ -7,7 +7,7 @@ import { GeneratorBulkRoutingModule } from './generator-bulk-routing.module';
 import { GeneratorBulkStateModule } from './state';
 
 import { GeneratorBulkComponent } from './generator-bulk.component';
-import { ContractsTableComponent } from './components/contracts-table/contracts-table.component';
+import { DocumentsTableComponent } from './components/documents-table/documents-table.component';
 
 @NgModule({
   imports: [
@@ -18,6 +18,6 @@ import { ContractsTableComponent } from './components/contracts-table/contracts-
     GeneratorBulkRoutingModule,
     GeneratorBulkStateModule
   ],
-  declarations: [GeneratorBulkComponent, ContractsTableComponent]
+  declarations: [GeneratorBulkComponent, DocumentsTableComponent]
 })
 export class GeneratorBulkModule { }

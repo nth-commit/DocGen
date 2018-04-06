@@ -1,5 +1,5 @@
 export { GeneratorBulkStateModule, GeneratorBulkState } from './generator-bulk-state.module';
 export {
-    Begin, DocumentsActions,
+    DocumentActions, Begin, BeginDraft,
     Document
-} from './documents';
+} from './document';
