@@ -5,19 +5,18 @@ import { Template } from '../../../../../core';
 import { AppAction } from '../../../../../_shared';
 
 export enum WizardActionsTypes {
-    BEGIN = '[Wizard2] Begin'
+    BEGIN = '[Wizard2] Begin',
+    DISCARD = '[Wizard2] Discard'
 }
 
-export abstract class WizardAction implements AppAction {
-    abstract type: string;
+export class WizardBeginAction implements AppAction {
+    readonly type = WizardActionsTypes.BEGIN;
+    constructor(public reducerId: string, public payload: { template: Template }) { }
+}
+
+export class WizardDiscardAction implements AppAction {
+    readonly type = WizardActionsTypes.DISCARD;
     constructor(public reducerId: string) { }
 }
 
-export interface WizardBeginPayload {
-    template: Template;
-}
-
-export class WizardBeginAction extends WizardAction {
-    readonly type = WizardActionsTypes.BEGIN;
-    constructor(reducerId: string, public paylod: WizardBeginPayload) { super(reducerId); }
-}
+export type WizardAction = WizardBeginAction | WizardDiscardAction;
