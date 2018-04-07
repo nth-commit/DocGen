@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule, MatDialogModule } from '@angular/material';
 
+import { GeneratorCoreModule } from '../_core';
 import { GeneratorBulkRoutingModule } from './generator-bulk-routing.module';
 import { GeneratorBulkStateModule } from './state';
 
@@ -16,6 +17,7 @@ import { WizardDialogComponent } from './components/wizard-dialog/wizard-dialog.
     MatTableModule,
     MatDialogModule,
 
+    GeneratorCoreModule,
     GeneratorBulkStateModule,
     GeneratorBulkRoutingModule
   ],

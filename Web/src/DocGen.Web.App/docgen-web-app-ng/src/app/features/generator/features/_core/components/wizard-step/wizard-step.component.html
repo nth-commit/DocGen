@@ -1,0 +1,6 @@
+<app-generator-wizard-step-input
+  *ngFor="let stepInput of step.inputs; let i = index"
+  [stepInput]="stepInput"
+  [value]="valueArray[i]"
+  (valueChanges)="onInputValueChanges(stepInput, i, $event)">
+</app-generator-wizard-step-input>

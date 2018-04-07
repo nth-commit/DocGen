@@ -1,0 +1,36 @@
+<form [formGroup]="form">
+  <div class="input-container" [ngSwitch]="stepInput.type">
+    <mat-form-field
+      *ngSwitchCase="TemplateStepInputType.Text">
+      <input matInput
+        formControlName="text"
+        [placeholder]="stepInput.name" />
+      <mat-hint>{{ stepInput.description }} {{ stepInput.hint ? ('e.g. ' + stepInput.hint) : '' }}</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field
+      *ngSwitchCase="TemplateStepInputType.Radio"
+      floatPlaceholder="always"
+      class="mat-form-field--no-underline">
+      <input matInput [placeholder]="stepInput.name" />
+      <mat-radio-group
+        *ngSwitchCase="TemplateStepInputType.Radio"
+        formControlName="radio">
+        <mat-radio-button
+          *ngFor="let option of stepInput.typeData"
+          [value]="option.Value">{{ option.Name }}</mat-radio-button>
+      </mat-radio-group>
+    </mat-form-field>
+
+    <mat-form-field
+      *ngSwitchCase="TemplateStepInputType.Checkbox"
+      floatPlaceholder="always"
+      class="mat-form-field--no-underline">
+      <input matInput [placeholder]="stepInput.name" />
+      <div class="checkbox-group">
+        <mat-checkbox formControlName="yes">Yes</mat-checkbox>
+        <mat-checkbox formControlName="no">No</mat-checkbox>
+      </div>
+    </mat-form-field>
+  </div>
+</form>

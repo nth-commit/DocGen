@@ -1,0 +1,7 @@
+app-generator-wizard-step-input {
+    display: block;
+
+    &:not(:first-child) {
+        margin-top: 45px;
+    }
+}

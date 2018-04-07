@@ -43,6 +43,70 @@ export function createGeneratorWizardReducer(id: string): ActionReducer<Generato
           values
         });
       }
+      case WizardActionsTypes.UPDATE_VALUES: {
+        const values: InputValueCollection = Object.assign({}, state.values, action.payload);
+
+        const stepInputsValid: boolean[][] = [];
+        state.steps.forEach((step, stepIndex) => {
+          const result: boolean[] = [];
+
+          const skipValidation = step.conditions.some(c => {
+            if (c.type === TemplateStepConditionType.EqualsPreviousInputValue) {
+              // Skip if values do not match.
+              const expectedPreviousInputValue = c.typeData.PreviousInputValue;
+              const previousInputId = c.typeData.PreviousInputId;
+
+              return state.values[previousInputId] !== expectedPreviousInputValue;
+            }
+            return false;
+          });
+
+          step.inputs.forEach((input, inputIndex) => {
+            result[inputIndex] = skipValidation || (values[input.id] !== undefined && values[input.id] !== null);
+          });
+
+          stepInputsValid[stepIndex] = result;
+        });
+
+        return Object.assign({}, state, <GeneratorWizardState>{
+          values,
+          stepInputsValid
+        });
+      }
+      case WizardActionsTypes.NEXT_STEP: {
+        if (!state.hasNextStep) {
+          throw new Error('Template does not have a next step');
+        }
+
+        if (!state.stepValid) {
+          throw new Error('Cannot navigate to the next step if the current step is invalid');
+        }
+
+        return Object.assign({}, state, <GeneratorWizardState>{
+          stepIndex: state.nextStepIndex,
+          stepIndexHistory: [...state.stepIndexHistory, state.stepIndex]
+        });
+      }
+      case WizardActionsTypes.PREVIOUS_STEP: {
+        if (!state.hasPreviousStep) {
+          throw new Error('Template does not have a previous step');
+        }
+
+        return Object.assign({}, state, <GeneratorWizardState>{
+          stepIndex: state.stepIndexHistory[state.stepIndexHistory.length - 1],
+          stepIndexHistory: state.stepIndexHistory.slice(0, state.stepIndexHistory.length - 1),
+          completed: false
+        });
+      }
+      case WizardActionsTypes.COMPLETE: {
+        if (!state.valid) {
+          throw new Error('Template values are incomplete');
+        }
+
+        return Object.assign(state, <GeneratorWizardState>{
+          completed: true
+        });
+      }
       default: {
         return state || {} as GeneratorWizardState;
       }
@@ -57,15 +121,18 @@ export function createGeneratorWizardReducer(id: string): ActionReducer<Generato
 
       const { values } = state;
       const step = state.steps[state.stepIndex];
-      state.step = Object.assign({}, step, <TemplateStep>{
-        name: InputValueCollectionUtility.getString(step.name, values),
-        description: InputValueCollectionUtility.getString(step.description, values),
-        inputs: step.inputs.map(i => Object.assign({}, i, <TemplateStepInput>{
-          name: i.name ? InputValueCollectionUtility.getString(i.name, values) : i.name,
-          description: i.description ? InputValueCollectionUtility.getString(i.description, values) : i.description,
-          hint: i.hint ? InputValueCollectionUtility.getString(i.hint, values) : i.hint
-        }))
-      });
+      if (!state.step || state.step.id !== step.id) {
+        // Don't break object equality, else it will trigger change detection and re-render step.
+        state.step = Object.assign({}, step, <TemplateStep>{
+          name: InputValueCollectionUtility.getString(step.name, values),
+          description: InputValueCollectionUtility.getString(step.description, values),
+          inputs: step.inputs.map(i => Object.assign({}, i, <TemplateStepInput>{
+            name: i.name ? InputValueCollectionUtility.getString(i.name, values) : i.name,
+            description: i.description ? InputValueCollectionUtility.getString(i.description, values) : i.description,
+            hint: i.hint ? InputValueCollectionUtility.getString(i.hint, values) : i.hint
+          }))
+        });
+      }
 
       state.stepValues = {};
       state.step.inputs.forEach(i => {
@@ -87,8 +154,8 @@ export function createGeneratorWizardReducer(id: string): ActionReducer<Generato
         return allConditionsMet;
       });
 
-      state.hasNextStep = true; // state.nextStepIndex > -1; // Always show next step to navigate to custom complete view.
-      state.hasPreviousStep = state.stepIndex > 0;
+      state.hasNextStep = !state.completed && state.nextStepIndex > -1;
+      state.hasPreviousStep = !state.completed && state.stepIndex > 0;
 
       state.empty = Object.keys(state.values).every(stepId =>
         state.values[stepId] === undefined ||

@@ -9,7 +9,7 @@ import 'rxjs/add/operator/map';
 import { getAppSettings } from '../../../../app.settings';
 import { TemplateService, Template } from '../../../core';
 
-import { GeneratorBulkState, Begin } from './state';
+import { GeneratorBulkState, DocumentBeginAction } from './state';
 
 @Injectable()
 export class GeneratorBulkResolveTemplate implements Resolve<Template> {
@@ -25,7 +25,7 @@ export class GeneratorBulkResolveTemplate implements Resolve<Template> {
         // TODO: Refresh from local storage
 
         const templatePromise = this.templateService.getLatestTemplate(templateId);
-        templatePromise.then(t => this.store.dispatch(new Begin(t)));
+        templatePromise.then(t => this.store.dispatch(new DocumentBeginAction(t)));
         return templatePromise;
     }
 }

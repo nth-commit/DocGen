@@ -1,6 +1,6 @@
 export { GeneratorBulkStateModule, GeneratorBulkState } from './generator-bulk-state.module';
 export {
-  DocumentActionsTypes, DocumentActions, Begin, BeginDraft,
+  DocumentActionsTypes, DocumentAction, DocumentBeginAction, DocumentUpdateDraftAction,
   Document
 } from './document';
 export {

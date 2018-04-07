@@ -1,3 +1,24 @@
-<p>
-  wizard-dialog works!
-</p>
+<div class="container">
+  <div class="content step-content" *ngIf="!(completed$ | async)">
+      <h2>{{ (step$ | async).name }}</h2>
+      <div class="description">{{ (step$ | async).description }}</div>
+      <app-generator-wizard-step
+        [step]="step$ | async"
+        [value]="stepValues$ | async"
+        (valueChanges)="updateStepValues($event)">
+      </app-generator-wizard-step>
+  </div>
+  <div class="content review-content" *ngIf="completed$ | async">
+    <h2>Review document</h2>
+  </div>
+  <div class="navigation-container">
+      <app-generator-wizard-step-navigation
+        [hasNextStep]="(hasNextStep$ | async) || !(completed$ | async)"
+        [hasPreviousStep]="(hasPreviousStep$ | async) || (completed$ | async)"
+        [currentStepValid]="stepValid$ | async"
+        (nextStepClick)="onNextStepClick()"
+        (previousStepClick)="onPreviousStepClick()"
+        (completeClick)="onCompleteClick()">
+      </app-generator-wizard-step-navigation>
+  </div>
+</div>

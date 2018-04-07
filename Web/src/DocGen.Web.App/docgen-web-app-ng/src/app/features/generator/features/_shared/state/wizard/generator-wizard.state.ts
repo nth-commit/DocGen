@@ -23,4 +23,5 @@ export interface GeneratorWizardState {
 
   empty: boolean;
   progress: number;
+  completed: boolean;
 }

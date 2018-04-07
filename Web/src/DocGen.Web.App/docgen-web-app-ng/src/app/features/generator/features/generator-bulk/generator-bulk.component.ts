@@ -6,9 +6,9 @@ import { Actions } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
 
 import { State, CoreState } from '../../../_shared';
-import { WizardActionsTypes } from '../_shared';
+import { WizardActionsTypes, WizardBeginAction } from '../_shared';
 
-import { REDUCER_ID, GeneratorBulkState, BeginDraft } from './state';
+import { REDUCER_ID, GeneratorBulkState } from './state';
 import { WizardDialogComponent } from './components/wizard-dialog/wizard-dialog.component';
 
 @Component({
@@ -29,22 +29,22 @@ export class GeneratorBulkComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    Observable.combineLatest(this.completedDocuments$, this.draftDocuments$)
+    this.store.select(s => s.generatorBulk.documents)
       .first()
-      .subscribe(([completedDocuments, draftDocuments]) => {
-        if (!completedDocuments.length && !draftDocuments.length) {
-          this.store.dispatch(new BeginDraft());
-        }
-      });
+      .subscribe(documentState => {
+        if (!documentState.draftDocuments.length && !documentState.draftDocuments.length) {
+          this.store.dispatch(new WizardBeginAction(REDUCER_ID, {
+            template: documentState.template
+          }));
 
-    this.store
-      .select(s => s.core.event)
-      .filter(e =>
-        e.actionType === WizardActionsTypes.BEGIN &&
-        e.reducerId === REDUCER_ID)
-      .debounceTime(200)
-      .subscribe(e => {
-        this.matDialog.open(WizardDialogComponent);
+          setTimeout(() => {
+            this.matDialog.open(WizardDialogComponent, {
+              width: '550px',
+              height: '1px',
+              minHeight: '700px'
+            });
+          }, 500);
+        }
       });
   }
 }
