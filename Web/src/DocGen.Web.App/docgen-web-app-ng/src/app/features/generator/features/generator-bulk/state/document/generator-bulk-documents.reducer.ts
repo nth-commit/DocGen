@@ -24,6 +24,17 @@ export function generatorBulkDocumentReducer(state: GeneratorBulkDocumentState, 
           state.draftDocuments.replace(existingDraftIndex, draftDocument)
       });
     }
+    case DocumentActionsTypes.PUBLISH_DRAFT: {
+      const { id, repeat } = action.payload;
+
+      const document = state.draftDocuments.find(d => d.id === id);
+
+      return Object.assign({}, state, <GeneratorBulkDocumentState>{
+        draftDocuments: state.draftDocuments.filter(d => d.id !== id),
+        completedDocuments: [...state.completedDocuments, document],
+        lastCompletedDocument: document
+      });
+    }
     default: {
       return state || {
         completedDocuments: [],

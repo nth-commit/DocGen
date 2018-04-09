@@ -22,6 +22,8 @@ export class GeneratorBulkComponent implements OnInit {
   completedDocuments$ = this.store.select(s => s.generatorBulk.documents.completedDocuments);
   draftDocuments$ = this.store.select(s => s.generatorBulk.documents.draftDocuments);
 
+  x$ = this.store.select(s => s.generatorBulk.documents);
+
   constructor(
     private store: Store<State>,
     private actions$: Actions,

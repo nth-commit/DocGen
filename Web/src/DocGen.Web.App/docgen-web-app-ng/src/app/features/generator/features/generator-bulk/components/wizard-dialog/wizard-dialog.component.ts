@@ -6,13 +6,8 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { InputValueCollection, TemplateStep } from '../../../../../core';
 import { State } from '../../../../../_shared';
-import {
-  GeneratorWizardState,
-  WizardUpdateValuesAction,
-  WizardNextStepAction,
-  WizardPreviousStepAction
- } from '../../../_shared';
-import { REDUCER_ID } from '../../state';
+import { GeneratorWizardState, WizardUpdateValuesAction, WizardNextAction, WizardPreviousAction } from '../../../_shared';
+import { REDUCER_ID, DocumentPublishDraftAction } from '../../state';
 
 @Component({
   selector: 'app-generator-wizard-dialog',
@@ -52,7 +47,7 @@ export class WizardDialogComponent implements OnInit {
       .first()
       .subscribe(([stepValid, hasNextStep]) => {
         if (stepValid) {
-          this.store.dispatch(new WizardNextStepAction(REDUCER_ID));
+          this.store.dispatch(new WizardNextAction(REDUCER_ID));
         }
       });
   }
@@ -61,14 +56,22 @@ export class WizardDialogComponent implements OnInit {
     this.completed$
       .first()
       .subscribe(completed => {
-        this.store.dispatch(new WizardPreviousStepAction(REDUCER_ID));
+        this.store.dispatch(new WizardPreviousAction(REDUCER_ID));
       });
   }
 
   onCompleteClick() {
-    // this.store.dispatch(new WizardCompleteStepAction(REDUCER_ID, {
-    //   repeat: this.repeatCreation
-    // }));
+    this.store
+      .select(s => s.generatorBulk.wizard.id)
+      .first()
+      .subscribe(id => {
+        this.store.dispatch(new DocumentPublishDraftAction({
+          id: id,
+          repeat: this.repeatCreation
+        }));
+      });
+
+    this.matDialogRef.close();
   }
 
   private selectFromWizard<T>(func: (wizard: GeneratorWizardState) => T): Observable<T> {

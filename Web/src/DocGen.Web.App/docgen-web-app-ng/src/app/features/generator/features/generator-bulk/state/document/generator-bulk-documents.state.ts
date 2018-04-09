@@ -7,6 +7,7 @@ export interface Document {
 
 export interface GeneratorBulkDocumentState {
     template?: Template;
+    lastCompletedDocument?: Document;
     completedDocuments: Document[];
     draftDocuments: Document[];
 }

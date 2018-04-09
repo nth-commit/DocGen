@@ -27,12 +27,12 @@ export class WizardDiscardAction implements AppAction {
     constructor(public reducerId: string) { }
 }
 
-export class WizardNextStepAction implements AppAction {
+export class WizardNextAction implements AppAction {
     readonly type = WizardActionsTypes.NEXT;
     constructor(public reducerId: string) { }
 }
 
-export class WizardPreviousStepAction implements AppAction {
+export class WizardPreviousAction implements AppAction {
     readonly type = WizardActionsTypes.PREVIOUS;
     constructor(public reducerId: string) { }
 }
@@ -41,5 +41,5 @@ export type WizardAction =
     WizardBeginAction |
     WizardUpdateValuesAction |
     WizardDiscardAction |
-    WizardNextStepAction |
-    WizardPreviousStepAction;
+    WizardNextAction |
+    WizardPreviousAction;
