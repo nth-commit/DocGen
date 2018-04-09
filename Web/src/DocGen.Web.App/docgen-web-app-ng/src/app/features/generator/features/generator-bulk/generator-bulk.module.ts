@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableModule, MatDialogModule } from '@angular/material';
+import { FormsModule } from '@angular/forms';
+import { MatTableModule, MatDialogModule, MatCheckboxModule } from '@angular/material';
 
 import { GeneratorCoreModule } from '../_core';
 import { GeneratorBulkRoutingModule } from './generator-bulk-routing.module';
@@ -13,9 +14,11 @@ import { WizardDialogComponent } from './components/wizard-dialog/wizard-dialog.
 @NgModule({
   imports: [
     CommonModule,
+    FormsModule,
 
     MatTableModule,
     MatDialogModule,
+    MatCheckboxModule,
 
     GeneratorCoreModule,
     GeneratorBulkStateModule,

@@ -69,11 +69,15 @@ export const InputValueCollectionUtility = {
   getString: (stringTemplate: string, collection: InputValueCollection): string => {
     return stringTemplate.replace(/{{(([a-z_]+[a-z_0-9]*)(.[a-z_]+[a-z_0-9]*)*)}}/, (x, y) => {
       const value = collection[y];
-      if (typeof value === 'string') {
-        return value;
-      } else {
-        return '' + value;
-      }
+      return this.getInputString(value);
     });
+  },
+
+  getInputString: (value: InputValue): string => {
+    if (typeof value === 'string') {
+      return value;
+    } else {
+      return '' + value;
+    }
   }
 };

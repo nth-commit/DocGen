@@ -10,9 +10,21 @@
   </div>
   <div class="content review-content" *ngIf="completed$ | async">
     <h2>Review document</h2>
+    <div class="document-values-container">
+      <app-generator-document-values-table
+        [steps]="steps$ | async"
+        [values]="values$ | async">
+      </app-generator-document-values-table>
+    </div>
+    <div class="repeat-creation-container">
+      <mat-checkbox [(ngModel)]="repeatCreation">
+        Continue creating more documents after save
+      </mat-checkbox>
+    </div>
   </div>
   <div class="navigation-container">
       <app-generator-wizard-step-navigation
+        completeText='Save'
         [hasNextStep]="(hasNextStep$ | async) || !(completed$ | async)"
         [hasPreviousStep]="(hasPreviousStep$ | async) || (completed$ | async)"
         [currentStepValid]="stepValid$ | async"

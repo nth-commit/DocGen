@@ -1,2 +1,2 @@
-<button mat-raised-button color="accent" *ngIf="hasPreviousStep" (click)="onPreviousClick($event)">BACK</button>
-<button mat-raised-button color="primary" (click)="onNextClick($event)" [disabled]="!currentStepValid">{{ hasNextStep ? 'NEXT' : 'DONE!' }}</button>
+<button mat-raised-button *ngIf="hasPreviousStep" (click)="onPreviousClick($event)">BACK</button>
+<button mat-raised-button color="primary" (click)="onNextClick($event)" [disabled]="!currentStepValid">{{ hasNextStep ? 'NEXT' : completeText.toUpperCase() }}</button>

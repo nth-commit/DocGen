@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialogRef } from '@angular/material';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -10,7 +11,8 @@ import {
   WizardUpdateValuesAction,
   WizardNextStepAction,
   WizardPreviousStepAction,
-  WizardCompleteStepAction
+  WizardCompleteStepAction,
+  WizardCompleteUndoStepAction
  } from '../../../_shared';
 import { REDUCER_ID } from '../../state';
 
@@ -29,15 +31,18 @@ export class WizardDialogComponent implements OnInit {
   stepValues$ = this.selectFromWizard(w => w.stepValues);
   progress$ = this.selectFromWizard(w => w.progress);
   completed$ = this.selectFromWizard(w => w.completed);
+  values$ = this.selectFromWizard(w => w.values);
 
-  // hasNextStep$ = Observable.combineLatest(this.selectFromWizard(w => w.hasNextStep), this.completed$)
-  //   .map(([hasNextStep, completed]) => hasNextStep || !completed);
+  repeatCreation = true;
 
   constructor(
-    private store: Store<State>
+    private store: Store<State>,
+    private matDialogRef: MatDialogRef<WizardDialogComponent>
   ) { }
 
   ngOnInit() {
+    this.matDialogRef.beforeClose().subscribe(() => {
+    });
   }
 
   updateStepValues(values: InputValueCollection) {
@@ -59,11 +64,21 @@ export class WizardDialogComponent implements OnInit {
   }
 
   onPreviousStepClick() {
-    this.store.dispatch(new WizardPreviousStepAction(REDUCER_ID));
+    this.completed$
+      .first()
+      .subscribe(completed => {
+        if (completed) {
+          this.store.dispatch(new WizardCompleteUndoStepAction(REDUCER_ID));
+        } else {
+          this.store.dispatch(new WizardPreviousStepAction(REDUCER_ID));
+        }
+      });
   }
 
   onCompleteClick() {
-    this.store.dispatch(new WizardCompleteStepAction(REDUCER_ID));
+    this.store.dispatch(new WizardCompleteStepAction(REDUCER_ID, {
+      repeat: this.repeatCreation
+    }));
   }
 
   private selectFromWizard<T>(func: (wizard: GeneratorWizardState) => T): Observable<T> {

@@ -10,7 +10,8 @@ export enum WizardActionsTypes {
     DISCARD = '[Wizard2] Discard',
     NEXT_STEP = '[Wizard2] Next Step',
     PREVIOUS_STEP = '[Wizard2] Previous Step',
-    COMPLETE = '[Wizard2] Complete'
+    COMPLETE = '[Wizard2] Complete',
+    COMPLETE_UNDO = '[Wizard2] Complete Undo'
 }
 
 export class WizardBeginAction implements AppAction {
@@ -38,8 +39,17 @@ export class WizardPreviousStepAction implements AppAction {
     constructor(public reducerId: string) { }
 }
 
+export interface WizardCompleteActionPayload {
+    repeat?: boolean;
+}
+
 export class WizardCompleteStepAction implements AppAction {
     readonly type = WizardActionsTypes.COMPLETE;
+    constructor(public reducerId: string, public payload: WizardCompleteActionPayload = {}) { }
+}
+
+export class WizardCompleteUndoStepAction implements AppAction {
+    readonly type = WizardActionsTypes.COMPLETE_UNDO;
     constructor(public reducerId: string) { }
 }
 
@@ -49,4 +59,5 @@ export type WizardAction =
     WizardDiscardAction |
     WizardNextStepAction |
     WizardPreviousStepAction |
-    WizardCompleteStepAction;
+    WizardCompleteStepAction |
+    WizardCompleteUndoStepAction;

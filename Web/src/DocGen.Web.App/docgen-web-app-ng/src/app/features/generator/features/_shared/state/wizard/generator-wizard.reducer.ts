@@ -26,7 +26,7 @@ export function createGeneratorWizardReducer(id: string): ActionReducer<Generato
         // worry about signing info at a later time?
         const fistStepIndexWithSignedCondition = template.steps.findIndex(s =>
           s.conditions.some(c => c.type === TemplateStepConditionType.IsDocumentSigned));
-        const steps = template.steps.slice(0, fistStepIndexWithSignedCondition);
+        const steps = template.steps.slice(0, fistStepIndexWithSignedCondition).slice(0, 1);
 
         const stepInputsValid = steps.map(s => s.inputs.map(i => false));
 
@@ -94,8 +94,7 @@ export function createGeneratorWizardReducer(id: string): ActionReducer<Generato
 
         return Object.assign({}, state, <GeneratorWizardState>{
           stepIndex: state.stepIndexHistory[state.stepIndexHistory.length - 1],
-          stepIndexHistory: state.stepIndexHistory.slice(0, state.stepIndexHistory.length - 1),
-          completed: false
+          stepIndexHistory: state.stepIndexHistory.slice(0, state.stepIndexHistory.length - 1)
         });
       }
       case WizardActionsTypes.COMPLETE: {
@@ -107,6 +106,16 @@ export function createGeneratorWizardReducer(id: string): ActionReducer<Generato
           completed: true
         });
       }
+      case WizardActionsTypes.COMPLETE_UNDO: {
+        if (!state.completed) {
+          throw new Error('Wizard was not completed');
+        }
+
+        return Object.assign({}, state, <GeneratorWizardState>{
+          completed: false
+        });
+      }
+
       default: {
         return state || {} as GeneratorWizardState;
       }

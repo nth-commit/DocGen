@@ -4,5 +4,5 @@ export {
   WizardActionsTypes, WizardAction,
   WizardBeginAction, WizardUpdateValuesAction,
   WizardNextStepAction, WizardPreviousStepAction,
-  WizardCompleteStepAction
+  WizardCompleteStepAction, WizardCompleteUndoStepAction
  } from './generator-wizard.actions';
