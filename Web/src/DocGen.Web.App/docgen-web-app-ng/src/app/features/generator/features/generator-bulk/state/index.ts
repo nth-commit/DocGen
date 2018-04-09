@@ -1,11 +1,10 @@
-export { GeneratorBulkStateModule, GeneratorBulkState } from './generator-bulk-state.module';
+export { GeneratorBulkStateModule } from './generator-bulk-state.module';
 
 export {
   DocumentActionsTypes, DocumentAction,
   DocumentBeginAction,
   DocumentUpdateDraftAction,
-  DocumentPublishDraftAction, DocumentPublishDraftPayload,
-  Document
+  DocumentPublishDraftAction, DocumentPublishDraftPayload
 } from './document';
 
 export { REDUCER_ID } from './constants';

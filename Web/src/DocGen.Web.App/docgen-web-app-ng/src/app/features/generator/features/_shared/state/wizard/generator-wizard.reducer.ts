@@ -5,7 +5,7 @@ import {
   InputValueCollection, InputValueCollectionUtility
 } from '../../../../../core';
 
-import { GeneratorWizardState } from './generator-wizard.state';
+import { GeneratorWizardState } from '../../../../../_shared';
 import { WizardActionsTypes, WizardAction, WizardBeginAction, WizardDiscardAction } from './generator-wizard.actions';
 
 export function createGeneratorWizardReducer(id: string): ActionReducer<GeneratorWizardState, WizardAction> {

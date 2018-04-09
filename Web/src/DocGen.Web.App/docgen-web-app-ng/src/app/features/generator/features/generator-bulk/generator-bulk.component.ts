@@ -5,10 +5,10 @@ import { Actions } from '@ngrx/effects';
 
 import { Observable } from 'rxjs/Observable';
 
-import { State, CoreState } from '../../../_shared';
+import { State } from '../../../_shared';
 import { WizardActionsTypes, WizardBeginAction } from '../_shared';
 
-import { REDUCER_ID, GeneratorBulkState } from './state';
+import { REDUCER_ID } from './state';
 import { WizardDialogComponent } from './components/wizard-dialog/wizard-dialog.component';
 
 @Component({

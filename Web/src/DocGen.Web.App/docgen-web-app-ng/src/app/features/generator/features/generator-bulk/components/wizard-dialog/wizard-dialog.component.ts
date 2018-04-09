@@ -5,8 +5,8 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { InputValueCollection, TemplateStep } from '../../../../../core';
-import { State } from '../../../../../_shared';
-import { GeneratorWizardState, WizardUpdateValuesAction, WizardNextAction, WizardPreviousAction } from '../../../_shared';
+import { State, GeneratorWizardState } from '../../../../../_shared';
+import { WizardUpdateValuesAction, WizardNextAction, WizardPreviousAction } from '../../../_shared';
 import { REDUCER_ID, DocumentPublishDraftAction } from '../../state';
 
 @Component({

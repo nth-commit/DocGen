@@ -1,5 +1,5 @@
 export {
-  GeneratorWizardState, createGeneratorWizardReducer,
+  createGeneratorWizardReducer,
   WizardActionsTypes, WizardAction,
   WizardBeginAction, WizardUpdateValuesAction,
   WizardNextAction, WizardPreviousAction

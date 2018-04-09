@@ -8,15 +8,16 @@ import 'rxjs/add/operator/map';
 
 import { getAppSettings } from '../../../../app.settings';
 import { TemplateService, Template } from '../../../core';
+import { State } from '../../../_shared';
 
-import { GeneratorBulkState, DocumentBeginAction } from './state';
+import { DocumentBeginAction } from './state';
 
 @Injectable()
 export class GeneratorBulkResolveTemplate implements Resolve<Template> {
 
     constructor(
         private templateService: TemplateService,
-        private store: Store<GeneratorBulkState>
+        private store: Store<State>
     ) { }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<Template> {

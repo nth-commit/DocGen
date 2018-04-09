@@ -23,4 +23,8 @@ export class GeneratorBulkStateEffects {
     .debounceTime(500)
     .withLatestFrom(this.store)
     .map(([action, state]) => new DocumentUpdateDraftAction(state.generatorBulk.wizard));
+
+  // @Effect() resetWizardWhenPublished = this.actions$
+  //   .ofType(DocumentActionsTypes.PUBLISH_DRAFT)
+  //   .map(action => )
 }

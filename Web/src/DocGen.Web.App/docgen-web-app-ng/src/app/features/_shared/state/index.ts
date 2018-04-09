@@ -1,15 +1,4 @@
-import { GeneratorBulkState } from '../../generator';
+export { State, CoreState, EventState } from './state';
+export { GeneratorWizardState, GeneratorBulkState, GeneratorBulkDocumentState, Document } from './generator';
 
-export interface CoreState {
-  event: EventState;
-}
-
-export interface EventState {
-  actionType: string;
-  reducerId: string;
-}
-
-export interface State {
-  core: CoreState;
-  generatorBulk: GeneratorBulkState;
-}
+export { RESET, resetMetaReducer } from './reset.meta-reducer';

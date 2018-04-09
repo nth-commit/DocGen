@@ -1,26 +1,23 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { StoreModule, combineReducers, Action } from '@ngrx/store';
+import { StoreModule, combineReducers, Action, compose } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { EffectsModule } from '@ngrx/effects';
 
 import { environment } from '../../../../../../environments/environment';
 import { CoreModule } from '../../../../_core';
+import { resetMetaReducer, GeneratorWizardState, GeneratorBulkState } from '../../../../_shared';
 
-import { createGeneratorWizardReducer, GeneratorWizardState } from '../../_shared';
-import { generatorBulkDocumentReducer, GeneratorBulkDocumentState } from './document';
+import { createGeneratorWizardReducer } from '../../_shared';
+import { generatorBulkDocumentReducer } from './document';
 
 import { GeneratorBulkStateEffects } from './generator-bulk-state.effects';
 import { REDUCER_ID } from './constants';
 
-export interface GeneratorBulkState {
-  wizard: GeneratorWizardState;
-  documents: GeneratorBulkDocumentState;
-}
-
 export const generatorBulkReducer = combineReducers<GeneratorBulkState, Action>(
   {
+    // wizard: resetMetaReducer(createGeneratorWizardReducer(REDUCER_ID)),
     wizard: createGeneratorWizardReducer(REDUCER_ID),
     documents: generatorBulkDocumentReducer
   }

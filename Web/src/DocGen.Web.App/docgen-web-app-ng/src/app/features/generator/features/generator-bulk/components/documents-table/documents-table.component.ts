@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import { Document } from '../../state';
+import { Document } from '../../../../../_shared';
 
 @Component({
   selector: 'app-generator-bulk-documents-table',

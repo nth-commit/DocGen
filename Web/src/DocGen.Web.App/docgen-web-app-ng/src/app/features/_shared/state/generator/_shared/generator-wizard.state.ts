@@ -1,4 +1,4 @@
-import { TemplateStep, InputValueCollection } from '../../../../../core';
+import { TemplateStep, InputValueCollection } from '../../../../core';
 
 export interface GeneratorWizardState {
   id: string;
