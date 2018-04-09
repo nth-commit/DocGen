@@ -10,9 +10,7 @@ import {
   GeneratorWizardState,
   WizardUpdateValuesAction,
   WizardNextStepAction,
-  WizardPreviousStepAction,
-  WizardCompleteStepAction,
-  WizardCompleteUndoStepAction
+  WizardPreviousStepAction
  } from '../../../_shared';
 import { REDUCER_ID } from '../../state';
 
@@ -54,11 +52,7 @@ export class WizardDialogComponent implements OnInit {
       .first()
       .subscribe(([stepValid, hasNextStep]) => {
         if (stepValid) {
-          if (hasNextStep) {
-            this.store.dispatch(new WizardNextStepAction(REDUCER_ID));
-          } else {
-            this.store.dispatch(new WizardCompleteStepAction(REDUCER_ID));
-          }
+          this.store.dispatch(new WizardNextStepAction(REDUCER_ID));
         }
       });
   }
@@ -67,18 +61,14 @@ export class WizardDialogComponent implements OnInit {
     this.completed$
       .first()
       .subscribe(completed => {
-        if (completed) {
-          this.store.dispatch(new WizardCompleteUndoStepAction(REDUCER_ID));
-        } else {
-          this.store.dispatch(new WizardPreviousStepAction(REDUCER_ID));
-        }
+        this.store.dispatch(new WizardPreviousStepAction(REDUCER_ID));
       });
   }
 
   onCompleteClick() {
-    this.store.dispatch(new WizardCompleteStepAction(REDUCER_ID, {
-      repeat: this.repeatCreation
-    }));
+    // this.store.dispatch(new WizardCompleteStepAction(REDUCER_ID, {
+    //   repeat: this.repeatCreation
+    // }));
   }
 
   private selectFromWizard<T>(func: (wizard: GeneratorWizardState) => T): Observable<T> {

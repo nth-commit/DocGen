@@ -26,7 +26,7 @@ export function createGeneratorWizardReducer(id: string): ActionReducer<Generato
         // worry about signing info at a later time?
         const fistStepIndexWithSignedCondition = template.steps.findIndex(s =>
           s.conditions.some(c => c.type === TemplateStepConditionType.IsDocumentSigned));
-        const steps = template.steps.slice(0, fistStepIndexWithSignedCondition).slice(0, 1);
+        const steps = template.steps.slice(0, fistStepIndexWithSignedCondition).slice(0, 2);
 
         const stepInputsValid = steps.map(s => s.inputs.map(i => false));
 
@@ -73,49 +73,38 @@ export function createGeneratorWizardReducer(id: string): ActionReducer<Generato
           stepInputsValid
         });
       }
-      case WizardActionsTypes.NEXT_STEP: {
-        if (!state.hasNextStep) {
-          throw new Error('Template does not have a next step');
-        }
-
+      case WizardActionsTypes.NEXT: {
         if (!state.stepValid) {
           throw new Error('Cannot navigate to the next step if the current step is invalid');
         }
 
-        return Object.assign({}, state, <GeneratorWizardState>{
-          stepIndex: state.nextStepIndex,
-          stepIndexHistory: [...state.stepIndexHistory, state.stepIndex]
-        });
+        if (state.hasNextStep) {
+          return Object.assign({}, state, <GeneratorWizardState>{
+            stepIndex: state.nextStepIndex,
+            stepIndexHistory: [...state.stepIndexHistory, state.stepIndex]
+          });
+        } else {
+          return Object.assign({}, state, <GeneratorWizardState>{
+            completed: true
+          });
+        }
       }
-      case WizardActionsTypes.PREVIOUS_STEP: {
+      case WizardActionsTypes.PREVIOUS: {
         if (!state.hasPreviousStep) {
           throw new Error('Template does not have a previous step');
         }
 
-        return Object.assign({}, state, <GeneratorWizardState>{
-          stepIndex: state.stepIndexHistory[state.stepIndexHistory.length - 1],
-          stepIndexHistory: state.stepIndexHistory.slice(0, state.stepIndexHistory.length - 1)
-        });
-      }
-      case WizardActionsTypes.COMPLETE: {
-        if (!state.valid) {
-          throw new Error('Template values are incomplete');
+        if (state.completed) {
+          return Object.assign({}, state, <GeneratorWizardState>{
+            completed: false
+          });
+        } else {
+          return Object.assign({}, state, <GeneratorWizardState>{
+            stepIndex: state.stepIndexHistory[state.stepIndexHistory.length - 1],
+            stepIndexHistory: state.stepIndexHistory.slice(0, state.stepIndexHistory.length - 1)
+          });
         }
-
-        return Object.assign(state, <GeneratorWizardState>{
-          completed: true
-        });
       }
-      case WizardActionsTypes.COMPLETE_UNDO: {
-        if (!state.completed) {
-          throw new Error('Wizard was not completed');
-        }
-
-        return Object.assign({}, state, <GeneratorWizardState>{
-          completed: false
-        });
-      }
-
       default: {
         return state || {} as GeneratorWizardState;
       }
@@ -164,7 +153,7 @@ export function createGeneratorWizardReducer(id: string): ActionReducer<Generato
       });
 
       state.hasNextStep = !state.completed && state.nextStepIndex > -1;
-      state.hasPreviousStep = !state.completed && state.stepIndex > 0;
+      state.hasPreviousStep = state.stepIndex > 0;
 
       state.empty = Object.keys(state.values).every(stepId =>
         state.values[stepId] === undefined ||
