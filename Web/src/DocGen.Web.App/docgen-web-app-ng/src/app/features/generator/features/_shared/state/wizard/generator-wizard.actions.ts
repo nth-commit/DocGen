@@ -14,7 +14,9 @@ export enum WizardActionsTypes {
 
 export class WizardBeginAction implements AppAction {
     readonly type = WizardActionsTypes.BEGIN;
-    constructor(public reducerId: string, public payload: { template: Template }) { }
+    constructor(
+        public reducerId: string,
+        public payload: { template: Template, presets?: InputValueCollection, showPresetInputs?: boolean }) { }
 }
 
 export class WizardUpdateValuesAction implements AppAction {

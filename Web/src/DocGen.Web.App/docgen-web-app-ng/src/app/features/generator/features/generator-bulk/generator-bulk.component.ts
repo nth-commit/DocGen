@@ -8,7 +8,7 @@ import { Observable } from 'rxjs/Observable';
 import { State } from '../../../_shared';
 import { WizardActionsTypes, WizardBeginAction } from '../_shared';
 
-import { REDUCER_ID, DocumentActionsTypes, DocumentPublishDraftAction } from './state';
+import { REDUCER_ID, DocumentActionsTypes, DocumentPublishDraftAction, DocumentUpdateConstantsAction } from './state';
 import { WizardDialogComponent } from './components/wizard-dialog/wizard-dialog.component';
 
 @Component({
@@ -31,6 +31,12 @@ export class GeneratorBulkComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.store.dispatch(new DocumentUpdateConstantsAction({
+      'organisation.name': 'Automio',
+      'organisation.location': 'New Plymouth',
+      'organisation.description': 'This is a description of the organisation'
+    }));
+
     this.store.select(s => s.generatorBulk.documents)
       .first()
       .subscribe(documentState => {
@@ -60,10 +66,13 @@ export class GeneratorBulkComponent implements OnInit {
     }
 
     this.store
-      .select(s => s.generatorBulk.documents.template)
+      .select(s => s.generatorBulk.documents)
       .first()
-      .subscribe(template => {
-        this.store.dispatch(new WizardBeginAction(REDUCER_ID, { template }));
+      .subscribe(documents => {
+        this.store.dispatch(new WizardBeginAction(REDUCER_ID, {
+          template: documents.template,
+          presets: documents.constants
+        }));
 
         this.wizardDialogRef = this.matDialog.open(WizardDialogComponent, {
           width: '550px',

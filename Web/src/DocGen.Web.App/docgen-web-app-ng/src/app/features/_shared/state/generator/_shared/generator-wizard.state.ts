@@ -4,6 +4,7 @@ export interface GeneratorWizardState {
   id: string;
 
   steps: TemplateStep[];
+  allSteps: TemplateStep[];
 
   step: TemplateStep;
   stepIndex: number;

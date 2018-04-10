@@ -5,5 +5,6 @@ export {
   DocumentActionsTypes,
   DocumentBeginAction,
   DocumentUpdateDraftAction,
-  DocumentPublishDraftAction, DocumentPublishDraftPayload
+  DocumentPublishDraftAction, DocumentPublishDraftPayload,
+  DocumentUpdateConstantsAction
 } from './generator-bulk-documents.actions';

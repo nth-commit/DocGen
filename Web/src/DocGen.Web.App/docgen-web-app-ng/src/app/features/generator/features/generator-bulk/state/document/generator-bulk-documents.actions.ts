@@ -1,12 +1,13 @@
 import { Action } from '@ngrx/store';
 
-import { Template } from '../../../../../core';
+import { Template, InputValueCollection } from '../../../../../core';
 import { GeneratorWizardState } from '../../../../../_shared';
 
 export enum DocumentActionsTypes {
     BEGIN = '[Generator Bulk Document] Begin',
     UPDATE_DRAFT = '[Generator Bulk Document] Update Draft',
-    PUBLISH_DRAFT = '[Generator Bulk Document] Publish Draft'
+    PUBLISH_DRAFT = '[Generator Bulk Document] Publish Draft',
+    UPDATE_CONSTANTS = '[Generator Bulk Document] Update Constants'
 }
 
 export class DocumentBeginAction implements Action {
@@ -29,4 +30,13 @@ export class DocumentPublishDraftAction implements Action {
     constructor(public payload: DocumentPublishDraftPayload) { }
 }
 
-export type DocumentAction = DocumentBeginAction | DocumentUpdateDraftAction | DocumentPublishDraftAction;
+export class DocumentUpdateConstantsAction implements Action {
+    readonly type = DocumentActionsTypes.UPDATE_CONSTANTS;
+    constructor(public payload: InputValueCollection) { }
+}
+
+export type DocumentAction =
+    DocumentBeginAction |
+    DocumentUpdateDraftAction |
+    DocumentPublishDraftAction |
+    DocumentUpdateConstantsAction;

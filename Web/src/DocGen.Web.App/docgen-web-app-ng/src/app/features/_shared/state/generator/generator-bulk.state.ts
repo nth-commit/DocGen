@@ -3,6 +3,7 @@ import { Template, InputValueCollection } from '../../../core';
 
 export interface GeneratorBulkDocumentState {
   template?: Template;
+  constants?: InputValueCollection;
   lastCompletedDocument?: Document;
   completedDocuments: Document[];
   draftDocuments: Document[];

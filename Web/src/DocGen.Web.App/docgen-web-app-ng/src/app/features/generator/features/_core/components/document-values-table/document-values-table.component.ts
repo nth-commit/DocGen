@@ -41,7 +41,8 @@ export class DocumentValuesTableComponent implements OnInit, OnChanges {
           name: inputName,
           value: InputValueCollectionUtility.getInputString(this.values[k])
         };
-      });
+      })
+      .filter(x => x.name);
     }
   }
 }

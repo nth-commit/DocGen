@@ -17,6 +17,7 @@ export class WizardDialogComponent implements OnInit {
 
   step$ = this.selectFromWizard(w => w.step);
   steps$ = this.selectFromWizard(w => w.steps);
+  allSteps$ = this.selectFromWizard(w => w.allSteps);
   hasPreviousStep$ = this.selectFromWizard(w => w.hasPreviousStep);
   hasNextStep$ = this.selectFromWizard(w => w.hasNextStep);
   stepValid$ = this.selectFromWizard(w => w.stepValid);

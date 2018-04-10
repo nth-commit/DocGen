@@ -20,22 +20,31 @@ export function createGeneratorWizardReducer(id: string): ActionReducer<Generato
   function resolveState(state: GeneratorWizardState, action: WizardAction): GeneratorWizardState {
     switch (action.type) {
       case WizardActionsTypes.BEGIN: {
-        const { template } = action.payload;
+        const { template, presets, showPresetInputs } = action.payload;
+        // TODO: Validate presets!
 
         // Ignore steps after signing for now. Previous wizard reducer has example of how to handle them. But is it necessary? Should we
         // worry about signing info at a later time?
         const fistStepIndexWithSignedCondition = template.steps.findIndex(s =>
           s.conditions.some(c => c.type === TemplateStepConditionType.IsDocumentSigned));
-        const steps = template.steps.slice(0, fistStepIndexWithSignedCondition).slice(0, 2);
+
+        const allSteps = template.steps.slice(0, fistStepIndexWithSignedCondition);
+
+        const steps = allSteps
+          .map(s => Object.assign({}, s, <TemplateStep>{
+            inputs: s.inputs.filter(i => showPresetInputs || !(i.id in presets))
+          }))
+          .filter(s => s.inputs.length);
 
         const stepInputsValid = steps.map(s => s.inputs.map(i => false));
 
-        const values = InputValueCollectionUtility.fromSteps(steps);
+        const values = Object.assign(InputValueCollectionUtility.fromSteps(steps), presets || {});
 
         return Object.assign({}, state, <GeneratorWizardState>{
           id: new Date().getTime().toString(),
 
           steps,
+          allSteps,
           stepIndex: 0,
           stepIndexHistory: [],
 

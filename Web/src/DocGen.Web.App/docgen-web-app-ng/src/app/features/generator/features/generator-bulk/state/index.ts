@@ -4,7 +4,8 @@ export {
   DocumentActionsTypes, DocumentAction,
   DocumentBeginAction,
   DocumentUpdateDraftAction,
-  DocumentPublishDraftAction, DocumentPublishDraftPayload
+  DocumentPublishDraftAction, DocumentPublishDraftPayload,
+  DocumentUpdateConstantsAction
 } from './document';
 
 export { REDUCER_ID } from './constants';
