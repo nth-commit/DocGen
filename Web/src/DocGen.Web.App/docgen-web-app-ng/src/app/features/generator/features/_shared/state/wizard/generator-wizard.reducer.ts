@@ -6,7 +6,7 @@ import {
 } from '../../../../../core';
 
 import { GeneratorWizardState } from '../../../../../_shared';
-import { WizardActionsTypes, WizardAction, WizardBeginAction, WizardDiscardAction } from './generator-wizard.actions';
+import { WizardActionsTypes, WizardAction, WizardBeginAction, WizardResetAction } from './generator-wizard.actions';
 
 export function createGeneratorWizardReducer(id: string): ActionReducer<GeneratorWizardState, WizardAction> {
 
@@ -105,8 +105,11 @@ export function createGeneratorWizardReducer(id: string): ActionReducer<Generato
           });
         }
       }
+      case WizardActionsTypes.RESET: {
+        return <GeneratorWizardState>{};
+      }
       default: {
-        return state || {} as GeneratorWizardState;
+        return state || <GeneratorWizardState>{};
       }
     }
   }

@@ -7,7 +7,7 @@ import { AppAction } from '../../../../../_shared';
 export enum WizardActionsTypes {
     BEGIN = '[Wizard2] Begin',
     UPDATE_VALUES = '[Wizard2] Update Values',
-    DISCARD = '[Wizard2] Discard',
+    RESET = '[Wizard2] Reset',
     NEXT = '[Wizard2] Next Step',
     PREVIOUS = '[Wizard2] Previous Step'
 }
@@ -22,8 +22,8 @@ export class WizardUpdateValuesAction implements AppAction {
     constructor(public reducerId: string, public payload: InputValueCollection) { }
 }
 
-export class WizardDiscardAction implements AppAction {
-    readonly type = WizardActionsTypes.DISCARD;
+export class WizardResetAction implements AppAction {
+    readonly type = WizardActionsTypes.RESET;
     constructor(public reducerId: string) { }
 }
 
@@ -40,6 +40,6 @@ export class WizardPreviousAction implements AppAction {
 export type WizardAction =
     WizardBeginAction |
     WizardUpdateValuesAction |
-    WizardDiscardAction |
+    WizardResetAction |
     WizardNextAction |
     WizardPreviousAction;

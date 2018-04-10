@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -29,13 +28,10 @@ export class WizardDialogComponent implements OnInit {
   repeatCreation = true;
 
   constructor(
-    private store: Store<State>,
-    private matDialogRef: MatDialogRef<WizardDialogComponent>
+    private store: Store<State>
   ) { }
 
   ngOnInit() {
-    this.matDialogRef.beforeClose().subscribe(() => {
-    });
   }
 
   updateStepValues(values: InputValueCollection) {
@@ -70,8 +66,6 @@ export class WizardDialogComponent implements OnInit {
           repeat: this.repeatCreation
         }));
       });
-
-    this.matDialogRef.close();
   }
 
   private selectFromWizard<T>(func: (wizard: GeneratorWizardState) => T): Observable<T> {

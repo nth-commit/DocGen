@@ -2,5 +2,6 @@ export {
   createGeneratorWizardReducer,
   WizardActionsTypes, WizardAction,
   WizardBeginAction, WizardUpdateValuesAction,
-  WizardNextAction, WizardPreviousAction
+  WizardNextAction, WizardPreviousAction,
+  WizardResetAction
 } from './state';

@@ -17,7 +17,6 @@ import { REDUCER_ID } from './constants';
 
 export const generatorBulkReducer = combineReducers<GeneratorBulkState, Action>(
   {
-    // wizard: resetMetaReducer(createGeneratorWizardReducer(REDUCER_ID)),
     wizard: createGeneratorWizardReducer(REDUCER_ID),
     documents: generatorBulkDocumentReducer
   }

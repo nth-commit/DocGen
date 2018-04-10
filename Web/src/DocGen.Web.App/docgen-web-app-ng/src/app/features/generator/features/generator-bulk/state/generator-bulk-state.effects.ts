@@ -3,7 +3,7 @@ import { Store, Action } from '@ngrx/store';
 import { Actions, Effect } from '@ngrx/effects';
 
 import { State, AppAction } from '../../../../_shared';
-import { WizardActionsTypes, WizardBeginAction } from '../../_shared';
+import { WizardActionsTypes, WizardBeginAction, WizardResetAction } from '../../_shared';
 import { DocumentActionsTypes, DocumentBeginAction, DocumentUpdateDraftAction } from './document';
 import { REDUCER_ID } from './constants';
 
@@ -24,7 +24,7 @@ export class GeneratorBulkStateEffects {
     .withLatestFrom(this.store)
     .map(([action, state]) => new DocumentUpdateDraftAction(state.generatorBulk.wizard));
 
-  // @Effect() resetWizardWhenPublished = this.actions$
-  //   .ofType(DocumentActionsTypes.PUBLISH_DRAFT)
-  //   .map(action => )
+  @Effect() resetWizardWhenPublished = this.actions$
+    .ofType(DocumentActionsTypes.PUBLISH_DRAFT)
+    .map(() => new WizardResetAction(REDUCER_ID));
 }
