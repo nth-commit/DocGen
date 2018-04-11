@@ -99,19 +99,17 @@ export function createGeneratorWizardReducer(id: string): ActionReducer<Generato
         }
       }
       case WizardActionsTypes.PREVIOUS: {
-        if (!state.hasPreviousStep) {
-          throw new Error('Template does not have a previous step');
-        }
-
         if (state.completed) {
           return Object.assign({}, state, <GeneratorWizardState>{
             completed: false
           });
-        } else {
+        } else if (state.hasPreviousStep) {
           return Object.assign({}, state, <GeneratorWizardState>{
             stepIndex: state.stepIndexHistory[state.stepIndexHistory.length - 1],
             stepIndexHistory: state.stepIndexHistory.slice(0, state.stepIndexHistory.length - 1)
           });
+        } else {
+          throw new Error('No previous step found');
         }
       }
       case WizardActionsTypes.RESET: {

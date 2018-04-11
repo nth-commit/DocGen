@@ -34,7 +34,10 @@ export class DocumentValuesTableComponent implements OnInit, OnChanges {
       );
 
     this.inputs = Object.keys(this.values)
-      .filter(k => this.values[k])
+      .filter(k => {
+        const value = this.values[k];
+        return value !== null && value !== undefined;
+      })
       .map(k => {
         const inputName = inputNameById.get(k);
         return {
