@@ -12,12 +12,12 @@ import {
   MatProgressBarModule
 } from '@angular/material';
 
-import { GeneratorCoreRoutingModule } from './generator-core-routing.module';
-
 import { WizardStepComponent } from './components/wizard-step/wizard-step.component';
 import { WizardStepInputComponent } from './components/wizard-step-input/wizard-step-input.component';
 import { WizardStepNavigationComponent } from './components/wizard-step-navigation/wizard-step-navigation.component';
 import { DocumentValuesTableComponent } from './components/document-values-table/document-values-table.component';
+
+import { GeneratorCoreRoutingModule } from './generator-core-routing.module';
 
 @NgModule({
   imports: [
@@ -30,7 +30,6 @@ import { DocumentValuesTableComponent } from './components/document-values-table
     MatButtonModule,
     MatCardModule,
     MatSnackBarModule,
-    MatProgressBarModule,
 
     GeneratorCoreRoutingModule
   ],

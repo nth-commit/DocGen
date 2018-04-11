@@ -10,6 +10,7 @@ import { WizardActionsTypes, WizardBeginAction } from '../_shared';
 
 import { REDUCER_ID, DocumentActionsTypes, DocumentPublishDraftAction, DocumentUpdateConstantsAction } from './state';
 import { WizardDialogComponent } from './components/wizard-dialog/wizard-dialog.component';
+import { DocumentValueSelectorService } from './services/document-value-selector/document-value-selector.service';
 
 @Component({
   selector: 'app-generator-bulk',
@@ -24,10 +25,12 @@ export class GeneratorBulkComponent implements OnInit {
 
   private wizardDialogRef: MatDialogRef<WizardDialogComponent>;
 
+
   constructor(
     private store: Store<State>,
     private actions$: Actions,
-    private matDialog: MatDialog
+    private matDialog: MatDialog,
+    private documentValueSelectorService: DocumentValueSelectorService
   ) { }
 
   ngOnInit() {
@@ -46,52 +49,40 @@ export class GeneratorBulkComponent implements OnInit {
       'organisation.description': 'This is a description of the organisation'
     }));
 
-    this.store.select(s => s.generatorBulk.documents)
-      .first()
-      .subscribe(documentState => {
-        if (!documentState.draftDocuments.length && !documentState.draftDocuments.length) {
-          setTimeout(() => {
-            this.openWizardDialog();
-          }, 500);
-        }
-      });
+    // this.store.select(s => s.generatorBulk.documents)
+    //   .first()
+    //   .subscribe(documentState => {
+    //     if (!documentState.draftDocuments.length && !documentState.draftDocuments.length) {
+    //       setTimeout(() => {
+    //         this.openWizardDialog();
+    //       }, 500);
+    //     }
+    //   });
 
     this.actions$
       .ofType(DocumentActionsTypes.PUBLISH_DRAFT)
-      .subscribe((action: DocumentPublishDraftAction) => {
-        if (action.payload.repeat) {
-          this.wizardDialogRef.afterClosed().subscribe(() => {
-            // TODO: Open field selector for wizard
-            this.openWizardDialog();
-          });
-        }
-        this.wizardDialogRef.close();
+      .withLatestFrom(this.store)
+      .subscribe(([action, state]: [DocumentPublishDraftAction, State]) => {
+      // .subscribe((action: DocumentPublishDraftAction) => {
+        // if (action.payload.repeat) {
+        //   this.wizardDialogRef.afterClosed().subscribe(() => {
+
+        //     const constantsSetPromise = Promise.resolve();
+        //     // if (!state.generatorBulk.documents.constants || true) {
+        //     if (true) {
+        //       // constantsSetPromise = this.documentValueSelectorService.selectValues();
+        //     }
+
+        //     // constantsSetPromise.then(() => this.openWizardDialog());
+        //   });
+        // }
+
+        // this.wizardDialogRef.close();
       });
   }
 
-  private openWizardDialog() {
-    if (this.wizardDialogRef) {
-      throw new Error('Wizard dialog ref is already open');
-    }
-
-    this.store
-      .select(s => s.generatorBulk.documents)
-      .first()
-      .subscribe(documents => {
-        this.store.dispatch(new WizardBeginAction(REDUCER_ID, {
-          template: documents.template,
-          presets: documents.constants
-        }));
-
-        this.wizardDialogRef = this.matDialog.open(WizardDialogComponent, {
-          width: '550px',
-          height: '1px',
-          minHeight: '700px'
-        });
-
-        this.wizardDialogRef.afterClosed().first().subscribe(() => {
-          this.wizardDialogRef = null;
-        });
-      });
+  private setDocumentUpdateConstants(): Promise<void> {
+    // return this.matDialog.open(DocumentValueSelectionDialog).afterClosed().toPromise();
+    return Promise.resolve();
   }
 }

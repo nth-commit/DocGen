@@ -32,7 +32,7 @@ export function createGeneratorWizardReducer(id: string): ActionReducer<Generato
 
         const steps = allSteps
           .map(s => Object.assign({}, s, <TemplateStep>{
-            inputs: s.inputs.filter(i => showPresetInputs || !(i.id in presets))
+            inputs: s.inputs.filter(i => !presets || showPresetInputs || !(i.id in presets))
           }))
           .filter(s => s.inputs.length);
 

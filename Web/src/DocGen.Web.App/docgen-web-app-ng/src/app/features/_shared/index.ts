@@ -2,7 +2,13 @@ export {
   State,
   CoreState,
   EventState,
-  GeneratorBulkState, GeneratorWizardState, GeneratorBulkDocumentState, Document,
-  RESET, resetMetaReducer
+
+  GeneratorWizardState,
+  GeneratorBulkState,
+  GeneratorBulkDocumentState,
+  GeneratorBulkLayoutState,
+  GeneratorBulkLayoutDialogState,
+  Document
+
 } from './state';
 export { AppAction } from './app-action';

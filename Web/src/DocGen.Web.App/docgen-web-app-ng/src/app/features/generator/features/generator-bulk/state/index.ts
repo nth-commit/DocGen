@@ -1,4 +1,4 @@
-export { GeneratorBulkStateModule } from './generator-bulk-state.module';
+export { generatorBulkReducer } from './generator-bulk.reducer';
 
 export {
   DocumentActionsTypes, DocumentAction,

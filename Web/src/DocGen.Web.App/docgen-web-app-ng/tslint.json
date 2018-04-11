@@ -137,7 +137,7 @@
     "no-output-rename": true,
     "use-life-cycle-interface": true,
     "use-pipe-transform-interface": true,
-    "component-class-suffix": true,
+    "component-class-suffix": false, // Use other prefixes for more specific types of components e.g. dialog
     "directive-class-suffix": true
   }
 }
