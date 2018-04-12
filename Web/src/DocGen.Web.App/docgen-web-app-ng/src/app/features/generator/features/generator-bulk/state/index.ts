@@ -1,4 +1,5 @@
 export { generatorBulkReducer } from './generator-bulk.reducer';
+export * from './generator-bulk.effects';
 
 export {
   DocumentActionsTypes, DocumentAction,

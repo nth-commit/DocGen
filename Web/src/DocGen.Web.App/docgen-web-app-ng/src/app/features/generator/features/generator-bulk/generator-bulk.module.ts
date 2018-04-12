@@ -11,7 +11,7 @@ import { environment } from '../../../../../environments/environment';
 import { CoreModule } from '../../../_core';
 import { GeneratorCoreModule } from '../_core';
 import { GeneratorBulkRoutingModule } from './generator-bulk-routing.module';
-import { REDUCER_ID, generatorBulkReducer, LayoutEffects } from './state';
+import { REDUCER_ID, generatorBulkReducer, GeneratorBulkEffects, LayoutEffects } from './state';
 
 import { GeneratorBulkComponent } from './generator-bulk.component';
 import { DocumentsTableComponent } from './components/documents-table/documents-table.component';
@@ -20,8 +20,6 @@ import { DocumentValueSelectionTableComponent } from './components/document-valu
 
 import { DocumentValueSelectorDialogComponent } from './services/document-value-selector/document-value-selector-dialog.component';
 import { DocumentValueSelectorService } from './services/document-value-selector/document-value-selector.service';
-
-import { GeneratorBulkStateEffects } from './generator-bulk-state.effects';
 
 @NgModule({
   imports: [
@@ -33,7 +31,7 @@ import { GeneratorBulkStateEffects } from './generator-bulk-state.effects';
     MatCheckboxModule,
 
     StoreModule.forFeature(REDUCER_ID, generatorBulkReducer),
-    EffectsModule.forFeature([GeneratorBulkStateEffects, LayoutEffects]),
+    EffectsModule.forFeature([GeneratorBulkEffects, LayoutEffects]),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
 
     CoreModule,

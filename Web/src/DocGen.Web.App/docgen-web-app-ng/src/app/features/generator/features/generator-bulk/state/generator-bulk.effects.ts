@@ -3,17 +3,14 @@ import { Store } from '@ngrx/store';
 import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
 
-import { State, AppAction } from '../../../_shared';
-import { WizardActionsTypes, WizardBeginAction, WizardResetAction } from '../_shared';
-import { DocumentActionsTypes, DocumentBeginAction, DocumentUpdateDraftAction } from './state/document';
-import { LayoutActionTypes, LayoutOpenDialogBeginAction, LayoutCloseDialogBeginAction } from './state/layout';
-import { REDUCER_ID } from './state/constants';
-
-import { WizardDialogComponent } from './components/wizard-dialog/wizard-dialog.component';
-import { withLatestFrom } from 'rxjs/operator/withLatestFrom';
+import { State, AppAction } from '../../../../_shared';
+import { WizardActionsTypes, WizardBeginAction, WizardResetAction } from '../../_shared';
+import { DocumentActionsTypes, DocumentBeginAction, DocumentUpdateDraftAction } from './document';
+import { LayoutActionTypes, LayoutOpenDialogBeginAction, LayoutCloseDialogBeginAction } from './layout';
+import { REDUCER_ID } from './constants';
 
 @Injectable()
-export class GeneratorBulkStateEffects {
+export class GeneratorBulkEffects {
 
   constructor(
     private actions$: Actions<AppAction>,
