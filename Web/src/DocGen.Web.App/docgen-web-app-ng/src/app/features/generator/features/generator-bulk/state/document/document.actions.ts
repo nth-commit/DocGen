@@ -8,7 +8,8 @@ export enum DocumentActionsTypes {
     UPDATE_DRAFT = '[Generator Bulk Document] Update Draft',
     PUBLISH_DRAFT = '[Generator Bulk Document] Publish Draft',
     UPDATE_CONSTANTS = '[Generator Bulk Document] Update Constants',
-    UPDATE_CONSTANTS_BEGIN = '[Generator Bulk Document] Update Constants Begin'
+    UPDATE_CONSTANTS_BEGIN = '[Generator Bulk Document] Update Constants Begin',
+    UPDATE_CONSTANTS_CANCEL = '[Generator Bulk Document] Update Constants Cancel'
 }
 
 export class DocumentBeginAction implements Action {
@@ -42,9 +43,15 @@ export class DocumentUpdateConstantsBeginAction implements Action {
     constructor() { }
 }
 
+export class DocumentUpdateConstantsCancelAction implements Action {
+    readonly type = DocumentActionsTypes.UPDATE_CONSTANTS_CANCEL;
+    constructor() { }
+}
+
 export type DocumentAction =
     DocumentBeginAction |
     DocumentUpdateDraftAction |
     DocumentPublishDraftAction |
     DocumentUpdateConstantsAction |
-    DocumentUpdateConstantsBeginAction;
+    DocumentUpdateConstantsBeginAction |
+    DocumentUpdateConstantsCancelAction;

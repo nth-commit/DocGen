@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 
 import { InputValueCollection, TemplateStep } from '../../../../../core';
 import { State } from '../../../../../_shared';
-import { DocumentUpdateConstantsAction } from '../../state/document';
+import { DocumentUpdateConstantsAction, DocumentUpdateConstantsCancelAction } from '../../state/document';
 
 @Component({
   templateUrl: './select-constants-dialog.component.html',
@@ -11,24 +11,41 @@ import { DocumentUpdateConstantsAction } from '../../state/document';
 })
 export class SelectConstantsDialogComponent implements OnInit {
 
+  steps$ = this.store.select(s => s.generatorBulk.documents.template.steps);
+  values$ = this.store.select(s => s.generatorBulk.documents.lastCompletedDocument.values);
+
+  selectedInputs$ = this.store
+    .select(s => s.generatorBulk.documents.lastConstants)
+    .filter(lastConstants => !!lastConstants)
+    .map(lastConstants => Object.keys(lastConstants));
+
+  selectedValues: InputValueCollection;
+
   constructor(
     private store: Store<State>
   ) { }
 
   ngOnInit() {
-    setTimeout(() => {
-      this.store.dispatch(new DocumentUpdateConstantsAction({
-        'contractor.type': 'person',
-        'contractor.person.name': 'asdasd',
-        'contractor.person.location': 'asdasd',
-        'contractor.person.occupation': 'asdasd',
-        'contractor.company.name': null,
-        'contractor.company.location': null,
-        'disclosure_reason': 'asdasdasd',
-        'disclosure_access': true,
-        // 'disclosure_access.details.persons': null
-      }));
-    }, 2000);
+    this.updateSelectedInputs([]);
   }
 
+  updateSelectedInputs(selectedInputs: string[]) {
+    this.values$
+      .first()
+      .subscribe(values => {
+        const selectedValues: InputValueCollection = {};
+        selectedInputs.forEach(inputId => {
+          selectedValues[inputId] = values[inputId];
+        });
+        this.selectedValues = selectedValues;
+      });
+  }
+
+  save() {
+    this.store.dispatch(new DocumentUpdateConstantsAction(this.selectedValues));
+  }
+
+  cancel() {
+    this.store.dispatch(new DocumentUpdateConstantsCancelAction());
+  }
 }

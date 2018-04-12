@@ -32,14 +32,20 @@ export function generatorBulkDocumentReducer(state: GeneratorBulkDocumentState, 
       return Object.assign({}, state, <GeneratorBulkDocumentState>{
         draftDocuments: state.draftDocuments.filter(d => d.id !== id),
         completedDocuments: [...state.completedDocuments, document],
-        lastCompletedDocument: document,
         repeating: repeat,
-        constants: clearConstants ? null : state.constants
+        constants: clearConstants ? null : state.constants,
+        lastCompletedDocument: document,
+        lastConstants: state.constants
       });
     }
     case DocumentActionsTypes.UPDATE_CONSTANTS: {
       return Object.assign({}, state, <GeneratorBulkDocumentState>{
         constants: action.payload
+      });
+    }
+    case DocumentActionsTypes.UPDATE_CONSTANTS_CANCEL: {
+      return Object.assign({}, state, <GeneratorBulkDocumentState>{
+        constants: null
       });
     }
     default: {

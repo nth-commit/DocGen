@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatTableModule, MatDialogModule, MatCheckboxModule } from '@angular/material';
+import { MatTableModule, MatDialogModule, MatCheckboxModule, MatButtonModule } from '@angular/material';
 
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
@@ -17,6 +17,7 @@ import { GeneratorBulkComponent } from './generator-bulk.component';
 import { DocumentsTableComponent } from './components/documents-table/documents-table.component';
 import { WizardDialogComponent } from './components/wizard-dialog/wizard-dialog.component';
 import { SelectConstantsDialogComponent } from './components/select-constants-dialog/select-constants-dialog.component';
+import { DocumentValueSelectTableComponent } from './components/document-value-select-table/document-value-select-table.component';
 
 @NgModule({
   imports: [
@@ -26,6 +27,7 @@ import { SelectConstantsDialogComponent } from './components/select-constants-di
     MatTableModule,
     MatDialogModule,
     MatCheckboxModule,
+    MatButtonModule,
 
     StoreModule.forFeature(REDUCER_ID, generatorBulkReducer),
     EffectsModule.forFeature([GeneratorBulkEffects, LayoutEffects, DocumentEffects]),
@@ -39,7 +41,8 @@ import { SelectConstantsDialogComponent } from './components/select-constants-di
     GeneratorBulkComponent,
     DocumentsTableComponent,
     WizardDialogComponent,
-    SelectConstantsDialogComponent
+    SelectConstantsDialogComponent,
+    DocumentValueSelectTableComponent
   ],
   entryComponents: [
     WizardDialogComponent,

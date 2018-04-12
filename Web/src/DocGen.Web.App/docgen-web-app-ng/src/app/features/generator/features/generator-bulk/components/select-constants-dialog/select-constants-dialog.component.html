@@ -1,3 +1,15 @@
-<p>
-  select-constants-dialog works!
-</p>
+<div class="container">
+  <h2>Select presets</h2>
+  <p>Select values from the previous document to use again.</p>
+  <app-generator-bulk-document-value-select-table
+    [steps]="steps$ | async"
+    [values]="values$ | async"
+    [selectedInputs]="selectedInputs$ | async"
+    (selectedInputsChanged)="updateSelectedInputs($event)">
+  </app-generator-bulk-document-value-select-table>
+  <div class="buttons">
+    <button mat-raised-button (click)="cancel()">CANCEL</button>
+    <button mat-raised-button color="primary" (click)="save()">SAVE</button>
+  </div>
+</div>
+

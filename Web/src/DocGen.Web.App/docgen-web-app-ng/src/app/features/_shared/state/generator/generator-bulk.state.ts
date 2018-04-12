@@ -23,10 +23,11 @@ export enum GeneratorBulkDocumentRepeatState {
 export interface GeneratorBulkDocumentState {
   template?: Template;
   constants?: InputValueCollection;
-  lastCompletedDocument?: Document;
   completedDocuments: Document[];
   draftDocuments: Document[];
   repeating?: boolean;
+  lastCompletedDocument?: Document;
+  lastConstants?: InputValueCollection;
 }
 
 export interface Document {

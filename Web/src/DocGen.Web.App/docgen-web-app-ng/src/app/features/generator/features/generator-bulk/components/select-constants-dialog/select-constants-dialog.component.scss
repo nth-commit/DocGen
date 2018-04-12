@@ -1,0 +1,23 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    app-generator-bulk-document-value-select-table {
+        display: block;
+        overflow: auto;
+        flex: 1;
+    }
+
+    .buttons {
+        margin-top: 24px;
+        display: flex;
+        justify-content: flex-end;
+
+        button {
+            &:not(:first-child) {
+                margin-left: 5px;
+            }
+        }
+    }
+}
