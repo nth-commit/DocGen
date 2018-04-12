@@ -6,7 +6,8 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { InputValueCollection, TemplateStep } from '../../../../../core';
 import { State, GeneratorWizardState } from '../../../../../_shared';
 import { WizardUpdateValuesAction, WizardNextAction, WizardPreviousAction } from '../../../_shared';
-import { REDUCER_ID, DocumentPublishDraftAction } from '../../state';
+import { REDUCER_ID } from '../../state/constants';
+import { DocumentPublishDraftAction } from '../../state/document';
 
 @Component({
   selector: 'app-generator-wizard-dialog',

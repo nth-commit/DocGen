@@ -11,7 +11,7 @@ import { environment } from '../../../../../environments/environment';
 import { CoreModule } from '../../../_core';
 import { GeneratorCoreModule } from '../_core';
 import { GeneratorBulkRoutingModule } from './generator-bulk-routing.module';
-import { REDUCER_ID, generatorBulkReducer } from './state';
+import { REDUCER_ID, generatorBulkReducer, LayoutEffects } from './state';
 
 import { GeneratorBulkComponent } from './generator-bulk.component';
 import { DocumentsTableComponent } from './components/documents-table/documents-table.component';
@@ -33,7 +33,7 @@ import { GeneratorBulkStateEffects } from './generator-bulk-state.effects';
     MatCheckboxModule,
 
     StoreModule.forFeature(REDUCER_ID, generatorBulkReducer),
-    EffectsModule.forFeature([GeneratorBulkStateEffects]),
+    EffectsModule.forFeature([GeneratorBulkStateEffects, LayoutEffects]),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
 
     CoreModule,

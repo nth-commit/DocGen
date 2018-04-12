@@ -10,7 +10,7 @@ import { getAppSettings } from '../../../../app.settings';
 import { TemplateService, Template } from '../../../core';
 import { State } from '../../../_shared';
 
-import { DocumentBeginAction } from './state';
+import { DocumentBeginAction, DocumentUpdateConstantsAction } from './state';
 
 @Injectable()
 export class GeneratorBulkResolveTemplate implements Resolve<Template> {
@@ -24,6 +24,21 @@ export class GeneratorBulkResolveTemplate implements Resolve<Template> {
         const templateId = route.paramMap.get('templateId');
 
         // TODO: Refresh from local storage
+
+        this.store.dispatch(new DocumentUpdateConstantsAction({
+            'contractor.type': 'person',
+            'contractor.person.name': 'asdasd',
+            'contractor.person.location': 'asdasd',
+            'contractor.person.occupation': 'asdasd',
+            'contractor.company.name': null,
+            'contractor.company.location': null,
+            'disclosure_reason': 'asdasdasd',
+            'disclosure_access': true,
+            // 'disclosure_access.details.persons': null,
+            'organisation.name': 'Automio',
+            'organisation.location': 'New Plymouth',
+            'organisation.description': 'This is a description of the organisation'
+          }));
 
         const templatePromise = this.templateService.getLatestTemplate(templateId);
         templatePromise.then(t => this.store.dispatch(new DocumentBeginAction(t)));

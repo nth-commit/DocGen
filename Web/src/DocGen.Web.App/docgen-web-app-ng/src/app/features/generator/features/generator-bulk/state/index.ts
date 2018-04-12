@@ -9,3 +9,5 @@ export {
 } from './document';
 
 export { REDUCER_ID } from './constants';
+
+export * from './layout';
