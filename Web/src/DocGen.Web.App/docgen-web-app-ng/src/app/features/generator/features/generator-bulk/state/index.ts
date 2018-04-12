@@ -1,14 +1,8 @@
 export { generatorBulkReducer } from './generator-bulk.reducer';
 export * from './generator-bulk.effects';
 
-export {
-  DocumentActionsTypes, DocumentAction,
-  DocumentBeginAction,
-  DocumentUpdateDraftAction,
-  DocumentPublishDraftAction, DocumentPublishDraftPayload,
-  DocumentUpdateConstantsAction
-} from './document';
 
 export { REDUCER_ID } from './constants';
 
+export * from './document';
 export * from './layout';

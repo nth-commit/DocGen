@@ -14,12 +14,17 @@ export enum GeneratorBulkLayoutDialogState {
   Closing
 }
 
+export enum GeneratorBulkDocumentRepeatState {
+  Started
+}
+
 export interface GeneratorBulkDocumentState {
   template?: Template;
   constants?: InputValueCollection;
   lastCompletedDocument?: Document;
   completedDocuments: Document[];
   draftDocuments: Document[];
+  repeatState?: GeneratorBulkDocumentRepeatState;
 }
 
 export interface Document {

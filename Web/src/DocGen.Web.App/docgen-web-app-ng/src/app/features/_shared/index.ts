@@ -8,7 +8,8 @@ export {
   GeneratorBulkDocumentState,
   GeneratorBulkLayoutState,
   GeneratorBulkLayoutDialogState,
-  Document
+  Document,
+  GeneratorBulkDocumentRepeatState
 
 } from './state';
 export { AppAction } from './app-action';

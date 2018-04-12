@@ -6,8 +6,16 @@ import { RouterReducerState, ROUTER_NAVIGATION } from '@ngrx/router-store';
 import { Observable } from 'rxjs/Observable';
 
 import { State, AppAction, GeneratorBulkLayoutDialogState } from '../../../../../_shared';
-import { LayoutActionTypes, LayoutOpenDialogBeginAction, LayoutOpenDialogEndAction, LayoutCloseDialogBeginAction } from './layout.actions';
+import {
+  LayoutActionTypes,
+  LayoutOpenDialogBeginAction,
+  LayoutOpenDialogEndAction,
+  LayoutCloseDialogBeginAction,
+  LayoutCloseDialogEndAction
+} from './layout.actions';
+
 import { WizardDialogComponent } from '../../components/wizard-dialog/wizard-dialog.component';
+import { SelectConstantsDialogComponent } from '../../components/select-constants-dialog/select-constants-dialog.component';
 
 @Injectable()
 export class LayoutEffects {
@@ -18,9 +26,9 @@ export class LayoutEffects {
     private matDialog: MatDialog
   ) { }
 
-  @Effect() onOpenDialogBegin_openDialogEnd$ = this.actions$
+  @Effect({ dispatch: false }) onOpenDialogBegin_subscribeToDialogEvents$ = this.actions$
     .ofType(LayoutActionTypes.OPEN_DIALOG_BEGIN)
-    .switchMap((action: LayoutOpenDialogBeginAction) => {
+    .do((action: LayoutOpenDialogBeginAction) => {
 
       let dialogOpenArgs: {
         componentType: any,
@@ -36,25 +44,51 @@ export class LayoutEffects {
             minHeight: '700px'
           }
         };
+      } else if (action.payload.dialog === 'select-constants') {
+        dialogOpenArgs = {
+          componentType: SelectConstantsDialogComponent,
+          config: {
+            width: '550px',
+            height: '1px',
+            minHeight: '700px'
+          }
+        };
       } else {
         throw new Error('Unknown dialog name');
       }
 
-      return Observable
+      Observable
         .timer(500)
-        .switchMap(() => {
+        .first()
+        .subscribe(() => {
           const dialogRef = this.matDialog.open(dialogOpenArgs.componentType, dialogOpenArgs.config);
 
-          dialogRef.afterClosed()
-            .switchMap(() => this.store.select(s => s.generatorBulk.layout))
+          dialogRef.afterOpen()
             .first()
-            .subscribe(layout => {
-              if (layout.dialogState !== GeneratorBulkLayoutDialogState.Closing) {
-                this.store.dispatch(new LayoutCloseDialogBeginAction());
-              }
+            .subscribe(() => {
+              this.store.dispatch(new LayoutOpenDialogEndAction({ dialog: action.payload.dialog, dialogRef }));
             });
 
-          return dialogRef.afterOpen().map(() => new LayoutOpenDialogEndAction({ dialogRef }));
+          dialogRef.afterClosed()
+            .first()
+            .debounceTime(100)
+            .subscribe(() => {
+              this.store
+                .select(s => s.generatorBulk.layout)
+                .first()
+                .subscribe(layout => {
+                  if (layout.dialogState !== GeneratorBulkLayoutDialogState.Closing) {
+                    this.store.dispatch(new LayoutCloseDialogBeginAction({ dialog: layout.dialog }));
+                  }
+
+                  this.store.dispatch(new LayoutCloseDialogEndAction({ dialog: layout.dialog }));
+                });
+            });
         });
     });
+
+    // @Effect() onCloseDialogBegin_closeDialogEnd$ = this.actions$
+    //   .ofType<LayoutCloseDialogBeginAction>(LayoutActionTypes.CLOSE_DIALOG_BEGIN)
+    //   .debounceTime(100) // Give dialog content a chance to unload
+    //   .map(action => new LayoutCloseDialogEndAction({ dialog: action.payload.dialog }));
 }

@@ -11,15 +11,13 @@ import { environment } from '../../../../../environments/environment';
 import { CoreModule } from '../../../_core';
 import { GeneratorCoreModule } from '../_core';
 import { GeneratorBulkRoutingModule } from './generator-bulk-routing.module';
-import { REDUCER_ID, generatorBulkReducer, GeneratorBulkEffects, LayoutEffects } from './state';
+import { REDUCER_ID, generatorBulkReducer, GeneratorBulkEffects, LayoutEffects, DocumentEffects } from './state';
 
 import { GeneratorBulkComponent } from './generator-bulk.component';
 import { DocumentsTableComponent } from './components/documents-table/documents-table.component';
 import { WizardDialogComponent } from './components/wizard-dialog/wizard-dialog.component';
 import { DocumentValueSelectionTableComponent } from './components/document-value-selection-table/document-value-selection-table.component';
-
-import { DocumentValueSelectorDialogComponent } from './services/document-value-selector/document-value-selector-dialog.component';
-import { DocumentValueSelectorService } from './services/document-value-selector/document-value-selector.service';
+import { SelectConstantsDialogComponent } from './components/select-constants-dialog/select-constants-dialog.component';
 
 @NgModule({
   imports: [
@@ -31,7 +29,7 @@ import { DocumentValueSelectorService } from './services/document-value-selector
     MatCheckboxModule,
 
     StoreModule.forFeature(REDUCER_ID, generatorBulkReducer),
-    EffectsModule.forFeature([GeneratorBulkEffects, LayoutEffects]),
+    EffectsModule.forFeature([GeneratorBulkEffects, LayoutEffects, DocumentEffects]),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
 
     CoreModule,
@@ -43,14 +41,13 @@ import { DocumentValueSelectorService } from './services/document-value-selector
     DocumentsTableComponent,
     WizardDialogComponent,
     DocumentValueSelectionTableComponent,
-    DocumentValueSelectorDialogComponent
+    SelectConstantsDialogComponent
   ],
   entryComponents: [
     WizardDialogComponent,
-    DocumentValueSelectorDialogComponent
+    SelectConstantsDialogComponent
   ],
   providers: [
-    DocumentValueSelectorService
   ]
 })
 export class GeneratorBulkModule { }

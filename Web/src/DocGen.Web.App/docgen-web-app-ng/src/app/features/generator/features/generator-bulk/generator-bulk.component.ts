@@ -10,7 +10,6 @@ import { WizardActionsTypes, WizardBeginAction } from '../_shared';
 
 import { REDUCER_ID, DocumentActionsTypes, DocumentPublishDraftAction, DocumentUpdateConstantsAction } from './state';
 import { WizardDialogComponent } from './components/wizard-dialog/wizard-dialog.component';
-import { DocumentValueSelectorService } from './services/document-value-selector/document-value-selector.service';
 
 @Component({
   selector: 'app-generator-bulk',
@@ -29,8 +28,7 @@ export class GeneratorBulkComponent implements OnInit {
   constructor(
     private store: Store<State>,
     private actions$: Actions,
-    private matDialog: MatDialog,
-    private documentValueSelectorService: DocumentValueSelectorService
+    private matDialog: MatDialog
   ) { }
 
   ngOnInit() {

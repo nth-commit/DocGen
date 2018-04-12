@@ -4,5 +4,6 @@ export {
   GeneratorBulkDocumentState,
   Document,
   GeneratorBulkLayoutState,
-  GeneratorBulkLayoutDialogState
+  GeneratorBulkLayoutDialogState,
+  GeneratorBulkDocumentRepeatState
 } from './generator-bulk.state';

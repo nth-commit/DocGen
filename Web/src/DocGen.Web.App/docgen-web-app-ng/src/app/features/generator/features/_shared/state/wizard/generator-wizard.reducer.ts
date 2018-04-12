@@ -12,7 +12,7 @@ export function createGeneratorWizardReducer(id: string): ActionReducer<Generato
 
   function generatorWizardReducer(state: GeneratorWizardState, action: WizardAction) {
     if (action.reducerId !== id) {
-      return state;
+      return state || <GeneratorWizardState>{};
     }
     return extendState(resolveState(state, action));
   }
@@ -20,6 +20,10 @@ export function createGeneratorWizardReducer(id: string): ActionReducer<Generato
   function resolveState(state: GeneratorWizardState, action: WizardAction): GeneratorWizardState {
     switch (action.type) {
       case WizardActionsTypes.BEGIN: {
+        if (state.id) {
+          throw new Error('Wizard has already began');
+        }
+
         const { template, presets, showPresetInputs } = action.payload;
         // TODO: Validate presets!
 

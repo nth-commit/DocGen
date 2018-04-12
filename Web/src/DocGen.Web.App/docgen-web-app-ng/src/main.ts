@@ -17,6 +17,8 @@ import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/observable/empty';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/timer';
+import 'rxjs/add/observable/merge';
+import 'rxjs/add/observable/zip';
 
 const bootstrap = () => platformBrowserDynamic().bootstrapModule(AppModule).catch(err => console.log(err));
 

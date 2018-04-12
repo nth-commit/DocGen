@@ -1,7 +1,7 @@
 import { Action, MetaReducer } from '@ngrx/store';
 
-import { GeneratorBulkDocumentState, Document } from '../../../../../_shared';
-import { DocumentAction, DocumentActionsTypes, DocumentBeginAction } from './generator-bulk-documents.actions';
+import { GeneratorBulkDocumentState, GeneratorBulkDocumentRepeatState, Document } from '../../../../../_shared';
+import { DocumentAction, DocumentActionsTypes, DocumentBeginAction } from './document.actions';
 
 export function generatorBulkDocumentReducer(state: GeneratorBulkDocumentState, action: DocumentAction): GeneratorBulkDocumentState {
   switch (action.type) {
@@ -32,7 +32,8 @@ export function generatorBulkDocumentReducer(state: GeneratorBulkDocumentState, 
       return Object.assign({}, state, <GeneratorBulkDocumentState>{
         draftDocuments: state.draftDocuments.filter(d => d.id !== id),
         completedDocuments: [...state.completedDocuments, document],
-        lastCompletedDocument: document
+        lastCompletedDocument: document,
+        repeatState: repeat ? GeneratorBulkDocumentRepeatState.Started : null
       });
     }
     case DocumentActionsTypes.UPDATE_CONSTANTS: {

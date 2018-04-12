@@ -8,28 +8,39 @@ export enum LayoutActionTypes {
   CLOSE_DIALOG_END = '[Generator Bulk Layout] Close Dialog End'
 }
 
+export interface LayoutDialogActionPayload {
+  dialog: string;
+}
+
 export class LayoutOpenDialogBeginAction {
   readonly type = LayoutActionTypes.OPEN_DIALOG_BEGIN;
-  constructor(public payload: { dialog: 'wizard' }) { }
+  constructor(public payload: LayoutDialogActionPayload) { }
+}
+
+export interface LayoutOpenDialogEndActionPayload extends LayoutDialogActionPayload {
+  dialogRef: MatDialogRef<any>;
 }
 
 export class LayoutOpenDialogEndAction {
   readonly type = LayoutActionTypes.OPEN_DIALOG_END;
-  constructor(public payload: { dialogRef: MatDialogRef<any> }) { }
+  constructor(public payload: LayoutOpenDialogEndActionPayload) { }
 }
 
 export class LayoutCloseDialogBeginAction {
   readonly type = LayoutActionTypes.CLOSE_DIALOG_BEGIN;
-  constructor() { }
+  constructor(public payload: LayoutDialogActionPayload) { }
 }
 
 export class LayoutCloseDialogEndAction {
   readonly type = LayoutActionTypes.CLOSE_DIALOG_END;
-  constructor() { }
+  constructor(public payload: LayoutDialogActionPayload) { }
 }
 
-export type LayoutAction =
+export type LayoutDialogAction =
   LayoutOpenDialogBeginAction |
   LayoutOpenDialogEndAction |
   LayoutCloseDialogBeginAction |
   LayoutCloseDialogEndAction;
+
+export type LayoutAction =
+  LayoutDialogAction;
