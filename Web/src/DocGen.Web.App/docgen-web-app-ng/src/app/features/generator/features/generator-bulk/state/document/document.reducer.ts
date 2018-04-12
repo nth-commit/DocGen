@@ -25,7 +25,7 @@ export function generatorBulkDocumentReducer(state: GeneratorBulkDocumentState, 
       });
     }
     case DocumentActionsTypes.PUBLISH_DRAFT: {
-      const { id, repeat } = action.payload;
+      const { id, repeat, clearConstants } = action.payload;
 
       const document = state.draftDocuments.find(d => d.id === id);
 
@@ -33,7 +33,8 @@ export function generatorBulkDocumentReducer(state: GeneratorBulkDocumentState, 
         draftDocuments: state.draftDocuments.filter(d => d.id !== id),
         completedDocuments: [...state.completedDocuments, document],
         lastCompletedDocument: document,
-        repeatState: repeat ? GeneratorBulkDocumentRepeatState.Started : null
+        repeating: repeat,
+        constants: clearConstants ? null : state.constants
       });
     }
     case DocumentActionsTypes.UPDATE_CONSTANTS: {

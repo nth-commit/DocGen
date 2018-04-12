@@ -16,9 +16,12 @@
         [values]="values$ | async">
       </app-generator-document-values-table>
     </div>
-    <div class="repeat-creation-container">
+    <div class="repeat-options-container">
       <mat-checkbox [(ngModel)]="repeatCreation">
         Continue creating more documents after save
+      </mat-checkbox>
+      <mat-checkbox *ngIf="hasConstants$ | async" [disabled]="!repeatCreation" [(ngModel)]="clearConstants">
+        Select different values to create the next document
       </mat-checkbox>
     </div>
   </div>

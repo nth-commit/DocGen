@@ -15,7 +15,9 @@ export enum GeneratorBulkLayoutDialogState {
 }
 
 export enum GeneratorBulkDocumentRepeatState {
-  Started
+  Unknown = 0,
+  BeforeRepeat,
+  Repeating
 }
 
 export interface GeneratorBulkDocumentState {
@@ -24,7 +26,7 @@ export interface GeneratorBulkDocumentState {
   lastCompletedDocument?: Document;
   completedDocuments: Document[];
   draftDocuments: Document[];
-  repeatState?: GeneratorBulkDocumentRepeatState;
+  repeating?: boolean;
 }
 
 export interface Document {

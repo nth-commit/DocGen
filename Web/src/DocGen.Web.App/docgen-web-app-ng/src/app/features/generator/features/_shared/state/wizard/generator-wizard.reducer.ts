@@ -53,7 +53,8 @@ export function createGeneratorWizardReducer(id: string): ActionReducer<Generato
           stepIndexHistory: [],
 
           stepInputsValid,
-          values
+          values,
+          presets
         });
       }
       case WizardActionsTypes.UPDATE_VALUES: {

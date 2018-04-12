@@ -40,7 +40,7 @@ export class GeneratorBulkEffects {
     }));
 
   @Effect() onWizardUpdateValues_dispatchDocumentUpdateDraft$ = this.actions$
-    .ofType(WizardActionsTypes.BEGIN, WizardActionsTypes.UPDATE_VALUES)
+    .ofType(WizardActionsTypes.UPDATE_VALUES)
     .filter(a => a.reducerId === REDUCER_ID)
     .debounceTime(500)
     .withLatestFrom(this.store)
@@ -60,10 +60,13 @@ export class GeneratorBulkEffects {
   @Effect() onLayoutCloseDialogEnd_dispatchUpdateConstantsBegin$ = this.actions$
     .ofType<LayoutDialogAction>(LayoutActionTypes.CLOSE_DIALOG_END)
     .withLatestFrom(this.store)
-    .filter(([action, store]) =>
-      action.payload.dialog === 'wizard' &&
-      store.generatorBulk.documents.repeatState === GeneratorBulkDocumentRepeatState.Started)
-    .map(([action, store]) => new DocumentUpdateConstantsBeginAction());
+    .filter(([action, store]) => action.payload.dialog === 'wizard' && store.generatorBulk.documents.repeating)
+    .map(([action, store]) => store.generatorBulk.documents.constants ?
+      new WizardBeginAction(REDUCER_ID, {
+        template: store.generatorBulk.documents.template,
+        presets: store.generatorBulk.documents.constants
+      }) :
+      new DocumentUpdateConstantsBeginAction());
 
   @Effect() onDocumentUpdateConstantsBegin_dispatchLayoutOpenDialogBegin$ = this.actions$
     .ofType(DocumentActionsTypes.UPDATE_CONSTANTS_BEGIN)

@@ -5,6 +5,7 @@ export interface GeneratorWizardState {
 
   steps: TemplateStep[];
   allSteps: TemplateStep[];
+  presets: InputValueCollection;
 
   step: TemplateStep;
   stepIndex: number;

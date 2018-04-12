@@ -16,7 +16,6 @@ import { REDUCER_ID, generatorBulkReducer, GeneratorBulkEffects, LayoutEffects, 
 import { GeneratorBulkComponent } from './generator-bulk.component';
 import { DocumentsTableComponent } from './components/documents-table/documents-table.component';
 import { WizardDialogComponent } from './components/wizard-dialog/wizard-dialog.component';
-import { DocumentValueSelectionTableComponent } from './components/document-value-selection-table/document-value-selection-table.component';
 import { SelectConstantsDialogComponent } from './components/select-constants-dialog/select-constants-dialog.component';
 
 @NgModule({
@@ -40,7 +39,6 @@ import { SelectConstantsDialogComponent } from './components/select-constants-di
     GeneratorBulkComponent,
     DocumentsTableComponent,
     WizardDialogComponent,
-    DocumentValueSelectionTableComponent,
     SelectConstantsDialogComponent
   ],
   entryComponents: [

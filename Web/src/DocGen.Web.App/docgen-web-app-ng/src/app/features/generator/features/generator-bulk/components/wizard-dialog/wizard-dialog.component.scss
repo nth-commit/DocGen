@@ -20,6 +20,16 @@
             .document-values-container {
                 flex: 1;
             }
+
+            .repeat-options-container {
+                mat-checkbox {
+                    display: block;
+
+                    &:not(:first-child) {
+                        margin-top: 5px;
+                    }
+                }
+            }
         }
     }
 
@@ -27,6 +37,6 @@
         display: flex;
         justify-content: flex-end;
         align-items: flex-end;
-        margin-top: 30px;
+        margin-top: 24px;
     }
 }

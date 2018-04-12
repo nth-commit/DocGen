@@ -6,7 +6,6 @@ import { State } from '../../../../../_shared';
 import { DocumentUpdateConstantsAction } from '../../state/document';
 
 @Component({
-  selector: 'app-select-constants-dialog',
   templateUrl: './select-constants-dialog.component.html',
   styleUrls: ['./select-constants-dialog.component.scss']
 })

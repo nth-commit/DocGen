@@ -24,6 +24,7 @@ export class DocumentUpdateDraftAction implements Action {
 export interface DocumentPublishDraftPayload {
     id: string;
     repeat: boolean;
+    clearConstants: boolean;
 }
 
 export class DocumentPublishDraftAction implements Action {

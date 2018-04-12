@@ -10,7 +10,6 @@ import { REDUCER_ID } from '../../state/constants';
 import { DocumentPublishDraftAction } from '../../state/document';
 
 @Component({
-  selector: 'app-generator-wizard-dialog',
   templateUrl: './wizard-dialog.component.html',
   styleUrls: ['./wizard-dialog.component.scss']
 })
@@ -26,8 +25,10 @@ export class WizardDialogComponent implements OnInit {
   progress$ = this.selectFromWizard(w => w.progress);
   completed$ = this.selectFromWizard(w => w.completed);
   values$ = this.selectFromWizard(w => w.values);
+  hasConstants$ = this.selectFromWizard(w => !!w.presets);
 
   repeatCreation = true;
+  clearConstants = false;
 
   constructor(
     private store: Store<State>
@@ -65,7 +66,8 @@ export class WizardDialogComponent implements OnInit {
       .subscribe(id => {
         this.store.dispatch(new DocumentPublishDraftAction({
           id: id,
-          repeat: this.repeatCreation
+          repeat: this.repeatCreation,
+          clearConstants: this.clearConstants
         }));
       });
   }
