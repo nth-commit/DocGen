@@ -20,18 +20,12 @@ export class GeneratorBulkEffects {
   @Effect() onDocumentBegin_dispatchWizardBegin$ = this.actions$
     .ofType(DocumentActionsTypes.BEGIN)
     .withLatestFrom(this.store)
-    .switchMap(([action, state]) => {
-      const { documents } = state.generatorBulk;
-
-      if (!documents.draftDocuments.length && !documents.draftDocuments.length) {
-        return Observable.of(new WizardBeginAction(REDUCER_ID, {
-          template: documents.template,
-          presets: documents.constants
-        }));
-      }
-
-      return Observable.empty();
-    });
+    .map(([action, state]) => state.generatorBulk.documents)
+    .filter(documents => !documents.draftDocuments.length && !documents.draftDocuments.length)
+    .map(documents => new WizardBeginAction(REDUCER_ID, {
+      template: documents.template,
+      presets: documents.constants
+    }));
 
   @Effect() onWizardBegin_dispatchLayoutOpenDialogBegin$ = this.actions$
     .ofType(WizardActionsTypes.BEGIN)
@@ -82,17 +76,10 @@ export class GeneratorBulkEffects {
     .ofType<LayoutDialogAction>(LayoutActionTypes.CLOSE_DIALOG_END)
     .filter(a => a.payload.dialog === 'select-constants')
     .withLatestFrom(this.store)
-    .switchMap(([action, state]) => {
-      const { documents } = state.generatorBulk;
-
-      if (documents.constants) {
-        // TODO: Improve this. Basically checking if the last dialog was dismissed or closed.
-        return Observable.of(new WizardBeginAction(REDUCER_ID, {
-          template: documents.template,
-          presets: documents.constants
-        }));
-      }
-
-      return Observable.empty();
-    });
+    .map(([action, state]) => state.generatorBulk.documents)
+    .filter(documents => !!documents.constants) // TODO: Improve this. Basically checking if the last dialog was dismissed or closed.
+    .map(documents => new WizardBeginAction(REDUCER_ID, {
+      template: documents.template,
+      presets: documents.constants
+    }));
 }
