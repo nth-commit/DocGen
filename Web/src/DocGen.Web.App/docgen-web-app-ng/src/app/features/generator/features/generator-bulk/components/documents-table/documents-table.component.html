@@ -21,7 +21,7 @@
 
   <ng-container matColumnDef="creationTime">
     <mat-header-cell *matHeaderCellDef>Created</mat-header-cell>
-    <mat-cell *matCellDef="let document">{{ document.creationTime }}</mat-cell>
+    <mat-cell *matCellDef="let document">{{ document.creationTime | date:'fullDate' }}</mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="options">

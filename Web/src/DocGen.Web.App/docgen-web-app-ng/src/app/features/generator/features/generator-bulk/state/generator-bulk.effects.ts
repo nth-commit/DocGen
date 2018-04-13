@@ -54,6 +54,7 @@ export class GeneratorBulkEffects {
     .ofType<LayoutDialogAction>(LayoutActionTypes.CLOSE_DIALOG_END)
     .filter(action => action.payload.dialog === 'wizard')
     .withLatestFrom(this.store, (action, state) => state.generatorBulk.documents)
+    .filter(documents => documents.repeating)
     .map(documents => documents.constants ?
       new WizardBeginAction(REDUCER_ID, {
         template: documents.template,

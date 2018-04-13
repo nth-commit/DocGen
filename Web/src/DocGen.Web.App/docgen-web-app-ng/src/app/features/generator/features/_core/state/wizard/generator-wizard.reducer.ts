@@ -77,7 +77,7 @@ export function createGeneratorWizardReducer(reducerId: string): ActionReducer<G
           action.payload.values);
 
         const stepInputsValid: boolean[][] = [];
-          state.steps.forEach((step, stepIndex) => {
+        steps.forEach((step, stepIndex) => {
           const result: boolean[] = [];
 
           const skipValidation = step.conditions.some(c => {
@@ -86,7 +86,7 @@ export function createGeneratorWizardReducer(reducerId: string): ActionReducer<G
               const expectedPreviousInputValue = c.typeData.PreviousInputValue;
               const previousInputId = c.typeData.PreviousInputId;
 
-              return state.values[previousInputId] !== expectedPreviousInputValue;
+              return values[previousInputId] !== expectedPreviousInputValue;
             }
             return false;
           });
