@@ -26,7 +26,7 @@ export class SelectConstantsDialogComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.updateSelectedInputs([]);
+    this.selectedInputs$.first().subscribe(selectedInputs => this.updateSelectedInputs(selectedInputs));
   }
 
   updateSelectedInputs(selectedInputs: string[]) {

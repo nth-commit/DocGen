@@ -19,8 +19,7 @@ export class GeneratorBulkEffects {
 
   @Effect() onDocumentBegin_dispatchWizardBegin$ = this.actions$
     .ofType(DocumentActionsTypes.BEGIN)
-    .withLatestFrom(this.store)
-    .map(([action, state]) => state.generatorBulk.documents)
+    .withLatestFrom(this.store, (action, state) => state.generatorBulk.documents)
     .filter(documents => !documents.draftDocuments.length && !documents.draftDocuments.length)
     .map(documents => new WizardBeginAction(REDUCER_ID, {
       template: documents.template,
@@ -37,8 +36,8 @@ export class GeneratorBulkEffects {
     .ofType(WizardActionsTypes.UPDATE_VALUES)
     .filter(a => a.reducerId === REDUCER_ID)
     .debounceTime(500)
-    .withLatestFrom(this.store)
-    .map(([action, state]) => new DocumentUpdateDraftAction(state.generatorBulk.wizard));
+    .withLatestFrom(this.store, (action, state) => state.generatorBulk.wizard)
+    .map(wizard => new DocumentUpdateDraftAction(wizard));
 
   @Effect() onDocumentPublishDraft_dispatchLayoutCloseDialogBegin$ = this.actions$
     .ofType(DocumentActionsTypes.PUBLISH_DRAFT)
@@ -53,12 +52,12 @@ export class GeneratorBulkEffects {
 
   @Effect() onLayoutCloseDialogEnd_dispatchUpdateConstantsBegin$ = this.actions$
     .ofType<LayoutDialogAction>(LayoutActionTypes.CLOSE_DIALOG_END)
-    .withLatestFrom(this.store)
-    .filter(([action, store]) => action.payload.dialog === 'wizard' && store.generatorBulk.documents.repeating)
-    .map(([action, store]) => store.generatorBulk.documents.constants ?
+    .filter(action => action.payload.dialog === 'wizard')
+    .withLatestFrom(this.store, (action, state) => state.generatorBulk.documents)
+    .map(documents => documents.constants ?
       new WizardBeginAction(REDUCER_ID, {
-        template: store.generatorBulk.documents.template,
-        presets: store.generatorBulk.documents.constants
+        template: documents.template,
+        presets: documents.constants
       }) :
       new DocumentUpdateConstantsBeginAction());
 
@@ -68,15 +67,14 @@ export class GeneratorBulkEffects {
 
   @Effect() onDocumentUpdateConstants_dispatchLayoutCloseDialogBegin$ = this.actions$
     .ofType(DocumentActionsTypes.UPDATE_CONSTANTS, DocumentActionsTypes.UPDATE_CONSTANTS_CANCEL)
-    .withLatestFrom(this.store)
-    .filter(([action, state]) => state.generatorBulk.layout.dialog === 'select-constants')
+    .withLatestFrom(this.store, (action, state) => state.generatorBulk.layout)
+    .filter(layout => layout.dialog === 'select-constants')
     .map(() => new LayoutCloseDialogBeginAction({ dialog: 'select-constants' }));
 
   @Effect() onLayoutCloseDialogEnd_dispatchWizardBegin$ = this.actions$
     .ofType<LayoutDialogAction>(LayoutActionTypes.CLOSE_DIALOG_END)
     .filter(a => a.payload.dialog === 'select-constants')
-    .withLatestFrom(this.store)
-    .map(([action, state]) => state.generatorBulk.documents)
+    .withLatestFrom(this.store, (action, state) => state.generatorBulk.documents)
     .filter(documents => !!documents.constants) // TODO: Improve this. Basically checking if the last dialog was dismissed or closed.
     .map(documents => new WizardBeginAction(REDUCER_ID, {
       template: documents.template,
