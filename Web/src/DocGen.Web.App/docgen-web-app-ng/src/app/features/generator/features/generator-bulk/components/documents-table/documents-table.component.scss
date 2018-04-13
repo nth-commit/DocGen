@@ -1,0 +1,29 @@
+mat-table {
+
+    mat-header-row {
+        :nth-child(1) {
+            width: 45px;
+            flex: initial;
+        }
+    }
+
+    mat-row {
+        cursor: pointer;
+
+        :nth-child(1) {
+            width: 45px;
+            flex: initial;
+            overflow: visible;
+
+            &.draft {
+                font-style: italic;
+            }
+        }
+
+        :nth-child(2) {
+            &.draft {
+                font-style: italic;
+            }
+        }
+    }
+}

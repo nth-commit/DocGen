@@ -7,7 +7,8 @@ export { WizardStepNavigationComponent } from './components/wizard-step-navigati
 export {
     createGeneratorWizardReducer,
     WizardActionsTypes, WizardAction,
-    WizardBeginAction, WizardUpdateValuesAction,
+    WizardBeginAction, WizardResumeAction,
+    WizardUpdateValuesAction,
     WizardNextAction, WizardPreviousAction,
     WizardResetAction
   } from './state';

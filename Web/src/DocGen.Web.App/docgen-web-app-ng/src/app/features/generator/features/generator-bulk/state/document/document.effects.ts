@@ -4,7 +4,7 @@ import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
 
 import { State, AppAction } from '../../../../../_core';
-import { DocumentActionsTypes, DocumentPublishDraftAction, DocumentUpdateConstantsBeginAction } from './document.actions';
+import { DocumentActionsTypes, DocumentPublishDocumentAction, DocumentUpdateConstantsBeginAction } from './document.actions';
 
 let id = 0;
 

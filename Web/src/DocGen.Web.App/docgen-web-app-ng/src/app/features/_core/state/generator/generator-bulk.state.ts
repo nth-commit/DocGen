@@ -30,11 +30,14 @@ export interface GeneratorBulkDocumentState {
   repeating?: boolean;
   lastCompletedDocument?: Document;
   lastConstants?: InputValueCollection;
+  documentsById?: Map<string, Document>;
 }
 
 export interface Document {
   id: string;
   values: InputValueCollection;
+  constants?: InputValueCollection;
+  creationTime?: Date;
 }
 
 export interface GeneratorBulkState {

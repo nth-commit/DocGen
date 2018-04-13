@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { State, AppAction, GeneratorBulkDocumentRepeatState } from '../../../../_core';
 import { WizardActionsTypes, WizardBeginAction, WizardResetAction } from '../../_core';
-import { DocumentActionsTypes, DocumentBeginAction, DocumentUpdateDraftAction, DocumentUpdateConstantsBeginAction } from './document';
+import { DocumentActionsTypes, DocumentBeginAction, DocumentUpdateDocumentAction, DocumentUpdateConstantsBeginAction } from './document';
 import { LayoutActionTypes, LayoutDialogAction, LayoutOpenDialogBeginAction, LayoutCloseDialogBeginAction } from './layout';
 import { REDUCER_ID } from './constants';
 
@@ -27,7 +27,7 @@ export class GeneratorBulkEffects {
     }));
 
   @Effect() onWizardBegin_dispatchLayoutOpenDialogBegin$ = this.actions$
-    .ofType(WizardActionsTypes.BEGIN)
+    .ofType(WizardActionsTypes.BEGIN, WizardActionsTypes.RESUME)
     .map(() => new LayoutOpenDialogBeginAction({
       dialog: 'wizard'
     }));
@@ -37,10 +37,10 @@ export class GeneratorBulkEffects {
     .filter(a => a.reducerId === REDUCER_ID)
     .debounceTime(500)
     .withLatestFrom(this.store, (action, state) => state.generatorBulk.wizard)
-    .map(wizard => new DocumentUpdateDraftAction(wizard));
+    .map(wizard => new DocumentUpdateDocumentAction(wizard));
 
   @Effect() onDocumentPublishDraft_dispatchLayoutCloseDialogBegin$ = this.actions$
-    .ofType(DocumentActionsTypes.PUBLISH_DRAFT)
+    .ofType(DocumentActionsTypes.PUBLISH_DOCUMENT)
     .map(() => new LayoutCloseDialogBeginAction({
       dialog: 'wizard'
     }));

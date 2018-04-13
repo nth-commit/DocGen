@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-
 import { Observable } from 'rxjs/Observable';
 
 import { State } from '../../../_core';
+import { WizardResumeAction } from '../_core';
+import { REDUCER_ID } from './state';
 
 @Component({
   selector: 'app-generator-bulk',
@@ -21,6 +22,20 @@ export class GeneratorBulkComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+  }
 
+  onDocumentClicked(documentId: string) {
+    this.store
+      .select(s => s.generatorBulk.documents)
+      .first()
+      .subscribe(documents => {
+        const document = documents.documentsById.get(documentId);
+        this.store.dispatch(new WizardResumeAction(REDUCER_ID, {
+          id: documentId,
+          template: documents.template,
+          presets: document.constants,
+          values: document.values
+        }));
+      });
   }
 }

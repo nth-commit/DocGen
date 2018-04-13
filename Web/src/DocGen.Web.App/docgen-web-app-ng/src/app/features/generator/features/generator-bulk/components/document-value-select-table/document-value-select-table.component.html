@@ -3,20 +3,18 @@
   <ng-container matColumnDef="selected">
     <mat-header-cell *matHeaderCellDef></mat-header-cell>
     <mat-cell *matCellDef="let input">
-      <div>
-        <mat-checkbox (change)="onChange(input.id, $event)" [checked]="inputSelectedById[input.id]"></mat-checkbox>
-      </div>
+      <mat-checkbox (change)="onChange(input.id, $event)" [checked]="inputSelectedById[input.id]"></mat-checkbox>
     </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="name">
     <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
-    <mat-cell *matCellDef="let input">{{input.name}}</mat-cell>
+    <mat-cell *matCellDef="let input">{{ input.name }}</mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="value">
     <mat-header-cell *matHeaderCellDef>Value</mat-header-cell>
-    <mat-cell *matCellDef="let input">{{input.value}}</mat-cell>
+    <mat-cell *matCellDef="let input">{{ input.value }}</mat-cell>
   </ng-container>
 
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

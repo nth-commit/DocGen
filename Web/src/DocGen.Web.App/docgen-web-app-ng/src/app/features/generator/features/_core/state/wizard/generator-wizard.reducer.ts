@@ -8,10 +8,10 @@ import {
 import { GeneratorWizardState } from '../../../../../_core';
 import { WizardActionsTypes, WizardAction, WizardBeginAction, WizardResetAction } from './generator-wizard.actions';
 
-export function createGeneratorWizardReducer(id: string): ActionReducer<GeneratorWizardState, WizardAction> {
+export function createGeneratorWizardReducer(reducerId: string): ActionReducer<GeneratorWizardState, WizardAction> {
 
   function generatorWizardReducer(state: GeneratorWizardState, action: WizardAction) {
-    if (action.reducerId !== id) {
+    if (action.reducerId !== reducerId) {
       return state || <GeneratorWizardState>{};
     }
     return extendState(resolveState(state, action));
@@ -46,6 +46,60 @@ export function createGeneratorWizardReducer(id: string): ActionReducer<Generato
 
         return Object.assign({}, state, <GeneratorWizardState>{
           id: new Date().getTime().toString(),
+
+          steps,
+          allSteps,
+          stepIndex: 0,
+          stepIndexHistory: [],
+
+          stepInputsValid,
+          values,
+          presets
+        });
+      }
+      case WizardActionsTypes.RESUME: {
+        const { template, presets, showPresetInputs, id } = action.payload;
+
+        const fistStepIndexWithSignedCondition = template.steps.findIndex(s =>
+          s.conditions.some(c => c.type === TemplateStepConditionType.IsDocumentSigned));
+
+        const allSteps = template.steps.slice(0, fistStepIndexWithSignedCondition);
+
+        const steps = allSteps
+          .map(s => Object.assign({}, s, <TemplateStep>{
+            inputs: s.inputs.filter(i => !presets || showPresetInputs || !(i.id in presets))
+          }))
+          .filter(s => s.inputs.length);
+
+        const values = Object.assign(
+          InputValueCollectionUtility.fromSteps(steps),
+          presets || {},
+          action.payload.values);
+
+        const stepInputsValid: boolean[][] = [];
+          state.steps.forEach((step, stepIndex) => {
+          const result: boolean[] = [];
+
+          const skipValidation = step.conditions.some(c => {
+            if (c.type === TemplateStepConditionType.EqualsPreviousInputValue) {
+              // Skip if values do not match.
+              const expectedPreviousInputValue = c.typeData.PreviousInputValue;
+              const previousInputId = c.typeData.PreviousInputId;
+
+              return state.values[previousInputId] !== expectedPreviousInputValue;
+            }
+            return false;
+          });
+
+          step.inputs.forEach((input, inputIndex) => {
+            result[inputIndex] = skipValidation || (values[input.id] !== undefined && values[input.id] !== null);
+          });
+
+          stepInputsValid[stepIndex] = result;
+        });
+
+        return Object.assign({}, state, <GeneratorWizardState>{
+          id,
 
           steps,
           allSteps,

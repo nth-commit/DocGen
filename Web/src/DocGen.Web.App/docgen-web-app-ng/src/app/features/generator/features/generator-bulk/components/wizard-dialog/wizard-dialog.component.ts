@@ -7,7 +7,7 @@ import { InputValueCollection, TemplateStep } from '../../../../../_core';
 import { State, GeneratorWizardState } from '../../../../../_core';
 import { WizardUpdateValuesAction, WizardNextAction, WizardPreviousAction } from '../../../_core';
 import { REDUCER_ID } from '../../state/constants';
-import { DocumentPublishDraftAction } from '../../state/document';
+import { DocumentPublishDocumentAction } from '../../state/document';
 
 @Component({
   templateUrl: './wizard-dialog.component.html',
@@ -64,7 +64,7 @@ export class WizardDialogComponent implements OnInit {
       .select(s => s.generatorBulk.wizard.id)
       .first()
       .subscribe(id => {
-        this.store.dispatch(new DocumentPublishDraftAction({
+        this.store.dispatch(new DocumentPublishDocumentAction({
           id: id,
           repeat: this.repeatCreation,
           clearConstants: this.clearConstants

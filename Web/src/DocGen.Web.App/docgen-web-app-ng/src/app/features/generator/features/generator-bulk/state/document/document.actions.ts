@@ -5,8 +5,9 @@ import { GeneratorWizardState } from '../../../../../_core';
 
 export enum DocumentActionsTypes {
     BEGIN = '[Generator Bulk Document] Begin',
-    UPDATE_DRAFT = '[Generator Bulk Document] Update Draft',
-    PUBLISH_DRAFT = '[Generator Bulk Document] Publish Draft',
+    UPDATE_DOCUMENT = '[Generator Bulk Document] Update Draft',
+    PUBLISH_DOCUMENT = '[Generator Bulk Document] Publish Draft',
+    EDIT_DOCUMENT = '[Generator Bulk Document] Edit Document',
     UPDATE_CONSTANTS = '[Generator Bulk Document] Update Constants',
     UPDATE_CONSTANTS_BEGIN = '[Generator Bulk Document] Update Constants Begin',
     UPDATE_CONSTANTS_CANCEL = '[Generator Bulk Document] Update Constants Cancel'
@@ -17,20 +18,20 @@ export class DocumentBeginAction implements Action {
     constructor(public payload: Template) { }
 }
 
-export class DocumentUpdateDraftAction implements Action {
-    readonly type = DocumentActionsTypes.UPDATE_DRAFT;
+export class DocumentUpdateDocumentAction implements Action {
+    readonly type = DocumentActionsTypes.UPDATE_DOCUMENT;
     constructor(public payload: GeneratorWizardState) { }
 }
 
-export interface DocumentPublishDraftPayload {
+export interface DocumentPublishDocumentPayload {
     id: string;
     repeat: boolean;
     clearConstants: boolean;
 }
 
-export class DocumentPublishDraftAction implements Action {
-    readonly type = DocumentActionsTypes.PUBLISH_DRAFT;
-    constructor(public payload: DocumentPublishDraftPayload) { }
+export class DocumentPublishDocumentAction implements Action {
+    readonly type = DocumentActionsTypes.PUBLISH_DOCUMENT;
+    constructor(public payload: DocumentPublishDocumentPayload) { }
 }
 
 export class DocumentUpdateConstantsAction implements Action {
@@ -50,8 +51,8 @@ export class DocumentUpdateConstantsCancelAction implements Action {
 
 export type DocumentAction =
     DocumentBeginAction |
-    DocumentUpdateDraftAction |
-    DocumentPublishDraftAction |
+    DocumentUpdateDocumentAction |
+    DocumentPublishDocumentAction |
     DocumentUpdateConstantsAction |
     DocumentUpdateConstantsBeginAction |
     DocumentUpdateConstantsCancelAction;

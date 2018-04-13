@@ -5,18 +5,39 @@ import { Template, InputValueCollection } from '../../../../../_core';
 import { AppAction } from '../../../../../_core';
 
 export enum WizardActionsTypes {
-    BEGIN = '[Wizard2] Begin',
-    UPDATE_VALUES = '[Wizard2] Update Values',
-    RESET = '[Wizard2] Reset',
-    NEXT = '[Wizard2] Next Step',
-    PREVIOUS = '[Wizard2] Previous Step'
+    BEGIN = '[Generator Wizard] Begin',
+    RESUME = '[Generator Wizard] Resume',
+    UPDATE_VALUES = '[Generator Wizard] Update Values',
+    RESET = '[Generator Wizard] Reset',
+    NEXT = '[Generator Wizard] Next Step',
+    PREVIOUS = '[Generator Wizard] Previous Step'
+}
+
+export interface WizardBeginActionPayload {
+    template: Template;
+    presets?: InputValueCollection;
+    showPresetInputs?: boolean;
 }
 
 export class WizardBeginAction implements AppAction {
     readonly type = WizardActionsTypes.BEGIN;
     constructor(
         public reducerId: string,
-        public payload: { template: Template, presets?: InputValueCollection, showPresetInputs?: boolean }) { }
+        public payload: WizardBeginActionPayload
+    ) { }
+}
+
+export interface WizardResumeActionPayload extends WizardBeginActionPayload {
+    id: string;
+    values: InputValueCollection;
+}
+
+export class WizardResumeAction implements AppAction {
+    readonly type = WizardActionsTypes.RESUME;
+    constructor(
+        public reducerId: string,
+        public payload: WizardResumeActionPayload
+    ) { }
 }
 
 export class WizardUpdateValuesAction implements AppAction {
@@ -41,6 +62,7 @@ export class WizardPreviousAction implements AppAction {
 
 export type WizardAction =
     WizardBeginAction |
+    WizardResumeAction |
     WizardUpdateValuesAction |
     WizardResetAction |
     WizardNextAction |

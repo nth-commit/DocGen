@@ -35,26 +35,7 @@ export function generatorBulkLayoutReducer(state: GeneratorBulkLayoutState, acti
         dialogState: GeneratorBulkLayoutDialogState.Opened
       });
     }
-    case (LayoutActionTypes.CLOSE_DIALOG_BEGIN): {
-      assertDialog(action.payload.dialog);
-      assertDialogState(GeneratorBulkLayoutDialogState.Opened);
-
-      state.dialogRef.close();
-
-      return Object.assign({}, state, <GeneratorBulkLayoutState>{
-        dialogRef: null,
-        dialogState: GeneratorBulkLayoutDialogState.Closing
-      });
-    }
-    case (LayoutActionTypes.CLOSE_DIALOG_END): {
-      assertDialog(action.payload.dialog);
-      assertDialogState(GeneratorBulkLayoutDialogState.Closing);
-
-      return Object.assign({}, state, <GeneratorBulkLayoutState>{
-        dialog: null,
-        dialogState: null
-      });
-    }
+    case (LayoutActionTypes.CLOSE_DIALOG_BEGIN):
     case (LayoutActionTypes.CANCEL_DIALOG_BEGIN): {
       assertDialog(action.payload.dialog);
       assertDialogState(GeneratorBulkLayoutDialogState.Opened);
@@ -63,12 +44,20 @@ export function generatorBulkLayoutReducer(state: GeneratorBulkLayoutState, acti
 
       return Object.assign({}, state, <GeneratorBulkLayoutState>{
         dialogRef: null,
-        dialogState: GeneratorBulkLayoutDialogState.Cancelling
+        dialogState: action.type === LayoutActionTypes.CLOSE_DIALOG_BEGIN ?
+          GeneratorBulkLayoutDialogState.Closing :
+          GeneratorBulkLayoutDialogState.Cancelling
       });
     }
+    case (LayoutActionTypes.CLOSE_DIALOG_END):
     case (LayoutActionTypes.CANCEL_DIALOG_END): {
       assertDialog(action.payload.dialog);
-      assertDialogState(GeneratorBulkLayoutDialogState.Cancelling);
+
+      if (action.type === LayoutActionTypes.CLOSE_DIALOG_END) {
+        assertDialogState(GeneratorBulkLayoutDialogState.Closing);
+      } else {
+        assertDialogState(GeneratorBulkLayoutDialogState.Cancelling);
+      }
 
       return Object.assign({}, state, <GeneratorBulkLayoutState>{
         dialog: null,

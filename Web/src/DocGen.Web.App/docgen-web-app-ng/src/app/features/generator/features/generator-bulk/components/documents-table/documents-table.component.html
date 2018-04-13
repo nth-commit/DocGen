@@ -1,2 +1,39 @@
+<mat-table [dataSource]="documents">
+
+  <ng-container matColumnDef="selected">
+    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+    <mat-cell *matCellDef="let document" [ngClass]="{ 'draft': !document.creationTime }">
+      <mat-checkbox *ngIf="document.creationTime" (change)="onChange(document.id, $event)" [checked]="documentsSelectedById[document.id]"></mat-checkbox>
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="title">
+    <mat-header-cell *matHeaderCellDef>Title</mat-header-cell>
+    <mat-cell *matCellDef="let document" ngClass="{ 'draft': !document.creationTime }">{{ 'Title' }}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="values">
+    <mat-header-cell *matHeaderCellDef>Values</mat-header-cell>
+    <mat-cell *matCellDef="let document">{{ document.values }}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="creationTime">
+    <mat-header-cell *matHeaderCellDef>Created</mat-header-cell>
+    <mat-cell *matCellDef="let document">{{ document.creationTime }}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="options">
+    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+    <mat-cell *matCellDef="let document">{{ 'Options' }}</mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row
+    *matRowDef="let document; columns: displayedColumns;"
+    (click)="openDocumentWizard(document)">
+  </mat-row>
+
+</mat-table>
+
 <pre>{{ completedDocuments | json }}</pre>
 <pre>{{ draftDocuments | json }}</pre>
