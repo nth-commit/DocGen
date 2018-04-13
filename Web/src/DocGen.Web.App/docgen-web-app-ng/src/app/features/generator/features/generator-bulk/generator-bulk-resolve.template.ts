@@ -7,8 +7,8 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
 import { getAppSettings } from '../../../../app.settings';
-import { TemplateService, Template } from '../../../core';
-import { State } from '../../../_shared';
+import { TemplateService, Template } from '../../../_core';
+import { State } from '../../../_core';
 
 import { DocumentBeginAction, DocumentUpdateConstantsAction } from './state';
 

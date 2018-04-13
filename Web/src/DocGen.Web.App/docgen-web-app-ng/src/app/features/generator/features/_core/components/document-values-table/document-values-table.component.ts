@@ -1,6 +1,6 @@
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
 
-import { TemplateStep, TemplateUtility, InputValueCollection, InputValueCollectionUtility } from '../../../../../core';
+import { TemplateStep, TemplateUtility, InputValueCollection, InputValueCollectionUtility } from '../../../../../_core';
 
 @Component({
   selector: 'app-generator-document-values-table',

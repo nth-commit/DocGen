@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-import { TemplateSelectDialogComponent, Template, TemplateService } from '../core';
+import { TemplateSelectDialogComponent, Template, TemplateService } from '../_core';
 
 declare type GenerationMode = 'single' | 'bulk';
 

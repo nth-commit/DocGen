@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule, MatCardModule, MatDialogModule } from '@angular/material';
 
-import { CoreModule } from '../core';
+import { CoreModule } from '../_core';
 import { GeneratorBulkModule } from './features/generator-bulk';
 
 import { GeneratorRoutingModule } from './generator-routing.module';

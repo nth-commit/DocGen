@@ -1,6 +1,6 @@
 import { Action, MetaReducer } from '@ngrx/store';
 
-import { GeneratorBulkLayoutState, GeneratorBulkLayoutDialogState } from '../../../../../_shared';
+import { GeneratorBulkLayoutState, GeneratorBulkLayoutDialogState } from '../../../../../_core';
 import { LayoutAction, LayoutActionTypes } from './layout.actions';
 
 export function generatorBulkLayoutReducer(state: GeneratorBulkLayoutState, action: LayoutAction): GeneratorBulkLayoutState {
@@ -49,6 +49,26 @@ export function generatorBulkLayoutReducer(state: GeneratorBulkLayoutState, acti
     case (LayoutActionTypes.CLOSE_DIALOG_END): {
       assertDialog(action.payload.dialog);
       assertDialogState(GeneratorBulkLayoutDialogState.Closing);
+
+      return Object.assign({}, state, <GeneratorBulkLayoutState>{
+        dialog: null,
+        dialogState: null
+      });
+    }
+    case (LayoutActionTypes.CANCEL_DIALOG_BEGIN): {
+      assertDialog(action.payload.dialog);
+      assertDialogState(GeneratorBulkLayoutDialogState.Opened);
+
+      state.dialogRef.close();
+
+      return Object.assign({}, state, <GeneratorBulkLayoutState>{
+        dialogRef: null,
+        dialogState: GeneratorBulkLayoutDialogState.Cancelling
+      });
+    }
+    case (LayoutActionTypes.CANCEL_DIALOG_END): {
+      assertDialog(action.payload.dialog);
+      assertDialogState(GeneratorBulkLayoutDialogState.Cancelling);
 
       return Object.assign({}, state, <GeneratorBulkLayoutState>{
         dialog: null,

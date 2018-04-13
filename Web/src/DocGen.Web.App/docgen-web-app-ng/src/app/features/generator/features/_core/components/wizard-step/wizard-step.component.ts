@@ -5,7 +5,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/observable/combineLatest';
 
-import { TemplateStep, TemplateStepInput, InputValueCollection, InputValue, InputValueCollectionUtility } from '../../../../../core';
+import { TemplateStep, TemplateStepInput, InputValueCollection, InputValue, InputValueCollectionUtility } from '../../../../../_core';
 
 @Component({
   selector: 'app-generator-wizard-step',

@@ -4,7 +4,7 @@ import { Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from '@a
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
-import { TemplateService, Template } from '../../../core';
+import { TemplateService, Template } from '../../../_core';
 
 @Injectable()
 export class TemplateResolve implements Resolve<Template> {

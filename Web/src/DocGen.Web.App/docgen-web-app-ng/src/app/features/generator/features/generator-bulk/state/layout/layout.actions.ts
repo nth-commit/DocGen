@@ -5,7 +5,9 @@ export enum LayoutActionTypes {
   OPEN_DIALOG_BEGIN = '[Generator Bulk Layout] Open Dialog Begin',
   OPEN_DIALOG_END = '[Generator Bulk Layout] Open Dialog End',
   CLOSE_DIALOG_BEGIN = '[Generator Bulk Layout] Close Dialog Begin',
-  CLOSE_DIALOG_END = '[Generator Bulk Layout] Close Dialog End'
+  CLOSE_DIALOG_END = '[Generator Bulk Layout] Close Dialog End',
+  CANCEL_DIALOG_BEGIN = '[Generator Bulk Layout] Cancel Dialog Begin',
+  CANCEL_DIALOG_END = '[Generator Bulk Layout] Cancel Dialog End'
 }
 
 export interface LayoutDialogActionPayload {
@@ -36,11 +38,23 @@ export class LayoutCloseDialogEndAction {
   constructor(public payload: LayoutDialogActionPayload) { }
 }
 
+export class LayoutCancelDialogBeginAction {
+  readonly type = LayoutActionTypes.CANCEL_DIALOG_BEGIN;
+  constructor(public payload: LayoutDialogActionPayload) { }
+}
+
+export class LayoutCancelDialogEndAction {
+  readonly type = LayoutActionTypes.CANCEL_DIALOG_END;
+  constructor(public payload: LayoutDialogActionPayload) { }
+}
+
 export type LayoutDialogAction =
   LayoutOpenDialogBeginAction |
   LayoutOpenDialogEndAction |
   LayoutCloseDialogBeginAction |
-  LayoutCloseDialogEndAction;
+  LayoutCloseDialogEndAction |
+  LayoutCancelDialogBeginAction |
+  LayoutCancelDialogEndAction;
 
 export type LayoutAction =
   LayoutDialogAction;

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material';
 
-import { InputValueCollection, TemplateStep, InputValueCollectionUtility, TemplateUtility } from '../../../../../core';
+import { InputValueCollection, TemplateStep, InputValueCollectionUtility, TemplateUtility } from '../../../../../_core';
 import { ENGINE_METHOD_DIGESTS } from 'constants';
 
 @Component({

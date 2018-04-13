@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
 
-import { State, AppAction } from '../../../../../_shared';
+import { State, AppAction } from '../../../../../_core';
 import { DocumentActionsTypes, DocumentPublishDraftAction, DocumentUpdateConstantsBeginAction } from './document.actions';
 
 let id = 0;

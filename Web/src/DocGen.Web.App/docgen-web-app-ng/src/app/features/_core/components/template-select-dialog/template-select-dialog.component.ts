@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { MatAutocompleteTrigger, MatDialogRef } from '@angular/material';
 
-import { Template } from '../../../core';
+import { Template } from '../../../_core';
 
 @Component({
   selector: 'app-core-template-select-dialog',

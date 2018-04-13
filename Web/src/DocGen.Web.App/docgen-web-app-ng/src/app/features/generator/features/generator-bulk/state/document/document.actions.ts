@@ -1,7 +1,7 @@
 import { Action } from '@ngrx/store';
 
-import { Template, InputValueCollection } from '../../../../../core';
-import { GeneratorWizardState } from '../../../../../_shared';
+import { Template, InputValueCollection } from '../../../../../_core';
+import { GeneratorWizardState } from '../../../../../_core';
 
 export enum DocumentActionsTypes {
     BEGIN = '[Generator Bulk Document] Begin',

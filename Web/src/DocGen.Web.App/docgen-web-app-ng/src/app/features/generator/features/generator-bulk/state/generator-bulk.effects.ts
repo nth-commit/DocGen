@@ -3,8 +3,8 @@ import { Store } from '@ngrx/store';
 import { Actions, Effect } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
 
-import { State, AppAction, GeneratorBulkDocumentRepeatState } from '../../../../_shared';
-import { WizardActionsTypes, WizardBeginAction, WizardResetAction } from '../../_shared';
+import { State, AppAction, GeneratorBulkDocumentRepeatState } from '../../../../_core';
+import { WizardActionsTypes, WizardBeginAction, WizardResetAction } from '../../_core';
 import { DocumentActionsTypes, DocumentBeginAction, DocumentUpdateDraftAction, DocumentUpdateConstantsBeginAction } from './document';
 import { LayoutActionTypes, LayoutDialogAction, LayoutOpenDialogBeginAction, LayoutCloseDialogBeginAction } from './layout';
 import { REDUCER_ID } from './constants';

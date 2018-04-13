@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
-import { Template, LocalStorageDocumentService, DocumentCreate } from '../../../core';
+import { Template, LocalStorageDocumentService, DocumentCreate } from '../../../_core';
 import { TextDocumentResult, SerializableDocumentResult, DocumentType } from '../../models';
 
 import { SignDocumentModalComponent } from '../../components/sign-document-modal/sign-document-modal.component';

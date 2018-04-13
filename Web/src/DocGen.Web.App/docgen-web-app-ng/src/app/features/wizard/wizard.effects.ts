@@ -12,7 +12,7 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/withLatestFrom';
 
 import { State, WizardActionTypes, Complete, ClearValues } from './reducers';
-import { RouteChangeService } from '../core';
+import { RouteChangeService } from '../_core';
 
 @Injectable()
 export class WizardEffects {

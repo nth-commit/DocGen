@@ -12,7 +12,7 @@ import { environment } from '../../../../environments/environment';
 import {
   Template, TemplateStep, TemplateStepInput, TemplateStepConditionType,
   InputValue, InputValueCollection, InputValueCollectionUtility
-} from '../../core';
+} from '../../_core';
 
 export enum WizardActionTypes {
   REFRESH = '[Wizard] Refresh',

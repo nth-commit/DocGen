@@ -1,4 +1,4 @@
-import { SerializableDocument } from '../../../core';
+import { SerializableDocument } from '../../../_core';
 import { DocumentType } from '../../models';
 
 export interface IDocumentRenderer {

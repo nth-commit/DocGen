@@ -1,8 +1,8 @@
 import { Action } from '@ngrx/store';
 
-import { Template, InputValueCollection } from '../../../../../core';
+import { Template, InputValueCollection } from '../../../../../_core';
 
-import { AppAction } from '../../../../../_shared';
+import { AppAction } from '../../../../../_core';
 
 export enum WizardActionsTypes {
     BEGIN = '[Wizard2] Begin',

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, ViewEncapsulation } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
-import { HtmlDocument } from '../../../core';
+import { HtmlDocument } from '../../../_core';
 
 @Component({
   selector: 'app-document-viewer-html-document',

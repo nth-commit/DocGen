@@ -2,7 +2,7 @@ import * as PDFDocument from '../../../../../../../../thirdparty/pdfkit';
 import * as blobStream from '../../../../../../../../thirdparty/blob-stream';
 import * as PDFKit from 'pdfkit';
 
-import { SerializableDocument } from '../../../../../../core';
+import { SerializableDocument } from '../../../../../../_core';
 
 import { IDocumentBuilderV1 } from '../../document-builder-v1.interface';
 

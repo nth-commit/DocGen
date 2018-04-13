@@ -1,4 +1,4 @@
-import { SerializableDocument, InputValueCollection, HtmlDocument } from '../../core';
+import { SerializableDocument, InputValueCollection, HtmlDocument } from '../../_core';
 
 export type DocumentType = 'text' | 'pdf' | 'html';
 

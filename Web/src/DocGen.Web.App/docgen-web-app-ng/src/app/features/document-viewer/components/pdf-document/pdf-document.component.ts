@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 import { DocumentRenderingService } from '../../services/document-rendering/document-rendering.service';
-import { SerializableDocument } from '../../../core';
+import { SerializableDocument } from '../../../_core';
 
 @Component({
   selector: 'app-document-viewer-pdf-document',

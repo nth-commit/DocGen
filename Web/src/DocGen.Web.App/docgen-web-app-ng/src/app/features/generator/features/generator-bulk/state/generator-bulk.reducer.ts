@@ -1,8 +1,8 @@
 import { combineReducers, Action } from '@ngrx/store';
 
-import { GeneratorBulkState } from '../../../../_shared';
+import { GeneratorBulkState } from '../../../../_core';
 
-import { createGeneratorWizardReducer } from '../../_shared';
+import { createGeneratorWizardReducer } from '../../_core';
 import { generatorBulkLayoutReducer } from './layout';
 import { generatorBulkDocumentReducer } from './document';
 import { REDUCER_ID } from './constants';

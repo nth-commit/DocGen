@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
 import { getAppSettings } from '../../../../app.settings';
-import { InputValueCollection, SerializableDocument, HtmlDocument } from '../../../core';
+import { InputValueCollection, SerializableDocument, HtmlDocument } from '../../../_core';
 import { DocumentResult, SerializableDocumentResult, TextDocumentResult, DocumentType, HtmlDocumentResult } from '../../models';
 
 @Injectable()

@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/first';
 
-import { Template, InputValueCollection } from '../../../core';
+import { Template, InputValueCollection } from '../../../_core';
 
 import { State, UpdateValues, NextStep, PreviousStep, Complete } from '../../reducers';
 

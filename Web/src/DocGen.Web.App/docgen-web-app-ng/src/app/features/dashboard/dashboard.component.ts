@@ -4,7 +4,7 @@ import { MatDialog, MatDialogRef } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromPromise';
 
-import { TemplateService, Template } from '../core';
+import { TemplateService, Template } from '../_core';
 import { TemplateSelectDialogComponent } from './components/template-select-dialog/template-select-dialog.component';
 
 @Component({

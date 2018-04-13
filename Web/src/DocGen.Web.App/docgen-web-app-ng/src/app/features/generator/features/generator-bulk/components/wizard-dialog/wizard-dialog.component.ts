@@ -3,9 +3,9 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-import { InputValueCollection, TemplateStep } from '../../../../../core';
-import { State, GeneratorWizardState } from '../../../../../_shared';
-import { WizardUpdateValuesAction, WizardNextAction, WizardPreviousAction } from '../../../_shared';
+import { InputValueCollection, TemplateStep } from '../../../../../_core';
+import { State, GeneratorWizardState } from '../../../../../_core';
+import { WizardUpdateValuesAction, WizardNextAction, WizardPreviousAction } from '../../../_core';
 import { REDUCER_ID } from '../../state/constants';
 import { DocumentPublishDraftAction } from '../../state/document';
 

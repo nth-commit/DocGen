@@ -3,9 +3,9 @@ import { Action, ActionReducer } from '@ngrx/store';
 import {
   Template, TemplateStep, TemplateStepInput, TemplateStepConditionType,
   InputValueCollection, InputValueCollectionUtility
-} from '../../../../../core';
+} from '../../../../../_core';
 
-import { GeneratorWizardState } from '../../../../../_shared';
+import { GeneratorWizardState } from '../../../../../_core';
 import { WizardActionsTypes, WizardAction, WizardBeginAction, WizardResetAction } from './generator-wizard.actions';
 
 export function createGeneratorWizardReducer(id: string): ActionReducer<GeneratorWizardState, WizardAction> {

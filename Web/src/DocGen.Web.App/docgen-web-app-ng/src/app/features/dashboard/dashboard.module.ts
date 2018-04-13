@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule, MatDialogModule, MatAutocompleteModule, MatFormFieldModule, MatInputModule } from '@angular/material';
 
-import { CoreModule } from '../core';
+import { CoreModule } from '../_core';
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';

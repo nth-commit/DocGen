@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { SerializableDocument } from '../../../core';
+import { SerializableDocument } from '../../../_core';
 import { DocumentType } from '../../models';
 
 import { IDocumentRenderer } from './document-renderer.interface';

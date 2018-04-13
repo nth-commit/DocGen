@@ -7,7 +7,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
 import { getAppSettings } from '../../../../app.settings';
-import { TemplateService, Template } from '../../../core';
+import { TemplateService, Template } from '../../../_core';
 import { State, WizardState, Refresh, Begin, BeginPayload, WizardMode } from '../../reducers';
 
 @Injectable()

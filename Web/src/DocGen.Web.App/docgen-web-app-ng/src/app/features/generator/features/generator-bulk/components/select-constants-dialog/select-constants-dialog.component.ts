@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 
-import { InputValueCollection, TemplateStep } from '../../../../../core';
-import { State } from '../../../../../_shared';
+import { InputValueCollection, TemplateStep } from '../../../../../_core';
+import { State } from '../../../../../_core';
 import { DocumentUpdateConstantsAction, DocumentUpdateConstantsCancelAction } from '../../state/document';
 
 @Component({

@@ -5,13 +5,15 @@ import { Actions, Effect } from '@ngrx/effects';
 import { RouterReducerState, ROUTER_NAVIGATION } from '@ngrx/router-store';
 import { Observable } from 'rxjs/Observable';
 
-import { State, AppAction, GeneratorBulkLayoutDialogState } from '../../../../../_shared';
+import { State, AppAction, GeneratorBulkLayoutDialogState } from '../../../../../_core';
 import {
   LayoutActionTypes,
   LayoutOpenDialogBeginAction,
   LayoutOpenDialogEndAction,
   LayoutCloseDialogBeginAction,
-  LayoutCloseDialogEndAction
+  LayoutCloseDialogEndAction,
+  LayoutCancelDialogBeginAction,
+  LayoutCancelDialogEndAction
 } from './layout.actions';
 
 import { WizardDialogComponent } from '../../components/wizard-dialog/wizard-dialog.component';
@@ -62,6 +64,7 @@ export class LayoutEffects {
         .first()
         .subscribe(() => {
           const dialogRef = this.matDialog.open(dialogOpenArgs.componentType, dialogOpenArgs.config);
+          dialogRef.disableClose = true;
 
           dialogRef.afterOpen()
             .first()
@@ -69,26 +72,26 @@ export class LayoutEffects {
               this.store.dispatch(new LayoutOpenDialogEndAction({ dialog: action.payload.dialog, dialogRef }));
             });
 
+          Observable
+            .race<Event>(
+              dialogRef.keydownEvents().filter(e => e.keyCode === 27),
+              dialogRef.backdropClick())
+            .withLatestFrom(this.store, (_, state) => state.generatorBulk.layout)
+            .subscribe(layout => {
+              this.store.dispatch(new LayoutCancelDialogBeginAction({ dialog: layout.dialog }));
+            });
+
           dialogRef.afterClosed()
             .first()
             .debounceTime(100)
-            .subscribe(() => {
-              this.store
-                .select(s => s.generatorBulk.layout)
-                .first()
-                .subscribe(layout => {
-                  if (layout.dialogState !== GeneratorBulkLayoutDialogState.Closing) {
-                    this.store.dispatch(new LayoutCloseDialogBeginAction({ dialog: layout.dialog }));
-                  }
-
-                  this.store.dispatch(new LayoutCloseDialogEndAction({ dialog: layout.dialog }));
-                });
+            .withLatestFrom(this.store, (_, state) => state.generatorBulk.layout)
+            .subscribe(layout => {
+              if (layout.dialogState === GeneratorBulkLayoutDialogState.Closing) {
+                this.store.dispatch(new LayoutCloseDialogEndAction({ dialog: layout.dialog }));
+              } else {
+                this.store.dispatch(new LayoutCancelDialogEndAction({ dialog: layout.dialog }));
+              }
             });
         });
     });
-
-    // @Effect() onCloseDialogBegin_closeDialogEnd$ = this.actions$
-    //   .ofType<LayoutCloseDialogBeginAction>(LayoutActionTypes.CLOSE_DIALOG_BEGIN)
-    //   .debounceTime(100) // Give dialog content a chance to unload
-    //   .map(action => new LayoutCloseDialogEndAction({ dialog: action.payload.dialog }));
 }

@@ -1,5 +1,5 @@
 import { GeneratorWizardState } from './_shared/generator-wizard.state';
-import { Template, InputValueCollection } from '../../../core';
+import { Template, InputValueCollection } from '../../../_core';
 import { MatDialogRef } from '@angular/material';
 
 export interface GeneratorBulkLayoutState {
@@ -9,9 +9,11 @@ export interface GeneratorBulkLayoutState {
 }
 
 export enum GeneratorBulkLayoutDialogState {
+  Unknown = 0,
   Opening,
   Opened,
-  Closing
+  Closing,
+  Cancelling
 }
 
 export enum GeneratorBulkDocumentRepeatState {

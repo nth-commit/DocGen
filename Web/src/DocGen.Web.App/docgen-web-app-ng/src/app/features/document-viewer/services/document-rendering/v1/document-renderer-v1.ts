@@ -10,7 +10,7 @@ import {
   isBeginWriteList, isBeginWriteListItem, isBeginWritePage,
   isEndWriteList, isEndWriteListItem, isEndWritePage,
   isWriteParagraphBreak, isWriteText
-} from '../../../../core';
+} from '../../../../_core';
 
 import { IDocumentRenderer } from '../document-renderer.interface';
 import { IDocumentBuilderV1 } from './document-builder-v1.interface';

@@ -1,6 +1,6 @@
 import { Action, MetaReducer } from '@ngrx/store';
 
-import { GeneratorBulkDocumentState, GeneratorBulkDocumentRepeatState, Document } from '../../../../../_shared';
+import { GeneratorBulkDocumentState, GeneratorBulkDocumentRepeatState, Document } from '../../../../../_core';
 import { DocumentAction, DocumentActionsTypes, DocumentBeginAction } from './document.actions';
 
 export function generatorBulkDocumentReducer(state: GeneratorBulkDocumentState, action: DocumentAction): GeneratorBulkDocumentState {

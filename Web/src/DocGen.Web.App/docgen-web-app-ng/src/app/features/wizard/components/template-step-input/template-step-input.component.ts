@@ -1,7 +1,7 @@
 import { Component, OnInit, OnChanges, SimpleChanges, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { TemplateStepInput, TemplateStepInputType, InputValue } from '../../../core';
+import { TemplateStepInput, TemplateStepInputType, InputValue } from '../../../_core';
 
 @Component({
   selector: 'app-wizard-template-step-input',

@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 
-import { Template } from '../../core';
+import { Template } from '../../_core';
 
 export enum DocumentViewerActionTypes {
     INIT = '[Document Viewer] Initialize',
