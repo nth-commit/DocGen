@@ -1,7 +1,7 @@
 import { Component, OnInit, OnChanges, SimpleChanges, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { TemplateStepInput, TemplateStepInputType, InputValue } from '../../../../../_core';
+import { TemplateStepInput, TemplateStepInputType, InputValue, InputValueCollection } from '../../../../../_core';
 
 @Component({
   selector: 'app-generator-wizard-step-input',
@@ -11,6 +11,7 @@ import { TemplateStepInput, TemplateStepInputType, InputValue } from '../../../.
 export class WizardStepInputComponent implements OnInit, OnChanges {
   @Input() stepInput: TemplateStepInput;
   @Input() value: InputValue;
+  @Input() allValues: InputValueCollection;
   @Output() valueChanges = new EventEmitter<InputValue>();
 
   TemplateStepInputType = TemplateStepInputType;

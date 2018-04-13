@@ -1,10 +1,11 @@
 <div class="container">
   <div class="content step-content" *ngIf="!(completed$ | async)">
-      <h2>{{ (step$ | async).name }}</h2>
-      <div class="description">{{ (step$ | async).description }}</div>
+      <h2>{{ (step$ | async).name | templatedText:(values$ | async) }}</h2>
+      <div class="description">{{ (step$ | async).description | templatedText:(values$ | async) }}</div>
       <app-generator-wizard-step
         [step]="step$ | async"
-        [value]="stepValues$ | async"
+        [values]="stepValues$ | async"
+        [allValues]="values$ | async"
         (valueChanges)="updateStepValues($event)">
       </app-generator-wizard-step>
   </div>

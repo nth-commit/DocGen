@@ -187,19 +187,7 @@ export function createGeneratorWizardReducer(reducerId: string): ActionReducer<G
       state.valid = state.stepsValid.every(x => x);
 
       const { values } = state;
-      const step = state.steps[state.stepIndex];
-      if (!state.step || state.step.id !== step.id) {
-        // Don't break object equality, else it will trigger change detection and re-render step.
-        state.step = Object.assign({}, step, <TemplateStep>{
-          name: InputValueCollectionUtility.getString(step.name, values),
-          description: InputValueCollectionUtility.getString(step.description, values),
-          inputs: step.inputs.map(i => Object.assign({}, i, <TemplateStepInput>{
-            name: i.name ? InputValueCollectionUtility.getString(i.name, values) : i.name,
-            description: i.description ? InputValueCollectionUtility.getString(i.description, values) : i.description,
-            hint: i.hint ? InputValueCollectionUtility.getString(i.hint, values) : i.hint
-          }))
-        });
-      }
+      state.step = state.steps[state.stepIndex];
 
       state.stepValues = {};
       state.step.inputs.forEach(i => {

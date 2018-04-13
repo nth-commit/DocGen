@@ -8,6 +8,9 @@ import { InputValueCollection, InputValueCollectionUtility } from '../../../../_
 export class TemplatedTextPipe implements PipeTransform {
 
   transform(templateText: string, values: InputValueCollection): string {
+    if (!templateText) {
+      return '';
+    }
     return InputValueCollectionUtility.getString(templateText, values);
   }
 

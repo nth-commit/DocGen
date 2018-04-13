@@ -14,7 +14,7 @@ import { TemplateStep, TemplateStepInput, InputValueCollection, InputValue, Inpu
 })
 export class WizardStepComponent implements OnInit, OnChanges {
   @Input() step: TemplateStep;
-  @Input() value: InputValueCollection = {};
+  @Input() values: InputValueCollection = {};
   @Input() allValues: InputValueCollection;
   @Output() valueChanges = new EventEmitter<InputValueCollection>();
 
@@ -30,21 +30,21 @@ export class WizardStepComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    const valueChange = changes.value;
-    if (!InputValueCollectionUtility.isEqual(valueChange.currentValue, valueChange.previousValue)) {
+    const valuesChange = changes.values;
+    if (!InputValueCollectionUtility.isEqual(valuesChange.currentValue, valuesChange.previousValue)) {
       this.valueArray = [];
       this.step.inputs.forEach((input, i) => {
-        this.valueArray[i] = this.value[input.id];
+        this.valueArray[i] = this.values[input.id];
       });
     }
   }
 
   onInputValueChanges(input: TemplateStepInput, index: number, value: InputValue) {
     this.valueArray[index] = value;
-    this.value[input.id] = value;
+    this.values[input.id] = value;
 
     setTimeout(() => {
-      this.valueChanges.emit(this.value);
+      this.valueChanges.emit(this.values);
     }, 50);
   }
 }
