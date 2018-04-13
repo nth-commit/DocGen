@@ -73,7 +73,7 @@ export class GeneratorBulkEffects {
     .map(() => new LayoutOpenDialogBeginAction({ dialog: 'select-constants' }));
 
   @Effect() onDocumentUpdateConstants_dispatchLayoutCloseDialogBegin$ = this.actions$
-    .ofType(DocumentActionsTypes.UPDATE_CONSTANTS)
+    .ofType(DocumentActionsTypes.UPDATE_CONSTANTS, DocumentActionsTypes.UPDATE_CONSTANTS_CANCEL)
     .withLatestFrom(this.store)
     .filter(([action, state]) => state.generatorBulk.layout.dialog === 'select-constants')
     .map(() => new LayoutCloseDialogBeginAction({ dialog: 'select-constants' }));

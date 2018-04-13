@@ -43,11 +43,6 @@ export function generatorBulkDocumentReducer(state: GeneratorBulkDocumentState, 
         constants: action.payload
       });
     }
-    case DocumentActionsTypes.UPDATE_CONSTANTS_CANCEL: {
-      return Object.assign({}, state, <GeneratorBulkDocumentState>{
-        constants: null
-      });
-    }
     default: {
       return state || {
         completedDocuments: [],

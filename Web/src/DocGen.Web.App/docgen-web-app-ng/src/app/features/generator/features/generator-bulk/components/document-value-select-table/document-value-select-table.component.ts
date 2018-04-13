@@ -67,7 +67,7 @@ export class DocumentValueSelectTableComponent implements OnInit, OnChanges {
     this.inputSelectedById[inputId] = change.checked;
 
     this.selectedInputs = this.inputs
-      .filter(i => this.inputSelectedById[i.id] !== null && this.inputSelectedById[i.id] !== undefined)
+      .filter(i => this.inputSelectedById[i.id])
       .map(i => i.id);
 
     this.selectedInputsChanged.emit(this.selectedInputs);
