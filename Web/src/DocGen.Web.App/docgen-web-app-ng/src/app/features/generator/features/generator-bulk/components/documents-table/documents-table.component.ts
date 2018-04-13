@@ -34,6 +34,13 @@ export class DocumentsTableComponent implements OnInit {
     this.documentClicked.emit(document.id);
   }
 
+  getFormattedValues(document: Document): string {
+    return Object.keys(document.values)
+      .filter(k => document.values[k] !== null && document.values[k] !== undefined)
+      .map(k => `${k}: ${document.values[k]}`)
+      .join(', ');
+  }
+
   onChange(inputId: string, change: MatCheckboxChange) {
 
   }

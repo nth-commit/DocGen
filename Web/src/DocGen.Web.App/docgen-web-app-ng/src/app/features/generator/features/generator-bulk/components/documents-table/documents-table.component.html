@@ -3,7 +3,7 @@
   <ng-container matColumnDef="selected">
     <mat-header-cell *matHeaderCellDef></mat-header-cell>
     <mat-cell *matCellDef="let document" [ngClass]="{ 'draft': !document.creationTime }">
-      <mat-checkbox *ngIf="document.creationTime" (change)="onChange(document.id, $event)" [checked]="documentsSelectedById[document.id]"></mat-checkbox>
+      <mat-checkbox *ngIf="document.creationTime" (click)="$event.stopPropagation()" (change)="onChange(document.id, $event)" [checked]="documentsSelectedById[document.id]"></mat-checkbox>
     </mat-cell>
   </ng-container>
 
@@ -16,7 +16,7 @@
 
   <ng-container matColumnDef="values">
     <mat-header-cell *matHeaderCellDef>Values</mat-header-cell>
-    <mat-cell *matCellDef="let document">{{ document.values }}</mat-cell>
+    <mat-cell *matCellDef="let document">{{ getFormattedValues(document) }}</mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="creationTime">
@@ -36,6 +36,3 @@
   </mat-row>
 
 </mat-table>
-
-<pre>{{ completedDocuments | json }}</pre>
-<pre>{{ draftDocuments | json }}</pre>
