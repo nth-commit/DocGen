@@ -9,7 +9,9 @@
 
   <ng-container matColumnDef="title">
     <mat-header-cell *matHeaderCellDef>Title</mat-header-cell>
-    <mat-cell *matCellDef="let document" ngClass="{ 'draft': !document.creationTime }">{{ 'Title' }}</mat-cell>
+    <mat-cell *matCellDef="let document" ngClass="{ 'draft': !document.creationTime }">
+      {{ template.name | templatedText:(document.values) }}
+    </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="values">

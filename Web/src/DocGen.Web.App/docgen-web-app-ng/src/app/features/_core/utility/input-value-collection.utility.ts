@@ -1,12 +1,12 @@
 import { Template, TemplateStep, InputValue, InputValueCollection } from '../models';
 
-export const InputValueCollectionUtility = {
+class _InputValueCollectionUtility {
 
-  fromTemplate: (template: Template): InputValueCollection => {
+  fromTemplate(template: Template): InputValueCollection {
     return this.fromSteps(template.steps);
-  },
+  }
 
-  fromSteps: (steps: TemplateStep[]): InputValueCollection => {
+  fromSteps(steps: TemplateStep[]): InputValueCollection  {
     const result: InputValueCollection = {};
 
     steps.forEach(s => {
@@ -16,9 +16,9 @@ export const InputValueCollectionUtility = {
     });
 
     return result;
-  },
+  }
 
-  toEncoded: (collection: InputValueCollection) => {
+  toEncoded(collection: InputValueCollection) {
     const result = btoa(JSON.stringify(collection));
 
     if (result.length > 2000) {
@@ -27,9 +27,9 @@ export const InputValueCollectionUtility = {
     }
 
     return result;
-  },
+  }
 
-  fromEncoded: (encoded: string) => {
+  fromEncoded(encoded: string) {
     const result: InputValueCollection = JSON.parse(atob(encoded));
 
     Object.keys(result).forEach(k => {
@@ -40,9 +40,9 @@ export const InputValueCollectionUtility = {
     });
 
     return result;
-  },
+  }
 
-  isEqual: (a: InputValueCollection, b: InputValueCollection) => {
+  isEqual(a: InputValueCollection, b: InputValueCollection) {
     if (a === b) {
       return true;
     } else if (a === undefined || b === undefined) {
@@ -64,20 +64,24 @@ export const InputValueCollectionUtility = {
 
       return a[aKey] === b[bKey];
     });
-  },
+  }
 
-  getString: (stringTemplate: string, collection: InputValueCollection): string => {
+  getString(stringTemplate: string, collection: InputValueCollection): string {
     return stringTemplate.replace(/{{(([a-z_]+[a-z_0-9]*)(.[a-z_]+[a-z_0-9]*)*)}}/, (x, y) => {
       const value = collection[y];
       return this.getInputString(value);
     });
-  },
+  }
 
-  getInputString: (value: InputValue): string => {
-    if (typeof value === 'string') {
+  getInputString(value: InputValue): string {
+    if (value === null || value === undefined) {
+      return '';
+    } else if (typeof value === 'string') {
       return value;
     } else {
       return '' + value;
     }
   }
-};
+}
+
+export const InputValueCollectionUtility = new _InputValueCollectionUtility();

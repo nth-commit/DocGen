@@ -18,6 +18,7 @@ import { WizardStepNavigationComponent } from './components/wizard-step-navigati
 import { DocumentValuesTableComponent } from './components/document-values-table/document-values-table.component';
 
 import { GeneratorCoreRoutingModule } from './generator-core-routing.module';
+import { TemplatedTextPipe } from './pipes/templated-text.pipe';
 
 @NgModule({
   imports: [
@@ -37,13 +38,15 @@ import { GeneratorCoreRoutingModule } from './generator-core-routing.module';
     WizardStepComponent,
     WizardStepInputComponent,
     WizardStepNavigationComponent,
-    DocumentValuesTableComponent
+    DocumentValuesTableComponent,
+    TemplatedTextPipe
   ],
   exports: [
     WizardStepComponent,
     WizardStepInputComponent,
     WizardStepNavigationComponent,
-    DocumentValuesTableComponent
+    DocumentValuesTableComponent,
+    TemplatedTextPipe
   ]
 })
 export class GeneratorCoreModule { }

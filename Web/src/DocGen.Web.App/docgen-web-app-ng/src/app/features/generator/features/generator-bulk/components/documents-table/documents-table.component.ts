@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material';
 
-import { Document } from '../../../../../_core';
+import { Document, Template } from '../../../../../_core';
 
 @Component({
   selector: 'app-generator-bulk-documents-table',
@@ -9,6 +9,7 @@ import { Document } from '../../../../../_core';
   styleUrls: ['./documents-table.component.scss']
 })
 export class DocumentsTableComponent implements OnInit {
+  @Input() template: Template;
   @Input() completedDocuments: Document[];
   @Input() draftDocuments: Document[];
   @Input() selectedDocumentIds: string[];

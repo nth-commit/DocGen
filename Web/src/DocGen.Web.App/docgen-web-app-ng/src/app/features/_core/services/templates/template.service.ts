@@ -60,6 +60,8 @@ export class TemplateService {
           i.id = inputId;
       });
     });
+
+    template.name += ' for {{organisation.name}}';
   }
 
   private getTemplateResourceUrl(id?: string) {

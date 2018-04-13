@@ -1,4 +1,5 @@
 <app-generator-bulk-documents-table
+  [template]="template$ | async"
   [completedDocuments]="completedDocuments$ | async"
   [draftDocuments]="draftDocuments$ | async"
   (documentClicked)="onDocumentClicked($event)">

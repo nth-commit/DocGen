@@ -15,13 +15,14 @@ import { TemplateStep, TemplateStepInput, InputValueCollection, InputValue, Inpu
 export class WizardStepComponent implements OnInit, OnChanges {
   @Input() step: TemplateStep;
   @Input() value: InputValueCollection = {};
+  @Input() allValues: InputValueCollection;
   @Output() valueChanges = new EventEmitter<InputValueCollection>();
+
+  valueArray: InputValue[];
 
   private inputValueSubjectsById: { [key: string]: BehaviorSubject<InputValue> };
   private inputValueObservables: Observable<{ id: string, value: InputValue }>[];
   private inputValuesByKeySub: Subscription;
-
-  private valueArray: InputValue[];
 
   constructor() { }
 
