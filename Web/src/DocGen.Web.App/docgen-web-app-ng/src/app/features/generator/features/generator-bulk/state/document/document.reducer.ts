@@ -47,15 +47,21 @@ export function resolveState(state: GeneratorBulkDocumentState, action: Document
     case DocumentActionsTypes.PUBLISH_DOCUMENT: {
       const { id, repeat, clearConstants } = action.payload;
 
+      let { draftDocuments, completedDocuments, lastCompletedDocument } = state;
       const document = state.draftDocuments.find(d => d.id === id);
-      document.creationTime = new Date();
+      if (document) {
+        document.creationTime = new Date();
+        lastCompletedDocument = document;
+        draftDocuments = draftDocuments.filter(d => d.id !== id);
+        completedDocuments = [...completedDocuments, document];
+      }
 
       return Object.assign({}, state, <GeneratorBulkDocumentState>{
-        draftDocuments: state.draftDocuments.filter(d => d.id !== id),
-        completedDocuments: [...state.completedDocuments, document],
+        draftDocuments,
+        completedDocuments,
+        lastCompletedDocument,
         repeating: repeat,
         constants: clearConstants ? null : state.constants,
-        lastCompletedDocument: document,
         lastConstants: state.constants
       });
     }

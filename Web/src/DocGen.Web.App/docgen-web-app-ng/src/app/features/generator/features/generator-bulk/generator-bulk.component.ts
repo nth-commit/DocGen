@@ -26,10 +26,17 @@ export class GeneratorBulkComponent implements OnInit {
 
   onDocumentClicked(documentId: string) {
     this.store
-      .select(s => s.generatorBulk.documents)
+      .select(s => s.generatorBulk)
       .first()
-      .subscribe(documents => {
+      .subscribe(generatorBulk => {
+        const { documents, layout } = generatorBulk;
+
+        if (layout.dialog) {
+          return;
+        }
+
         const document = documents.documentsById.get(documentId);
+
         this.store.dispatch(new WizardResumeAction(REDUCER_ID, {
           id: documentId,
           template: documents.template,

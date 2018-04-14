@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatTableModule, MatDialogModule, MatCheckboxModule, MatButtonModule } from '@angular/material';
+import { MatTableModule, MatDialogModule, MatCheckboxModule, MatButtonModule, MatIconModule, MatMenuModule } from '@angular/material';
 
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
@@ -28,6 +28,8 @@ import { DocumentValueSelectTableComponent } from './components/document-value-s
     MatDialogModule,
     MatCheckboxModule,
     MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
 
     StoreModule.forFeature(REDUCER_ID, generatorBulkReducer),
     EffectsModule.forFeature([GeneratorBulkEffects, LayoutEffects, DocumentEffects]),
