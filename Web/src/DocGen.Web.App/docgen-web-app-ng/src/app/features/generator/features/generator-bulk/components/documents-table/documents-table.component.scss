@@ -30,6 +30,12 @@ mat-table {
         }
     }
 
+    mat-header-row {
+        :nth-child(1) {
+            overflow: visible;
+        }
+    }
+
     mat-row {
         cursor: pointer;
 

@@ -1,9 +1,24 @@
-<app-generator-bulk-documents-table
-  [template]="template$ | async"
-  [completedDocuments]="completedDocuments$ | async"
-  [draftDocuments]="draftDocuments$ | async"
-  (documentClicked)="openDocumentWizard($event)"
-  (documentDeleteClicked)="deleteDocument($event)"
-  (documentCreateFromClicked)="createFromDocument($event)"
-  (documentDownloadClicked)="downloadDocument($event)">
-</app-generator-bulk-documents-table>
+<div class="container">
+  <div class="controls">
+    <div class="bulk-controls" *ngIf="selectedDocuments.length > 0">
+        <button mat-raised-button color="primary"
+          *ngIf="allSelectedAreCompleted"
+          (click)="downloadSelectedDocuments()">DOWNLOAD <mat-icon>file_download</mat-icon></button>
+        <button mat-raised-button color="primary"
+          (click)="deleteSelectedDocuments()">DELETE <mat-icon>delete</mat-icon></button>
+    </div>
+    <div class="fill"></div>
+    <button mat-raised-button color="primary" (click)="create()" >CREATE <mat-icon>note_add</mat-icon></button>
+  </div>
+  <app-generator-bulk-documents-table
+    [template]="template$ | async"
+    [completedDocuments]="completedDocuments$ | async"
+    [draftDocuments]="draftDocuments$ | async"
+    [selectedDocuments]="selectedDocuments"
+    (documentClicked)="openDocumentWizard($event)"
+    (documentDeleteClicked)="deleteDocument($event)"
+    (documentCreateFromClicked)="createFromDocument($event)"
+    (documentDownloadClicked)="downloadDocument($event)"
+    (selectedDocumentsUpdated)="updateSelectedDocuments($event)">
+  </app-generator-bulk-documents-table>
+</div>

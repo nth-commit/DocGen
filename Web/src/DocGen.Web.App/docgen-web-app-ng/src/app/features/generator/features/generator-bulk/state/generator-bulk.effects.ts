@@ -47,7 +47,7 @@ export class GeneratorBulkEffects {
     }));
 
   @Effect() onLayoutCloseDialogEnd_dispatchWizardReset$ = this.actions$
-    .ofType<LayoutDialogAction>(LayoutActionTypes.CLOSE_DIALOG_END)
+    .ofType<LayoutDialogAction>(LayoutActionTypes.CLOSE_DIALOG_END, LayoutActionTypes.CANCEL_DIALOG_END)
     .filter(a => a.payload.dialog === 'wizard')
     .map(() => new WizardResetAction(REDUCER_ID));
 

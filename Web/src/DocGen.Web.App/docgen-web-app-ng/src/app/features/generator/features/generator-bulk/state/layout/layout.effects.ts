@@ -60,7 +60,7 @@ export class LayoutEffects {
       }
 
       Observable
-        .timer(500)
+        .timer(100)
         .first()
         .subscribe(() => {
           const dialogRef = this.matDialog.open(dialogOpenArgs.componentType, dialogOpenArgs.config);
@@ -70,15 +70,15 @@ export class LayoutEffects {
             .first()
             .subscribe(() => {
               this.store.dispatch(new LayoutOpenDialogEndAction({ dialog: action.payload.dialog, dialogRef }));
-            });
 
-          Observable
-            .race<Event>(
-              dialogRef.keydownEvents().filter(e => e.keyCode === 27),
-              dialogRef.backdropClick())
-            .withLatestFrom(this.store, (_, state) => state.generatorBulk.layout)
-            .subscribe(layout => {
-              this.store.dispatch(new LayoutCancelDialogBeginAction({ dialog: layout.dialog }));
+              Observable
+                .race<Event>(
+                  dialogRef.keydownEvents().filter(e => e.keyCode === 27),
+                  dialogRef.backdropClick())
+                .withLatestFrom(this.store, (_, state) => state.generatorBulk.layout)
+                .subscribe(layout => {
+                  this.store.dispatch(new LayoutCancelDialogBeginAction({ dialog: layout.dialog }));
+                });
             });
 
           dialogRef.afterClosed()

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material';
 
 import { Document, Template } from '../../../../../_core';
@@ -8,7 +8,7 @@ import { Document, Template } from '../../../../../_core';
   templateUrl: './documents-table.component.html',
   styleUrls: ['./documents-table.component.scss']
 })
-export class DocumentsTableComponent implements OnInit {
+export class DocumentsTableComponent implements OnInit, OnChanges {
   @Input() template: Template;
   @Input() completedDocuments: Document[];
   @Input() draftDocuments: Document[];
@@ -17,20 +17,58 @@ export class DocumentsTableComponent implements OnInit {
   @Output() documentDeleteClicked = new EventEmitter<Document>();
   @Output() documentCreateFromClicked = new EventEmitter<Document>();
   @Output() documentDownloadClicked = new EventEmitter<Document>();
+  @Output() selectedDocumentsUpdated = new EventEmitter<Document[]>();
 
   displayedColumns = ['selected', 'title', 'values', 'creationTime', 'options'];
-  documentsSelectedById: { [documentId: string]: boolean } = {};
+  isSelectedByDocumentId: { [key: string]: boolean };
 
   constructor() { }
-
-  ngOnInit() {
-  }
 
   get documents(): Document[] {
     return [
       ...this.completedDocuments,
       ...this.draftDocuments
     ];
+  }
+
+  get documentSelectedCount(): number {
+    return Object.keys(this.isSelectedByDocumentId)
+      .filter(k => this.isSelectedByDocumentId[k])
+      .length;
+  }
+
+  get documentSelectedMaxCount(): number {
+    return this.documents.length;
+  }
+
+  ngOnInit() {
+    if (!this.selectedDocuments) {
+      this.selectedDocuments = [];
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    const updateIsSelectedByDocumentId =
+      !this.selectedDocuments ||
+      changes.selectedDocuments ||
+      changes.completedDocuments ||
+      changes.draftDocuments;
+
+    if (!this.selectedDocuments) {
+      this.selectedDocuments = [];
+    }
+
+    if (updateIsSelectedByDocumentId) {
+      const selectedDocumentsById = Map.fromArray(
+        this.selectedDocuments,
+        d => d.id,
+        d => d);
+
+      this.isSelectedByDocumentId = {};
+      this.documents.forEach(d => {
+        this.isSelectedByDocumentId[d.id] = selectedDocumentsById.has(d.id);
+      });
+    }
   }
 
   openDocumentWizard(document: Document) {
@@ -56,8 +94,19 @@ export class DocumentsTableComponent implements OnInit {
       .join(', ');
   }
 
-  onChange(inputId: string, change: MatCheckboxChange) {
+  onChange(change: MatCheckboxChange) {
+    this.documents.forEach(d => this.isSelectedByDocumentId[d.id] = change.checked);
+    this.updateSelectedDocuments();
+  }
 
+  onDocumentChange(document: Document, change: MatCheckboxChange) {
+    this.isSelectedByDocumentId[document.id] = change.checked;
+    this.updateSelectedDocuments();
+  }
+
+  updateSelectedDocuments() {
+    this.selectedDocuments = this.documents.filter(d => this.isSelectedByDocumentId[d.id]);
+    this.selectedDocumentsUpdated.emit(this.selectedDocuments);
   }
 
 }

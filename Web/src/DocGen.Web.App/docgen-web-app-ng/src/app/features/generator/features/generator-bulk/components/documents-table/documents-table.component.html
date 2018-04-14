@@ -1,16 +1,26 @@
 <mat-table [dataSource]="documents">
 
   <ng-container matColumnDef="selected">
-    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+    <mat-header-cell *matHeaderCellDef>
+      <mat-checkbox
+        [disabled]="documentSelectedCount === 0"
+        [checked]="documentSelectedCount > 0"
+        [indeterminate]="documentSelectedCount > 0 && documentSelectedCount < documentSelectedMaxCount"
+        (change)="onChange($event)"></mat-checkbox>
+    </mat-header-cell>
     <mat-cell *matCellDef="let document" [ngClass]="{ 'draft': !document.creationTime }">
-      <mat-checkbox *ngIf="document.creationTime" (click)="$event.stopPropagation()" (change)="onChange(document.id, $event)" [checked]="documentsSelectedById[document.id]"></mat-checkbox>
+      <mat-checkbox
+        [checked]="isSelectedByDocumentId[document.id]"
+        (click)="$event.stopPropagation()"
+        (change)="onDocumentChange(document, $event)"></mat-checkbox>
     </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="title">
     <mat-header-cell *matHeaderCellDef>Title</mat-header-cell>
     <mat-cell *matCellDef="let document" ngClass="{ 'draft': !document.creationTime }">
-      {{ template.name | templatedText:(document.values) }}
+      <i *ngIf="!document.creationTime">(draft) {{ template.name | templatedText:(document.values) }}</i>
+      <span *ngIf="document.creationTime">{{ template.name | templatedText:(document.values) }}</span>
     </mat-cell>
   </ng-container>
 
@@ -32,14 +42,14 @@
         </button>
         <mat-menu #menu="matMenu">
           <button (click)="downloadDocument(document)" mat-menu-item>
-            <mat-icon>file download</mat-icon>
+            <mat-icon>file_download</mat-icon>
             <span>Download</span>
           </button>
           <button *ngIf="document.creationTime" (click)="createFromDocument(document)" mat-menu-item>
-            <mat-icon>note add</mat-icon>
+            <mat-icon>note_add</mat-icon>
             <span>Create from</span>
           </button>
-          <button (click)="deleteDocument(document)" mat-menu-item>
+          <button *ngIf="document.creationTime" (click)="deleteDocument(document)" mat-menu-item>
             <mat-icon>delete</mat-icon>
             <span>Delete</span>
           </button>
