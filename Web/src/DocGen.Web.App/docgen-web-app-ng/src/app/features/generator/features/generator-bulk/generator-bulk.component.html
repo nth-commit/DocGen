@@ -2,5 +2,8 @@
   [template]="template$ | async"
   [completedDocuments]="completedDocuments$ | async"
   [draftDocuments]="draftDocuments$ | async"
-  (documentClicked)="onDocumentClicked($event)">
+  (documentClicked)="openDocumentWizard($event)"
+  (documentDeleteClicked)="deleteDocument($event)"
+  (documentCreateFromClicked)="createFromDocument($event)"
+  (documentDownloadClicked)="downloadDocument($event)">
 </app-generator-bulk-documents-table>

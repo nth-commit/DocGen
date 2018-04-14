@@ -19,6 +19,7 @@ export class GeneratorBulkEffects {
 
   @Effect() onDocumentBegin_dispatchWizardBegin$ = this.actions$
     .ofType(DocumentActionsTypes.BEGIN)
+    .debounceTime(500)
     .withLatestFrom(this.store, (action, state) => state.generatorBulk.documents)
     .filter(documents => !documents.draftDocuments.length && !documents.draftDocuments.length)
     .map(documents => new WizardBeginAction(REDUCER_ID, {

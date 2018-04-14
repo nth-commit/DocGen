@@ -70,6 +70,23 @@ export function resolveState(state: GeneratorBulkDocumentState, action: Document
         constants: action.payload
       });
     }
+    case DocumentActionsTypes.DELETE_DOCUMENT: {
+      return Object.assign({}, state, <GeneratorBulkDocumentState>{
+        draftDocuments: state.draftDocuments.filter(d => d.id !== action.payload.id),
+        completedDocuments: state.completedDocuments.filter(d => d.id !== action.payload.id)
+      });
+    }
+    case DocumentActionsTypes.CREATE_FROM_DOCUMENT: {
+      const document = state.completedDocuments.find(d => d.id === action.payload.id);
+      if (!document) {
+        throw new Error('Could not find completed document');
+      }
+
+      return Object.assign({}, state, <GeneratorBulkDocumentState>{
+        lastCompletedDocument: document,
+        constants: null
+      });
+    }
     default: {
       return state || {
         completedDocuments: [],

@@ -5,12 +5,14 @@ import { GeneratorWizardState } from '../../../../../_core';
 
 export enum DocumentActionsTypes {
     BEGIN = '[Generator Bulk Document] Begin',
-    UPDATE_DOCUMENT = '[Generator Bulk Document] Update Draft',
-    PUBLISH_DOCUMENT = '[Generator Bulk Document] Publish Draft',
+    UPDATE_DOCUMENT = '[Generator Bulk Document] Update Document',
+    PUBLISH_DOCUMENT = '[Generator Bulk Document] Publish Document',
     EDIT_DOCUMENT = '[Generator Bulk Document] Edit Document',
     UPDATE_CONSTANTS = '[Generator Bulk Document] Update Constants',
     UPDATE_CONSTANTS_BEGIN = '[Generator Bulk Document] Update Constants Begin',
-    UPDATE_CONSTANTS_CANCEL = '[Generator Bulk Document] Update Constants Cancel'
+    UPDATE_CONSTANTS_CANCEL = '[Generator Bulk Document] Update Constants Cancel',
+    DELETE_DOCUMENT = '[Generator Bulk Document] Delete Document',
+    CREATE_FROM_DOCUMENT = '[Generator Bulk Document] Create From Document'
 }
 
 export class DocumentBeginAction implements Action {
@@ -49,10 +51,22 @@ export class DocumentUpdateConstantsCancelAction implements Action {
     constructor() { }
 }
 
+export class DocumentDeleteDocumentAction implements Action {
+    readonly type = DocumentActionsTypes.DELETE_DOCUMENT;
+    constructor(public payload: { id: string }) { }
+}
+
+export class DocumentCreateFromAction implements Action {
+    readonly type = DocumentActionsTypes.CREATE_FROM_DOCUMENT;
+    constructor(public payload: { id: string }) { }
+}
+
 export type DocumentAction =
     DocumentBeginAction |
     DocumentUpdateDocumentAction |
     DocumentPublishDocumentAction |
     DocumentUpdateConstantsAction |
     DocumentUpdateConstantsBeginAction |
-    DocumentUpdateConstantsCancelAction;
+    DocumentUpdateConstantsCancelAction |
+    DocumentDeleteDocumentAction |
+    DocumentCreateFromAction;

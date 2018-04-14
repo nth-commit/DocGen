@@ -23,4 +23,7 @@ export class DocumentEffects {
     console.log('Action: ' + id, a);
   });
 
+  @Effect() onCreateFrom_dispatchUpdateConstantsBegin$ = this.actions$
+    .ofType(DocumentActionsTypes.CREATE_FROM_DOCUMENT)
+    .map(() => new DocumentUpdateConstantsBeginAction());
 }

@@ -31,15 +31,15 @@
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #menu="matMenu">
-          <button mat-menu-item>
+          <button (click)="downloadDocument(document)" mat-menu-item>
             <mat-icon>file download</mat-icon>
             <span>Download</span>
           </button>
-          <button mat-menu-item>
+          <button *ngIf="document.creationTime" (click)="createFromDocument(document)" mat-menu-item>
             <mat-icon>note add</mat-icon>
             <span>Create from</span>
           </button>
-          <button mat-menu-item>
+          <button (click)="deleteDocument(document)" mat-menu-item>
             <mat-icon>delete</mat-icon>
             <span>Delete</span>
           </button>
