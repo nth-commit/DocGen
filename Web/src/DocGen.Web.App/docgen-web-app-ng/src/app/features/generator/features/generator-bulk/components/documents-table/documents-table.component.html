@@ -3,7 +3,7 @@
   <ng-container matColumnDef="selected">
     <mat-header-cell *matHeaderCellDef>
       <mat-checkbox
-        [disabled]="documentSelectedCount === 0"
+        [disabled]="documents.length === 0"
         [checked]="documentSelectedCount > 0"
         [indeterminate]="documentSelectedCount > 0 && documentSelectedCount < documentSelectedMaxCount"
         (change)="onChange($event)"></mat-checkbox>
